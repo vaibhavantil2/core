@@ -1,7 +1,7 @@
 {
     "name": "@glue42/workspaces-api",
     "version": "0.0.0",
-    "description": "",
+    "description": "Glue42 Core workspaces API",
     "main": "dist/workspaces.umd.js",
     "module": "dist/workspaces.es.js",
     "types": "./workspaces.d.ts",
@@ -40,6 +40,6 @@
         "typescript": "^3.7.4"
     },
     "publishConfig": {
-        "registry": "https://registry.npmjs.org"
+        "access": "public"
     }
 }
