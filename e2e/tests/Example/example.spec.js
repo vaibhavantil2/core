@@ -31,4 +31,8 @@ describe('it should work', () => {
     it('should initialize channels', async () => {
         expect(glue.channels).to.not.be.an('undefined');
     });
+
+    it('should initialize channels', async () => {
+        expect(glue.workspaces).to.not.be.an('undefined');
+    });
 });

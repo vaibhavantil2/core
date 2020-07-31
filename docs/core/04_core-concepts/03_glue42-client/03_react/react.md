@@ -120,8 +120,10 @@ import { useGlueInit } from "@glue42/react-hooks";
 const App = () => {
     // Example custom configuration for the Glue42 Web library.
     const config = {
-        extends: false,
-        worker: "./lib/worker.js"
+        assets: {
+            location: "/lib",
+            extendConfig: false
+        }
     }
     const glue = useGlueInit(config, GlueWeb);
 

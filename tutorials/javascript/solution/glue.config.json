@@ -1,14 +1,10 @@
 {
     "glue": {
-        "worker": "./worker.js",
         "layouts": {
             "autoRestore": false,
             "autoSaveWindowContext": false
         },
         "channels": true
-    },
-    "gateway": {
-        "location": "./gateway.js"
     },
     "channels": [
         {
@@ -98,6 +94,12 @@
                     "top": 100,
                     "width": 400,
                     "height": 400
+                }
+            },
+            {
+                "name": "ClientDetails",
+                "details": {
+                    "url": "http://localhost:4242/clientdetails"
                 }
             }
         ]

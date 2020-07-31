@@ -1,18 +1,22 @@
 import { Glue42Web } from "../../web";
-import { defaultConfigLocation, defaultConfig, defaultWorkerName } from "./defaults";
+import { defaultConfig, defaultWorkerName, defaultAssetsBaseLocation, defaultConfigName } from "./defaults";
 import { Glue42CoreConfig } from "../glue.config";
 import { fetchTimeout } from "../utils";
 
 const getRemoteConfig = async (userConfig: Glue42Web.Config): Promise<Glue42CoreConfig> => {
-    // check userConfig, if not there check defaultConfig, if not there use the defaultConfigLocation
-    const extend: string | false = userConfig.extends ?? defaultConfig.extends ?? defaultConfigLocation;
-    if (extend === false) {
-        // user has disabled extending the config
+
+    if (userConfig.assets?.extendConfig === false || userConfig.extends === false) {
+        // the user has disabled extending the config
         return {};
     }
+
+    const remoteConfigLocation: string = userConfig.assets?.location ? `${userConfig.assets.location}/${defaultConfigName}` :
+        typeof userConfig.extends === "string" ? userConfig.extends :
+            `${defaultAssetsBaseLocation}/${defaultConfigName}`;
+
     let response: Response;
     try {
-        response = await fetchTimeout(extend);
+        response = await fetchTimeout(remoteConfigLocation);
         if (!response.ok) {
             return {};
         }
@@ -35,13 +39,20 @@ export const buildConfig = async (userConfig?: Glue42Web.Config): Promise<Glue42
         ...userConfig
     };
 
+    resultWebConfig.worker = `${resultWebConfig.assets.location}/${defaultWorkerName}`;
+
     // if we have extends options, we need to set the worker location to be the same
     // because worker is always on the same level as custom config
-    if (resultWebConfig?.extends) {
+    if (typeof resultWebConfig?.extends === "string") {
         const lastIndex = resultWebConfig.extends.lastIndexOf("/");
         const worker = resultWebConfig.extends.substr(0, lastIndex + 1) + defaultWorkerName;
         resultWebConfig.worker = worker;
     }
+
+    if (!remoteConfig.layouts) {
+        remoteConfig.layouts = { remoteType: "json" };
+    }
+
     return {
         ...remoteConfig,
         glue: resultWebConfig

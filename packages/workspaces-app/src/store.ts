@@ -132,7 +132,7 @@ class WorkspaceStore {
 
     public getWorkspaceContext(workspaceId: string) {
         const workspace = this.getById(workspaceId);
-        return workspace.layout.config.workspacesOptions.context;
+        return workspace?.layout?.config?.workspacesOptions?.context;
     }
 
     private getByContainerIdCore(id: string): Workspace {

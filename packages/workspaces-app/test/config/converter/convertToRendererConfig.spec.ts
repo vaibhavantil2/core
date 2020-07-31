@@ -17,6 +17,7 @@ describe("convertToRendererConfig() Should", () => {
             isFocused: false,
             isLoaded: false,
             isMaximized: false,
+            title: undefined,
             url: mockUrl,
             windowId: undefined
         }
@@ -105,11 +106,14 @@ describe("convertToRendererConfig() Should", () => {
                                     header: false,
                                     appName: mockApp,
                                     url: mockUrl,
-                                    windowId: undefined
+                                    windowId: undefined,
+                                    title: undefined,
+                                    context: undefined
                                 },
                                 id: mockId,
                                 type: "component",
                                 windowId: undefined,
+                                title: undefined,
                                 workspacesConfig: {}
                             }
                         ]
@@ -126,11 +130,14 @@ describe("convertToRendererConfig() Should", () => {
                                     header: false,
                                     appName: mockApp,
                                     url: mockUrl,
-                                    windowId: undefined
+                                    windowId: undefined,
+                                    title: undefined,
+                                    context: undefined
                                 },
                                 id: mockId,
                                 type: "component",
                                 windowId: undefined,
+                                title: undefined,
                                 workspacesConfig: {}
                             }
                         ]
@@ -147,11 +154,14 @@ describe("convertToRendererConfig() Should", () => {
                                     header: false,
                                     appName: mockApp,
                                     url: mockUrl,
-                                    windowId: undefined
+                                    windowId: undefined,
+                                    title: undefined,
+                                    context: undefined
                                 },
                                 id: mockId,
                                 type: "component",
                                 windowId: undefined,
+                                title: undefined,
                                 workspacesConfig: {}
                             }
                         ]
@@ -337,10 +347,28 @@ describe("convertToRendererConfig() Should", () => {
                     componentState: {
                         appName: mockApp,
                         url: mockUrl,
-                        windowId: undefined
+                        windowId: undefined,
+                        title: undefined,
+                        context: undefined
                     },
                     id: mockId,
                     type: "component",
+                    windowId: undefined,
+                    title: undefined,
+                    workspacesConfig: {}
+                },
+                {
+                    componentName: `app${mockId}`,
+                    componentState: {
+                        appName: mockApp,
+                        url: mockUrl,
+                        windowId: undefined,
+                        title: undefined,
+                        context: undefined
+                    },
+                    id: mockId,
+                    type: "component",
+                    title: undefined,
                     windowId: undefined,
                     workspacesConfig: {}
                 },
@@ -349,23 +377,14 @@ describe("convertToRendererConfig() Should", () => {
                     componentState: {
                         appName: mockApp,
                         url: mockUrl,
-                        windowId: undefined
+                        title: undefined,
+                        windowId: undefined,
+                        context: undefined
                     },
                     id: mockId,
                     type: "component",
                     windowId: undefined,
-                    workspacesConfig: {}
-                },
-                {
-                    componentName: `app${mockId}`,
-                    componentState: {
-                        appName: mockApp,
-                        url: mockUrl,
-                        windowId: undefined
-                    },
-                    id: mockId,
-                    type: "component",
-                    windowId: undefined,
+                    title: undefined,
                     workspacesConfig: {}
                 }
             ]
@@ -557,11 +576,14 @@ describe("convertToRendererConfig() Should", () => {
                                         componentState: {
                                             appName: mockApp,
                                             url: mockUrl,
-                                            windowId: undefined
+                                            windowId: undefined,
+                                            title: undefined,
+                                            context: undefined
                                         },
                                         id: mockId,
                                         type: "component",
                                         windowId: undefined,
+                                        title: undefined,
                                         workspacesConfig: {}
                                     }
                                 ],
@@ -581,11 +603,14 @@ describe("convertToRendererConfig() Should", () => {
                                             componentState: {
                                                 appName: mockApp,
                                                 url: mockUrl,
-                                                windowId: undefined
+                                                windowId: undefined,
+                                                title: undefined,
+                                                context: undefined
                                             },
                                             id: mockId,
                                             type: "component",
                                             windowId: undefined,
+                                            title: undefined,
                                             workspacesConfig: {}
                                         }
                                     ],

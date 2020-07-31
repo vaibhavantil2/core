@@ -48,7 +48,7 @@ export class LocalWebWindow implements Glue42Web.Windows.WebWindow {
         if (typeof title === "object" && title !== null) {
             title = title.title;
         }
-        document.title = title;
+        document.title = title as string;
         return this;
     }
 
@@ -59,6 +59,11 @@ export class LocalWebWindow implements Glue42Web.Windows.WebWindow {
 
     public async moveTo(top?: number | undefined, left?: number | undefined): Promise<Glue42Web.Windows.WebWindow> {
         await this.moveResize({ top, left });
+        return this;
+    }
+
+    public async focus(): Promise<Glue42Web.Windows.WebWindow> {
+        window.focus();
         return this;
     }
 
@@ -87,8 +92,8 @@ export class LocalWebWindow implements Glue42Web.Windows.WebWindow {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public updateContext(context: any): Promise<Glue42Web.Windows.WebWindow> {
         const oldContext = this.context;
-        this.context = Object.assign({}, context, oldContext);
-        this.registry.execute("context-updated", context, oldContext);
+        this.context = Object.assign({}, oldContext, context);
+        this.registry.execute("context-updated", this.context, oldContext);
         return Promise.resolve(this);
     }
 

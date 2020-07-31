@@ -6,6 +6,10 @@ describe("createApiWindow() Should", () => {
     const mockWindowId = "mockWindowId";
     const mockUrl = "mockUrl";
     const mockAppName = "mockAppName";
+    const mockFrameId = "mockFrameId";
+    const mockTitle = "mockTitle";
+    const mockPositionIndex = 0;
+    const mockWorkspaceId = "mockWorkspaceId";
 
     it("return the correct window object when the id is string and all optional args are present", () => {
         const expectedResult = {
@@ -17,7 +21,11 @@ describe("createApiWindow() Should", () => {
                 isLoaded: true,
                 isFocused: false,
                 appName: mockAppName,
-                url: mockUrl
+                url: mockUrl,
+                frameId: mockFrameId,
+                positionIndex: mockPositionIndex,
+                title: mockTitle,
+                workspaceId: mockWorkspaceId
             }
         };
 
@@ -28,6 +36,10 @@ describe("createApiWindow() Should", () => {
             isFocused: false,
             url: mockUrl,
             appName: mockAppName,
+            frameId: mockFrameId,
+            positionIndex: mockPositionIndex,
+            title: mockTitle,
+            workspaceId: mockWorkspaceId
         });
 
         expect(result).to.eql(expectedResult);
@@ -43,7 +55,11 @@ describe("createApiWindow() Should", () => {
                 isLoaded: true,
                 isFocused: false,
                 appName: mockAppName,
-                url: mockUrl
+                url: mockUrl,
+                frameId: mockFrameId,
+                positionIndex: mockPositionIndex,
+                title: mockTitle,
+                workspaceId: mockWorkspaceId
             }
         };
 
@@ -54,6 +70,10 @@ describe("createApiWindow() Should", () => {
             isFocused: false,
             url: mockUrl,
             appName: mockAppName,
+            frameId: mockFrameId,
+            positionIndex: 0,
+            title: mockTitle,
+            workspaceId: mockWorkspaceId
         });
 
         expect(result).to.eql(expectedResult);
@@ -69,7 +89,11 @@ describe("createApiWindow() Should", () => {
                 isLoaded: false,
                 isFocused: false,
                 appName: mockAppName,
-                url: mockUrl
+                url: mockUrl,
+                frameId: mockFrameId,
+                positionIndex: mockPositionIndex,
+                title: mockTitle,
+                workspaceId: mockWorkspaceId
             }
         };
 
@@ -80,6 +104,10 @@ describe("createApiWindow() Should", () => {
             isFocused: false,
             url: mockUrl,
             appName: mockAppName,
+            frameId: mockFrameId,
+            positionIndex: mockPositionIndex,
+            title: mockTitle,
+            workspaceId: mockWorkspaceId
         });
 
         expect(result).to.eql(expectedResult);

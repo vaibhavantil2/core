@@ -11,8 +11,9 @@ export interface WorkspaceItem {
     type?: "workspace";
     children: Array<RowItem | ColumnItem | GroupItem | WindowItem>;
     config?: {
+        name?: string;
         context?: object;
-        [k: string]: object;
+        [k: string]: object | string;
     };
 }
 
@@ -35,6 +36,11 @@ export interface WindowItem {
         isMaximized: boolean;
         isLoaded: boolean;
         isFocused: boolean;
+        workspaceId?: string;
+        frameId?: string;
+        positionIndex?: number;
+        title?: string;
+        context?: string;
     };
 }
 
@@ -136,6 +142,13 @@ export interface Workspace {
     context?: object;
 }
 
+export interface WorkspaceLayout {
+    name: string;
+    type: "Workspace";
+    metadata?: object;
+    components: Array<{ type: "Workspace"; state: WorkspaceItem }>;
+}
+
 export interface FrameLayoutConfig {
     workspaceLayout: GoldenLayout.Config;
     workspaceConfigs: Array<{ id: string; config: GoldenLayout.Config }>;
@@ -146,6 +159,7 @@ export interface WindowDefinition {
     appName?: string;
     url?: string;
     windowId?: string;
+    context?: object;
 }
 
 export interface StartupConfig {
@@ -154,6 +168,21 @@ export interface StartupConfig {
     workspaceName?: string;
     workspaceNames?: string[];
     context?: object;
+    build: boolean;
+}
+
+
+export interface APIWIndowSettings {
+    id: string | string[];
+    windowId: string;
+    isMaximized: boolean;
+    isFocused: boolean;
+    appName?: string;
+    url?: string;
+    workspaceId: string;
+    frameId: string;
+    title: string;
+    positionIndex: number;
 }
 
 export type WorkspaceOptionsWithTitle = GoldenLayout.WorkspacesOptions & { title?: string };

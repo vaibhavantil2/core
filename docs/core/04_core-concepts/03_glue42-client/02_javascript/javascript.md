@@ -38,19 +38,21 @@ Below is an example of initializing the Glue42 Web library with the default sett
 
 ```javascript
 // Use the object returned from the factory function
-// to access the Glue42 Core APIs
+// to access the Glue42 Core APIs.
 const glue = await GlueWeb();
 ```
 
-In your application, go to the `index.js` file and initialize the Glue42 Web library:
+Initializing the Glue42 Web library with custom settings:
 
 ```javascript
 const initializeGlue42 = async () => {
 
     // Example initialization options.
     const initOptions = {
-        extends: false,
-        worker: "./lib/worker.js",
+        assets: {
+            location: "/lib",
+            extendConfig: false
+        },
         layouts: {
             autoRestore: true,
             autoSaveWindowContext: true
@@ -58,10 +60,10 @@ const initializeGlue42 = async () => {
     };
 
     // Use the object returned from the factory function
-    // to access the Glue42 Core APIs
+    // to access the Glue42 Core APIs.
     const glue = await GlueWeb(initOptions);
 
-    // Here Glue42 Web is initialized and you can access all Glue42 Core APIs
+    // Here Glue42 Web is initialized and you can access all Glue42 Core APIs.
 };
 
 initializeGlue42().catch(console.error);

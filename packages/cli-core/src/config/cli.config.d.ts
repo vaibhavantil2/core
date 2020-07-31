@@ -31,6 +31,8 @@ export interface CliGlueAssets {
     workspaces?: {
         appLocation: string;
         manifestLocation: string;
+        frameCss?: string;
+        popupsCss?: string;
     };
     config: string;
     layouts: string;

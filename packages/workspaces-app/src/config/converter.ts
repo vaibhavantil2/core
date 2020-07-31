@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { WorkspaceItem, ParentItem, AnyItem } from "../types/internal";
+import { WorkspaceItem, ParentItem, AnyItem, APIWIndowSettings } from "../types/internal";
 import GoldenLayout, { StackConfig, ColumnConfig, RowConfig, Config } from "@glue42/golden-layout";
 import { EmptyVisibleWindowName } from "../constants";
 import factory from "./factory";
@@ -65,7 +65,9 @@ class ConfigConverter {
                 windowId: config.config?.windowId,
                 id: config.id,
                 appName: config.config?.appName || (config as any).appName,
-                url: config.config?.url || (config as any).url
+                url: config.config?.url || (config as any).url,
+                title: config.config?.title || (config as any).title,
+                context: config.config?.context || (config as any).context
             });
 
             if (parent.type !== "group") {
@@ -92,14 +94,20 @@ class ConfigConverter {
         } else if (config.type !== "component" && config.workspacesConfig && config.workspacesConfig.wrapper) {
             return this.flat(config.content.map((c) => this.convertToApiConfigCore(c)));
         } else if (config.type === "component") {
+            const wspsConfig = config.workspacesConfig as APIWIndowSettings;
             const resultWindow = factory.createApiWindow({
                 id: config.id,
                 isFocused: false,
-                isMaximized: false,
+                isMaximized: wspsConfig.isMaximized,
                 windowId: config.componentState.windowId,
                 appName: config.componentState.appName,
-                url: config.componentState.url
+                url: config.componentState.url,
+                frameId: wspsConfig.frameId,
+                workspaceId: wspsConfig.workspaceId,
+                title: wspsConfig.title,
+                positionIndex: wspsConfig.positionIndex
             });
+
             return resultWindow;
         }
         return {

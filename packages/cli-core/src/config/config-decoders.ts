@@ -36,7 +36,9 @@ export const glueDevConfigDecoder: Decoder<GlueDevConfig> = object({
         route: optional(nonEmptyStringDecoder),
         workspaces: optional(object({
             appLocation: nonEmptyStringDecoder,
-            manifestLocation: nonEmptyStringDecoder
+            manifestLocation: nonEmptyStringDecoder,
+            frameCss: optional(nonEmptyStringDecoder),
+            popupsCss: optional(nonEmptyStringDecoder)
         })),
         layouts: optional(nonEmptyStringDecoder)
     })),

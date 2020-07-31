@@ -1,6 +1,6 @@
 import GoldenLayout from "@glue42/golden-layout";
 import { generate } from "shortid";
-import { FrameLayoutConfig } from "../types/internal";
+import { FrameLayoutConfig, APIWIndowSettings, WorkspaceOptionsWithTitle } from "../types/internal";
 import { TitleGenerator } from "./titleGenerator";
 import { idAsString } from "../utils";
 import store from "../store";
@@ -27,23 +27,26 @@ class WorkspacesConfigurationFactory {
         };
     }
 
-    public createGDWindowConfig(args: { windowId: string; id?: string; appName?: string; url?: string }): GoldenLayout.ComponentConfig {
+    public createGDWindowConfig(args: { windowId: string; id?: string; appName?: string; url?: string; title?: string; context?: object }): GoldenLayout.ComponentConfig {
         const baseConfiguration = this.createWindowConfigurationCore(args.id);
         return {
             ...baseConfiguration,
             ...{
                 componentName: `app${baseConfiguration.id}`,
                 windowId: args.windowId,
+                title: args.title,
                 componentState: {
                     windowId: args.windowId,
                     appName: args.appName,
-                    url: args.url
+                    url: args.url,
+                    title: args.title,
+                    context: args.context
                 }
             }
         };
     }
 
-    public createApiWindow(args: { id: string | string[]; windowId: string; isMaximized: boolean; isFocused: boolean; appName?: string; url?: string }) {
+    public createApiWindow(args: APIWIndowSettings) {
         return {
             id: Array.isArray(args.id) ? args.id[0] : args.id,
             type: "window",
@@ -53,7 +56,11 @@ class WorkspacesConfigurationFactory {
                 isLoaded: args.windowId !== undefined,
                 isFocused: args.isFocused,
                 appName: args.appName,
-                url: args.url
+                url: args.url,
+                title: args.title,
+                workspaceId: args.workspaceId,
+                frameId: args.frameId,
+                positionIndex: args.positionIndex
             }
         };
     }
@@ -130,7 +137,7 @@ class WorkspacesConfigurationFactory {
                             id: wcc?.id || defaultId,
                             componentName: this.getWorkspaceLayoutComponentName(idAsString(wcc?.id) || defaultId),
                             componentState: {},
-                            title: wcc?.workspacesOptions?.name || this.getWorkspaceTitle(store.workspaceIds),
+                            title: (wcc?.workspacesOptions as WorkspaceOptionsWithTitle)?.title || wcc?.workspacesOptions?.name || this.getWorkspaceTitle(store.workspaceIds),
                         };
                     }),
                     workspacesConfig: {}
@@ -154,6 +161,9 @@ class WorkspacesConfigurationFactory {
             workspaceLayout: workspacesConfig
         };
     }
+    public wrapInGroup(content: GoldenLayout.ComponentConfig[]) {
+        return this.wrap(content, "stack");
+    }
 
     private createWindowConfigurationCore(id?: string): GoldenLayout.ComponentConfig {
         return {
@@ -161,6 +171,16 @@ class WorkspacesConfigurationFactory {
             type: "component",
             id: id || this.getId(),
             componentName: EmptyVisibleWindowName,
+        };
+    }
+
+    private wrap(content: GoldenLayout.ComponentConfig[], wrapper: "stack" | "row" | "column") {
+        return {
+            workspacesConfig: {
+                wrapper: true
+            },
+            type: wrapper,
+            content
         };
     }
 }

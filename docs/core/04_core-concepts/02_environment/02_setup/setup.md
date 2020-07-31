@@ -1,6 +1,6 @@
 ## Overview
 
-Setting up the **Glue42 Environment** means creating a correct configuration file and serving it together with the rest of the Environment files - the [**Glue42 Gateway**](../overview/index.html#glue42_gateway) and the [**Shared Worker**](../overview/index.html#shared_worker) scripts. You can set up the Glue42 Environment in two ways - using the [**Glue42 CLI**](../../cli/index.html) tool or manually. The Glue42 CLI greatly facilitates and simplifies the process of setting up your development environment and bundling it for deployment. It installs the necessary dependencies and creates an initial basic configuration file with default settings. It is highly recommended to use the Glue42 CLI as it makes the setup procedure fast and easy and lets you focus on building a great app. On the other hand, if you require a more fine-grained control over your setup (maybe because you use some very custom tools), then you can go to the [Manual](#manual) section.
+Setting up the **Glue42 Environment** means creating a correct configuration file and serving it together with the rest of the Environment files. You can set up the Glue42 Environment in two ways - using the [**Glue42 CLI**](../../cli/index.html) tool or manually. The Glue42 CLI greatly facilitates and simplifies the process of setting up your development environment and bundling it for deployment. It installs the necessary dependencies and creates an initial basic configuration file with default settings. It is highly recommended to use the Glue42 CLI as it makes the setup procedure fast and easy and lets you focus on building a great app. On the other hand, if you require a more fine-grained control over your setup, then you can go to the [Manual](#manual) section.
 
 ## Single and Multiple Apps
 
@@ -8,7 +8,7 @@ This section explains how to set up and serve your Glue42 Environment files usin
 
 As a prerequisite, you need to have the `@glue42/cli-core` package installed globally on your machine:
 
-```javascript
+```cmd
 npm install --global @glue42/cli-core
 ```
 
@@ -16,7 +16,7 @@ npm install --global @glue42/cli-core
 
 First, you need to get all [**Glue42 Environment**](../overview/index.html) files and create basic configuration files. Go to the root directory of your project - for single app projects, this will be the application root directory; for multi app projects, this will be the root directory which contains all apps and shared assets. Open a command prompt and run the following:
 
-```javascript
+```cmd
 gluec init
 ```
 
@@ -24,10 +24,19 @@ The `init` command will set up **Glue42 Core** for the current directory. This m
 
 - install with `npm` (and perform `npm init --yes` beforehand if no `package.json` file is found) all necessary dependencies that provide the [**Glue42 Environment**](../overview/index.html) files;
 - create a `glue.config.dev.json` file with default settings and correct paths for all **Glue42 Core** assets;
-- create a `glue.config.json` file with default settings so that you can easily customize (if you need to) the settings in it. The Glue42 CLI will copy this file to the output directory when bundling your **Glue42 Core** files for deployment.
+- create a `glue.config.json` file with default settings so that you can customize (if you need to) the settings in it. The Glue42 CLI will copy this file to the output directory when bundling your **Glue42 Core** files for deployment.
+- create a `glue.layouts.json` file in which [**Workspaces**](../../capabilities/workspaces/index.html) layouts can be defined;
 - create a `glue.core.cli.log` file which will contain the log output of the [**Glue42 CLI**](../../cli/index.html) if you set the `logging` setting in the `glue.config.dev.json` to `"full"`.
 
-*For detailed descriptions of the Environment files, see the [**Glue42 Environment: Overview**](../overview/index.html) section.*
+If you want to use [**Workspaces**](../../../capabilities/workspaces/index.html) in your project, use the `-w` or `--workspaces` flag to modify the `init` command:
+
+```cmd
+gluec init -w
+```
+
+This will additionally setup all files and configurations necessary for the support of Workspaces in your project.
+
+*For detailed descriptions of the Glue42 Environment files, see the [**Glue42 Environment: Overview**](../overview/index.html) section.*
 
 ### Configuration
 
@@ -235,7 +244,7 @@ You can define entire directories with shared files, or individual shared files,
 
 After all necessary configuration is ready, you can start the Glue42 Core dev server from the Glue42 CLI:
 
-```javascript
+```cmd
 gluec serve
 ```
 
@@ -247,23 +256,29 @@ At first glance, the end result is pretty much the same as the one from `ng serv
 
 ## Manual
 
-You can also manually set up your [**Glue42 Environment**](../overview/index.html) if nonе of the built-in solutions suits your needs. The steps you need to take are the same for both single and multi application projects - simply remember to install the dependencies at the root directory of your project, which in a single app project is the application root directory, and in a multi app project is the root directory containing all applications and shared assets.
+You can also manually set up your [**Glue42 Environment**](../overview/index.html) if none of the built-in solutions suits your needs. The steps you need to take are the same for both single and multi application projects - remember to install the dependencies at the root directory of your project, which in a single app project is the application root directory, and in a multi app project is the root directory containing all applications and shared assets.
 
 *Before you begin, remember that you can also use partially the Glue42 CLI to install the necessary dependencies and create a basic configuration file through the `gluec init` command. After that, you can edit and serve the files with your own dev server and custom settings.*
 
 ### Installing the Dependencies
 
-Go to the root directory of your project and install the necessary Glue42 Core dependencies:
+Go to the root directory of your project and install the necessary **Glue42 Core** dependencies:
 
-```javascript
+```cmd
 npm install --save @glue42/gateway-web @glue42/worker-web
+```
+
+If you want to use [**Workspaces**](../../../capabilities/workspaces/index.html) in your project, you have to install also the `@glue42/workspaces-app` package:
+
+```cmd
+npm install --save @glue42/workspaces-app
 ```
 
 ### Configuration
 
 Now, you have to create a `glue.config.json` configuration file and define the properties you need. For detailed information on the available properties in the configuration file, see the [**Glue42 Environment: Overview**](../overview/index.html#configuration_file) section.
 
-Keep in mind that the configuration file is *optional*, so if you don't want to use such, skip this step and Glue42 Core will continue with the built-in defaults when initializing the [**Glue42 Web**](../../../../reference/core/latest/glue42%20web/index.html) library. You can specify that you will not use a configuration file and/or you can override the built-in default library settings when initializing a [**Glue42 Client**](../../glue42-client/overview/index.html).
+Keep in mind that the configuration file is *optional*, so if you don't want to use such, skip this step and **Glue42 Core** will continue with the built-in defaults when initializing the [**Glue42 Web**](../../../../reference/core/latest/glue42%20web/index.html) library. You can specify that you will not use a configuration file and/or you can override the built-in default library settings when initializing a [**Glue42 Client**](../../glue42-client/overview/index.html).
 
 ### Serving Your Project
 
@@ -271,33 +286,30 @@ Now you need to serve your project, which includes the Glue42 Environment files.
 
 - #### Default Route
 
-Remember that by default:
-
-- Glue42 Clients will expect an *optional* configuration file named `glue.config.json` located at `./glue` to retrieve user-level configurations;
-- Glue42 Clients will expect a `worker.js` file located at `./glue`;
-- the Shared Worker will expect a `gateway.js` (and an *optional* `glue.config.json`, if you have provided one) file located at `./glue`;
-
-To change these defaults, see [**Glue42 Client: Initializing a Glue42 Client**](../../glue42-client/overview/#initializing_a_glue42_client).
+Remember that by default all Glue42 Clients expect the Glue42 Environment files to be located at the `/glue` directory at the base of your project. To change this default, see [**Glue42 Client: Initializing a Glue42 Client**](../../glue42-client/overview/#initializing_a_glue42_client).
 
 You should serve:
 
 - the Glue42 Gateway script from `./node_modules/@glue42/gateway-web/web/gateway-web.js`;
 - the Shared Worker script from `./node_modules/@glue42/worker-web/dist/worker.js`;
+- the Workspaces App (if using Workspaces) from `./node_modules/@glue42/workspaces-app/index.html`;
 
 - #### Custom Route
 
 If you would like to serve the Glue42 Environment files from a different route, for example from `/assets/glue/`, then you need to:
 
 - serve all Environment files at the same level (so that they are siblings);
-- configure all [**Glue42 Clients**](../../glue42-client/overview/index.html) to retrieve the Shared Worker file (and/or the *optional* configuration file) from the correct route;
+- configure all [**Glue42 Clients**](../../glue42-client/overview/index.html) to retrieve the Environment files from the correct route;
 
-**Example with a configuration file:**
+**Example with a configuration file**
 
 Routes:
 
 - `/assets/glue/worker.js`
 - `/assets/glue/gateway.js`
 - `/assets/glue/glue.config.json`
+- `/assets/glue/glue.layouts.json` (if using Workspaces)
+- `/assets/glue/workspaces-app/index.html` (if using Workspaces)
 
 Glue42 Client configuration during initialization:
 
@@ -305,24 +317,30 @@ Glue42 Client configuration during initialization:
 // This will configure the Glue42 Client app to retrieve
 // the configuration file from a custom location.
 const config = {
-    extends: "/assets/glue/glue.config.json"
+    assets: {
+        location: "/assets/glue"
+    }
 };
 ```
 
-**Example without a configuration file:**
+**Example without a configuration file**
 
 Routes:
 
 - `/assets/glue/worker.js`
 - `/assets/glue/gateway.js`
+- `/assets/glue/glue.layouts.json` (if using Workspaces)
+- `/assets/glue/workspaces-app/index.html` (if using Workspaces)
 
 Glue42 Client configuration during initialization:
 
 ```javascript
-// This will configure the Glue42 Client app to expect
-// the Shared Worker script at a custom location.
 const config = {
-    worker: "/assets/glue/worker.js"
+    assets: {
+        location: "/assets/glue/",
+        // This will prevent the library from searching for a configuration file.
+        extendConfig: false
+    }
 };
 ```
 

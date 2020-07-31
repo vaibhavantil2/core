@@ -72,6 +72,11 @@ export class RemoteWebWindow implements Glue42Web.Windows.WebWindow {
         return this;
     }
 
+    public async focus(): Promise<Glue42Web.Windows.WebWindow> {
+        await this.callControl("focus", {}, true);
+        return this;
+    }
+
     public async getBounds(): Promise<Glue42Web.Windows.Bounds> {
         const result = await this.callControl("getBounds", {});
         return result.returned;

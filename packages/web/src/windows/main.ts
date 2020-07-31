@@ -74,6 +74,7 @@ export class Windows implements Glue42Web.Windows.API {
             throw new Error(`failed to open a window with url=${url} and options=${optionsString}`);
         }
         // adjust bounds
+        newWindow.focus();
         newWindow.moveTo(left, top);
         newWindow.resizeTo(width, height);
         const remoteWindow = new ChildWebWindow(newWindow, id, name, this.control, this);

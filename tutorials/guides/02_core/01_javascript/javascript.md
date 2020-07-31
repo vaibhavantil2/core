@@ -805,6 +805,291 @@ glue.channels.onChanged(handleChannelChanges);
 
 Now when the user clicks on a client in the **Clients** app and there is no running instance of the **Stocks** app, the **Stocks** app will be started, showing the portfolio of the selected client, and it will also join the channel that the **Clients** app is currently on.
 
+## 8. Workspaces
+
+So far we have exceeded the clients' expectations and they couldn't be happier. Well, that being said, they found a something that would make them happier. The only complaint that we got from our users is that very quickly their desktops become overwhelmed with multiple floating, standalone windows. Our users asked us to look into this problem and see if we can offer some kind of a solution. Luckily for us, our brand new **Workspaces** feature solves just that problem and then some.
+
+We are going to comment out the channels logic that we introduced a couple of chapters ago and use **Workspaces** as a way to unclutter our users' desktops while preserving their efficiency when servicing multiple clients at once. Note that the only reason for us to remove the channels functionality at this point is to allow us to really focus, learn and play around with **Workspaces**, that being said, when combined channels and workspaces can produce some really impressive user experience.
+
+Our goal here is when a user clicks on a client inside the `clients` application, a new workspace should open and this workspace should display detailed information about this client in one app and his stocks portfolio in another. What's more, when the user clicks on a stock, a third application should appear in that workspace, displaying more details about the selected stock.
+
+For this section it is best to checkout the **Workspaces API** and keep it close by for reference.
+
+### 8.1. Setting up for Workspaces
+
+The first thing we need to do is configure our current development environment for workspaces. This is very easy and all it takes is one command:
+
+```cmd
+gluec workspaces init
+```
+
+This command will add the necessary workspaces packages to our project and will also add the workspaces default settings in our configuration files. That's it.
+
+**Note** that this command only works if the current directory has already been initialized by `gluec init`. In case of a brand new project you can use `gluec init -w` to both setup the basic Glue42 Core files and workspaces at once.
+
+### 8.2. Workspaces layouts
+
+Next, we need to build our workspace layout. This is the blueprint which describes the shape and form of the workspace we want to restore by a given name. When our users click on a client, we want to restore a specific workspace layout. It should contain the `ClientDetails` and `Stocks` apps.
+
+In order to do all of that we need to a few of things.
+
+We need to define the `ClientDetails` as a Glue42 Core application in the `glue.config.json`:
+
+```json
+{
+    "glue": ...,
+    "channels": ...,
+    "appManager": {
+        "localApplications": [
+            ...,
+            {
+                "name": "ClientDetails",
+                "details": {
+                    "url": "http://localhost:4242/clientdetails"
+                }
+            }
+        ]
+    }
+}
+```
+
+We also need to define it inside `glue.config.dev.json` so that the Glue42 Core CLI can serve this app:
+
+```json
+{
+    "glueAssets": ...,
+    "server": {
+        "apps": [
+            ...,
+            {
+                "route": "/clientdetails",
+                "file": {
+                    "path": "./client-details/"
+                }
+            }
+        ],
+        "settings": ...},
+        "sharedAssets": ...
+    },
+    "logging": "dev"
+}
+```
+
+We have done all of this before, so you should feel a little bit more comfortable with the process.
+
+This was necessary because **Workspaces** work almost entirely with ***defined*** applications. Now, we can open the **workspace builder** and compose our layout. To do can run:
+
+```cmd
+gluec workspaces build
+```
+
+**Note!** The CLI server must be running before your execute this command.
+
+This opens the workspace builder in our default browser. Now we add the `ClientDetails` app by clicking on the plus icon in the middle and then we add the `stocks` app by clicking the plus icon on the top right corner of the newly formed group. You should see both apps open inside this new workspace. Now we need to save this layout by click the save icon on the left of the workspace title and we give it a name (`client-space`). Next we click `download` and save the `.txt` file in the project directory. Finally we copy the contents of the downloaded `.txt` file and paste it inside the `workspaces` array in `glue.layouts.json`.
+
+That's it! Now, we can just restore this layout by its name via the **Workspaces API**.
+
+Before we continue with the implementation of the new workspaces features, we need to comment-out all the channels-related code in `stocks` and `clients`. Like said before, we can make awesome projects which combine both, but for simplicity right now we will just do one or the other. 
+
+### 8.3. Open Workspaces
+
+Let's start with opening a new workspace every time a client is clicked. Before we do that, we need to initialize the **Workspaces API** in all of our apps.
+
+First add a script including the `workspaces.umd.min.js` to each index.html:
+
+```html
+    <script src="/lib/workspaces.umd.min.js"></script>
+```
+
+And then go over to the point where you initialize `GlueWeb` and add the `GlueWorkspaces` factory function to the `libraries` array:
+
+```javascript
+    window.glue = await window.GlueWeb({
+        appManager: true,
+        application: 'Clients',
+        libraries: [window.GlueWorkspaces]
+    });
+```
+
+Much like `window.GlueWeb`, `window.GlueWorkspaces` is a factory function which is attached to the global window object by the `workspaces.umd.min.js` script.
+
+Now, head over to `clients` and comment-out all of the channels logic inside the `start` function. The go over to the `clientClickedHandler` and comment everything out also. In this function all we need to do is open a new workspace by restoring the layout we created previously and pass the selected client as a startup context.
+
+```javascript
+const clientClickedHandler = (client) => {
+    // const selectClientStocks = window.glue.interop.methods().find((method) => method.name === 'SelectClient');
+
+    // if (selectClientStocks) {
+    //     window.glue.interop.invoke(selectClientStocks, { client });
+    // }
+
+    // window.glue.contexts.update('SelectedClient', client).catch(console.error);
+
+    // Update the context of the current channel with the newly selected client portfolio.
+    // const myChannel = window.glue.channels.my();
+
+    // if (myChannel) {
+    //     window.glue.channels.publish(client).catch(console.error);
+    // }
+
+    // const isStocksRunning = window.glue.appManager.application('Stocks').instances.length > 0;
+
+    // if (!isStocksRunning) {
+    //     window.glue.appManager.application('Stocks').start({ channel: myChannel }).catch(console.error);
+    // }
+    glue.workspaces.restoreWorkspace("client-space", { context: { client } }).catch(console.error);
+};
+```
+
+If your have done everything correctly so far, you should get a new workspace every time your click a client. Next, we need to extend `clients-details` so that the app can receive it's context and display the correct client information.
+
+We begin by initializing the **Workspaces API** (html script tag and factory function) just like we did in `clients`. After that we need to fetch the context provided when the workspace was created. In order to do that we need to subscribe to our window's `onContextUpdated` method. When we get notified of an upated context and this context contains a client property, we need to set the fields passing in the client and also setting the workspace's title to be the client's name.
+
+```javascript
+const start = async () => {
+    window.glue = await window.GlueWeb({
+        appManager: true,
+        application: 'ClientDetails',
+        libraries: [window.GlueWorkspaces]
+    });
+
+    toggleGlueAvailable();
+
+    glue.windows.my().onContextUpdated((ctx) => {
+        if (ctx.client) {
+            setFields(ctx.client);
+            glue.workspaces.getMyWorkspace()
+                .then((wsp) => wsp.setTitle(ctx.client.name))
+                .catch(console.error);
+        }
+    }); 
+};
+```
+
+Finally we need to do the exact same steps in the `stocks` app:
+- comment-out the channels code from the index.html and index.js
+- initialize the **Workspaces API** - html script tag and factory function initialization
+- subscribe to `onContextUpdated` and set up the stocks to display just like we did previously in this tutorial
+
+```javascript
+const start = async () => {
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js');
+    }
+
+    const stocksResponse = await fetch('http://localhost:8080/api/portfolio');
+
+    const stocks = await stocksResponse.json();
+
+    generateStockPrices(newPricesHandler);
+
+    window.glue = await window.GlueWeb({
+        appManager: true,
+        application: 'Stocks',
+        libraries: [window.GlueWorkspaces]
+    });
+
+    toggleGlueAvailable();
+
+    window.priceStream = await glue.interop.createStream('LivePrices');
+
+    glue.windows.my().onContextUpdated((ctx) => {
+        if (ctx.client) {
+            const clientPortfolio = ctx.client.portfolio;
+            const stockToShow = stocks.filter((stock) => clientPortfolio.includes(stock.RIC));
+            setupStocks(stockToShow);
+        }
+    });
+
+};
+```
+
+Awesome! At this point when we click a client, we get a workspace and all apps inside this workspace display information specific to the selected client.
+
+### 8.4. Modify Workspaces
+
+Now, let's bring the `stock details` app into the workspace. Our goal is when a user click on a stock, the `stock details` app should appear in the workspace as a sibling to the stocks app.
+
+In order to achieve that we go to the `stockClickedHandler` and define the following logic. If there is an existing `stock details` app in the workspace of the calling window, then we just need to get a reference to the underlying GDWindow of that app and update it's context by passing in the selected stock. If there isn't an app in the workspace, we need to add a new parent of type `group` as a sibling to the parent of the `stocks` window. Then we need to add the `stock details` app to that new group.
+
+This might sound a bit confusing at first, so let's break it down. The `stocks` app is a workspace window, which is the only child of a parent of type `group`. If we just add the `stock details` app as a second child, then that app will appear like a second tab in that group and the user will have to manually toggle between both apps. This is not great. What we need is the `stocks details` app to appear visually like the `stocks` app, which means creating it's own parent of type `group` and making it a sibling to the `stocks` app parent. This way the apps will be both visible and the user can freely move them around as he/she pleases.
+
+Finally when we have a `stocks details` app in the workspace, we need a way to pass it the selected stock. We will do that by updating that window's context via the **Window API**. But since so far we have been dealing with it in the context of workspaces, we need to get it's `GDWindow` representation.
+
+```javascript
+const stockClickedHandler = async (stock) => {
+    // window.glue.windows.open(`${stock.BPOD} Details`, 'http://localhost:4242/stocks/details/', openConfig).catch(console.error);
+
+    // const detailsApplication = window.glue.appManager.application('Details');
+    // detailsApplication.start(stock).catch(console.error);
+
+    let detailsGdWindow;
+
+    const myWorkspace = await glue.workspaces.getMyWorkspace();
+
+    let detailsWorkspaceWindow = myWorkspace.getWindow((win) => win.appName === "Details");
+
+    if (detailsWorkspaceWindow) {
+        detailsGdWindow = detailsWorkspaceWindow.getGdWindow();
+    } else {
+
+        const myId = glue.windows.my().id;
+
+        const myImmediateParent = myWorkspace.getWindow((win) => win.id === myId).parent;
+
+        const group = await myImmediateParent.parent.addGroup();
+
+        detailsWorkspaceWindow = await group.addWindow({ appName: "Details" });
+
+        await detailsWorkspaceWindow.forceLoad();
+
+        detailsGdWindow = detailsWorkspaceWindow.getGdWindow();
+    }
+
+    detailsGdWindow.updateContext({ stock });
+};
+```
+
+**Note!** We use `forceLoad()` to make sure that the `stock details` app is loaded and therefore a `GdWindow` instance is available. This is needed, because `addWindow()` adds a new window to the workspace (meaning it exists in the workspace as an element), but it does not guarantee that the content has loaded.
+
+As a final touch we need to head over to `stock details` and initialize **Workspaces**. Then comment-out the existing context and subscription logic in the `start` function. Finally we need to get the selected stock from the window context. We need to both check the `glue.windows.my().context` and subscribe to `onContextUpdated` in order for our app to continue working as expected even when ejected from the workspace:
+
+```javascript
+const start = async () => {
+    window.glue = await window.GlueWeb({
+        appManager: true,
+        application: 'Details'
+    });
+    toggleGlueAvailable();
+
+    const subscription = await window.glue.interop.subscribe('LivePrices');
+    subscription.onData((streamData) => {
+        if (!selectedStock) {
+            return;
+        }
+        const newPrices = streamData.data.stocks;
+        const selectedStockPrice = newPrices.find((prices) => prices.RIC === selectedStock.RIC);
+        updateStockPrices(selectedStockPrice.Bid, selectedStockPrice.Ask);
+    });
+
+    const context = glue.windows.my().context;
+    let selectedStock;
+
+    if (context && context.stock) {
+        selectedStock = context.stock;
+        setFields(selectedStock);
+    }
+
+    glue.windows.my().onContextUpdated((ctx) => {
+        if (ctx.stock) {
+            selectedStock = ctx.stock;
+            setFields(selectedStock);
+        }
+    });
+};
+```
+
 ## Congratulations!
 
 You have successfully completed the **Glue42 Core** JavaScript tutorial! If you are a React or an Angular developer, try also the [React](../react/index.html) and [Angular](../angular/index.html) tutorials for **Glue42 Core**.

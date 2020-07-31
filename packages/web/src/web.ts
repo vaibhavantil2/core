@@ -7,17 +7,22 @@ import { Channels } from "./channels/main";
 import { AppManager } from "./app-manager/main";
 import { Glue42DesktopWindowContext } from "./types";
 import { Notifications } from "./notifications/main";
-import { defaultWorkerLocation } from "./config/defaults";
+import { defaultWorkerLocation, defaultAssetsBaseLocation } from "./config/defaults";
 import { buildConfig } from "./config/config";
 import { Control } from "./control/control";
 import { SaveAutoLayoutCommand } from "./control/commands";
-import { restoreAutoSavedLayout } from "./layouts/autoRestore";
 import { initStartupContext } from "./windows/startup";
 import { LocalWebWindow } from "./windows/my";
+import { LayoutsController } from "./layouts/controller";
+import { LayoutStorage } from "./layouts/storage";
+import { LocalStore } from "./layouts/stores/local";
+import { JSONStore } from "./layouts/stores/json";
+import { AutoStorage } from "./layouts/stores/auto";
+import { RemoteStore } from "./layouts/types";
 import { LocalInstance } from "./app-manager/my";
 import { promisePlus } from "./shared/promise-plus";
 
-const hookCloseEvents = (api: Glue42Web.API, config: Glue42Web.Config, control: Control): void => {
+const hookCloseEvents = (api: Glue42Web.API, config: Glue42Web.Config, control: Control, layoutsController?: LayoutsController): void => {
     // hook up page close event's, so we can cleanup properly
     let done = false;
     const doneFn = async (): Promise<void> => {
@@ -30,7 +35,6 @@ const hookCloseEvents = (api: Glue42Web.API, config: Glue42Web.Config, control: 
                 const firstChild = allChildren[0];
                 const layoutName = `_auto_${document.location.href}`;
                 if (allChildren.length > 0) {
-                    const layouts = api.layouts as Layouts;
                     const command: SaveAutoLayoutCommand = {
                         domain: "layouts",
                         command: "saveLayoutAndClose",
@@ -40,12 +44,12 @@ const hookCloseEvents = (api: Glue42Web.API, config: Glue42Web.Config, control: 
                             layoutName,
                             context: {},
                             metadata: {},
-                            parentInfo: layouts.getLocalLayoutComponent({}, true)
+                            parentInfo: layoutsController?.getLocalLayoutComponent({}, true) as Glue42Web.Layouts.WindowComponent
                         }
                     };
                     control.send(command, { windowId: firstChild });
                 } else {
-                    api.layouts.save({ name: layoutName });
+                    layoutsController?.autoSave({ name: layoutName });
                 }
             }
             api.done();
@@ -80,6 +84,7 @@ export const createFactoryFunction = (coreFactoryFunction: GlueCoreFactoryFuncti
                     windows: true,
                     logger: builtCoreConfig.glue?.logger,
                     channels: shouldInitializeChannels,
+                    layouts: true,
                     appManager: shouldInitializeAppManager
                 });
             }
@@ -88,6 +93,8 @@ export const createFactoryFunction = (coreFactoryFunction: GlueCoreFactoryFuncti
         // create @glue42/core with the extra libs for @glue42/web
         const control = new Control();
         let windows: Windows;
+        let layouts: Layouts;
+        let layoutsController: LayoutsController | undefined;
 
         const ext: Glue42Core.Extension = {
             libs: [
@@ -118,7 +125,22 @@ export const createFactoryFunction = (coreFactoryFunction: GlueCoreFactoryFuncti
                 },
                 {
                     name: "layouts",
-                    create: (coreLib): Layouts => new Layouts(windows, coreLib.interop, coreLib.logger.subLogger("layouts"), control, builtCoreConfig.glue)
+                    create: (coreLib): Layouts => {
+
+                        let remoteStore: RemoteStore | undefined;
+
+                        if (builtCoreConfig.layouts?.remoteType === "json") {
+                            const baseLocation = builtCoreConfig?.glue.assets?.location || defaultAssetsBaseLocation;
+                            remoteStore = new JSONStore(baseLocation);
+                        }
+
+                        const localStore = new LocalStore();
+                        const autoStore = new AutoStorage();
+                        const layoutsStorage = new LayoutStorage(localStore, autoStore, remoteStore);
+                        layoutsController = new LayoutsController(layoutsStorage, windows, control, coreLib.interop, builtCoreConfig?.glue);
+                        layouts = new Layouts(layoutsController);
+                        return layouts;
+                    }
                 }
             );
 
@@ -146,6 +168,11 @@ export const createFactoryFunction = (coreFactoryFunction: GlueCoreFactoryFuncti
         }
 
         const core = await promisePlus<Glue42Web.API>(() => coreFactoryFunction(coreConfig, ext) as Promise<Glue42Web.API>, 10000, "Glue Web initialization timed out");
+
+        if (config?.libraries) {
+            await Promise.all(config.libraries.map((lib) => lib(core, builtCoreConfig?.glue)));
+        }
+
         // start control component
         control.start(core.interop, core.logger.subLogger("control"));
         if (isWebEnvironment) {
@@ -153,9 +180,9 @@ export const createFactoryFunction = (coreFactoryFunction: GlueCoreFactoryFuncti
             await initStartupContext(core.windows.my() as LocalWebWindow, core.interop, core.appManager?.myInstance as LocalInstance);
             // if there is a saved layout restore it
             if (builtCoreConfig.glue?.layouts?.autoRestore) {
-                await restoreAutoSavedLayout(core);
+                await layoutsController?.restoreAutoSavedLayout();
             }
-            await hookCloseEvents(core, builtCoreConfig.glue ?? {}, control);
+            await hookCloseEvents(core, builtCoreConfig.glue ?? {}, control, layoutsController);
         }
 
         return core;

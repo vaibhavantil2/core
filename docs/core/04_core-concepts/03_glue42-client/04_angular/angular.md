@@ -61,7 +61,7 @@ import GlueWeb from "@glue42/web";
     ],
     imports: [
         BrowserModule,
-        Glue42Ng.forRoot({ factory: GlueWeb, config: { extends: false } })
+        Glue42Ng.forRoot({ factory: GlueWeb, config: { assets: { extendConfig: false } }})
     ],
     providers: [],
     bootstrap: [AppComponent]

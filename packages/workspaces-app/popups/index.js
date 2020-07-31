@@ -1,12 +1,17 @@
 
+import GlueWeb from "./lib/web.umd";
+import workspaces from "@glue42/workspaces-api";
+
 const config = {
     application: "WorkspacesPopup",
-    appManager: true
+    appManager: true,
+    libraries: [workspaces]
 };
 
 GlueWeb(config).then(async (glue) => {
     window.interopId = glue.interop.instance.peerId;
     let startInformation = {};
+
     const getAppHtml = (appName) => {
         const template = document.createElement('template');
         template.innerHTML = ` 
@@ -24,13 +29,14 @@ GlueWeb(config).then(async (glue) => {
         const template = document.createElement('template');
         template.innerHTML = `
         <a class="nav-link border-bottom border-secondary pb-2 px-2" href="#">
-            <div class="workspace d-flex flex-row">
+            <div class="align-items-center workspace d-flex flex-row">
                 <div class="workspace-icon mr-2"></div>
                 <div class="workspace-description">
-                    <h5 class="mb-1">${name}</h5>
-                    <div class="text-muted">Last updated: <span>10-Nov-2019</span></div>
+                    <h5 class="mb-0 text-truncate">${name}</h5>
                 </div>
+                <div class="close-icon ml-auto"></div>
             </div>
+        </div>
         </a>`
 
         return template.content.children[0];
@@ -65,7 +71,6 @@ GlueWeb(config).then(async (glue) => {
 
     const invokeGlueAction = async (operation, operationArguments) => {
         const instance = glue.agm.servers().find((i) => i.peerId === startInformation.peerId)
-        console.log("instance", instance, operation, operationArguments);
 
         return (await glue.agm.invoke("T42.Workspaces.Control", { operation, operationArguments }, instance || "best")).returned;
     }
@@ -108,7 +113,10 @@ GlueWeb(config).then(async (glue) => {
 
                 if (rowColRadioButton && rowColRadioButton.classList.contains("active")) {
                     const containerContent = { type: "group", children: [{ type: "window", appName: a.name }] };
-                    const targetParent = parent.type ? parent.getMyParent() : parent;
+                    let targetParent = parent.type ? parent.parent : parent;
+                    if((parent.type==="row" || parent.type==="column") && !parent.children.length){
+                        targetParent =  parent
+                    }
                     const rowArguments = { type: "column", children: [containerContent] };
                     const columnArguments = { type: "row", children: [containerContent] };
 
@@ -141,24 +149,58 @@ GlueWeb(config).then(async (glue) => {
                 });
             }
 
+            const closeButton = Array.from(workspaceLayoutElement.children[0].children)
+                .find(e => e.classList.contains("close-icon"));
+
+            closeButton.onclick = (e) => {
+                e.stopPropagation()
+                glue.workspaces.layouts.delete(s.name).then(() => {
+                    Array.from(workspaceList.children).forEach(i => i.remove());
+                    return populateWorkspacesList();
+                }).catch((e) => {
+                    hideDeleteFeedback();
+                    showDeleteFeedback(e.message)
+                });
+            }
+
             workspaceList.appendChild(workspaceLayoutElement);
         })
     }
 
-    const showErrorFeedback = (message) => {
-        const feedbackContainer = document.getElementById("feedback-container");
+    const showFeedback = (message, containerId) => {
+        const innerMessageRegex = /Inner message:\s+(.+)/gm;
+        const regexResult = innerMessageRegex.exec(message);
+        const innerMessage = (regexResult && regexResult[1]) || message;
 
-        feedbackContainer.appendChild(getErrorFeedbackHtml(message));
+        const feedbackContainer = document.getElementById(containerId);
+
+        feedbackContainer.appendChild(getErrorFeedbackHtml(innerMessage));
 
         updatePopupSize().catch((e) => console.warn(`Could not resize popup because ${JSON.stringify(e)}`));
     }
 
-    const hideSaveWorkspaceFeedback = () => {
-        const feedbackContainer = document.getElementById("feedback-container");
+    const hideFeedback = (containerId) => {
+        const feedbackContainer = document.getElementById(containerId);
 
         Array.from(feedbackContainer.children).forEach(c => c.remove());
 
         updatePopupSize().catch((e) => console.warn(`Could not resize popup because ${JSON.stringify(e)}`));
+    }
+
+    const showDeleteFeedback = (message) => {
+        showFeedback(message, "delete-layout-feedback-container");
+    }
+
+    const hideDeleteFeedback = () => {
+        hideFeedback("delete-layout-feedback-container");
+    }
+
+    const showSaveWorkspaceFeedback = (message) => {
+        showFeedback(message, "feedback-container");
+    }
+
+    const hideSaveWorkspaceFeedback = () => {
+        hideFeedback("feedback-container");
     }
 
     window.glue = glue;
@@ -192,7 +234,6 @@ GlueWeb(config).then(async (glue) => {
             height: bodyBounds.height
         }
 
-        console.log("body size", bodySize);
         success(bodySize)
     })
 
@@ -239,7 +280,7 @@ GlueWeb(config).then(async (glue) => {
         let parentType = lane.type || "workspace";
 
         if (parentType === "group") {
-            parentType = lane.getMyParent().type || "workspace";
+            parentType = lane.parent.type || "workspace";
         }
 
         rowColRadioButton.innerText = `This ${parentType.substring(0, 1).toUpperCase() + parentType.substring(1)}`;
@@ -259,21 +300,42 @@ GlueWeb(config).then(async (glue) => {
         const saveWorkspaceButton = document.getElementById("saveWorkspaceButton");
         const saveWorkspaceName = document.getElementById("saveWorkspaceName");
 
+        hideSaveWorkspaceFeedback();
+
         saveWorkspaceName.onclick = () => {
             hideSaveWorkspaceFeedback();
+        }
+
+        saveWorkspaceButton.innerHTML = payload.buildMode ? "Download" : "Save";
+
+        const exportJson = (layout, name) => {
+            const downloadElement = document.createElement("a");
+            const data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(layout));
+            // what to return in order to show download window?
+
+            document.body.append(downloadElement);
+            downloadElement.setAttribute("href", "data:" + data);
+            downloadElement.setAttribute("download", `${name}.txt`);
+            downloadElement.click();
+            downloadElement.remove();
         }
 
         saveWorkspaceButton.onclick = async () => {
             const workspaceName = saveWorkspaceName.value;
             if (workspaceName) {
                 try {
-                    await invokeGlueAction("saveLayout", { name: workspaceName, workspaceId: payload.workspaceId });
+                    if (payload.buildMode) {
+                        const layout = await invokeGlueAction("generateLayout", { name: workspaceName, workspaceId: payload.workspaceId });
+                        exportJson(layout, workspaceName);
+                    } else {
+                        await glue.workspaces.layouts.save({ name: workspaceName, workspaceId: payload.workspaceId });
+                    }
                     saveWorkspaceName.value = "";
 
                     hidePopup();
                 } catch (error) {
                     hideSaveWorkspaceFeedback();
-                    showErrorFeedback(error.message);
+                    showSaveWorkspaceFeedback(error.message);
                 }
             }
         }
@@ -284,7 +346,13 @@ GlueWeb(config).then(async (glue) => {
         saveWorkspaceView.style.display = "none";
         openWorkspaceView.style.display = "";
 
-        startInformation = payload
+        startInformation = payload;
+        hideDeleteFeedback();
+
+        openWorkspaceView.onclick = () => {
+            hideDeleteFeedback();
+        }
+
         Array.from(workspaceList.children).forEach(i => i.remove());
         await populateWorkspacesList();
         createNewWorkspaceButton.onclick = () => {

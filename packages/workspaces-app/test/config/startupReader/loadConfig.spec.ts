@@ -248,4 +248,77 @@ describe("loadConfig() Should", () => {
 
         expect(resultConfig.context).to.be.null;
     });
+
+    it("cleanUp the url when only emptyFrame is passed", () => {
+        let invoked = false;
+        global.window = {
+            location: {
+                search: "?emptyFrame=true",
+                origin: "https://glue42.com",
+                pathname: "/core/"
+            },
+            history: {
+                replaceState: (_, __, url) => {
+                    invoked = true;
+                    expect(url).to.eql("https://glue42.com/core/?");
+                }
+            }
+        };
+        global.document = {
+            title: "glue42"
+        };
+
+        startupReader.loadConfig();
+
+        expect(invoked).to.be.true;
+    });
+
+    it("cleanUp the url when emptyFrame and workspaceName is passed second", () => {
+        let invoked = false;
+        global.window = {
+            location: {
+                search: "?emptyFrame=true&workspaceName=WSPSname",
+                origin: "https://glue42.com",
+                pathname: "/core/"
+            },
+            history: {
+                replaceState: (_, __, url) => {
+                    invoked = true;
+                    expect(url).to.eql("https://glue42.com/core/?workspaceName=WSPSname");
+                }
+            }
+        };
+        global.document = {
+            title: "glue42"
+        };
+
+        startupReader.loadConfig();
+        expect(invoked).to.be.true;
+
+    });
+
+    it("cleanUp the url when emptyFrame and workspaceName is passed first", () => {
+        let invoked = false;
+        global.window = {
+            location: {
+                search: "?workspaceName=WSPSname&emptyFrame=true",
+                origin: "https://glue42.com",
+                pathname: "/core/"
+            },
+            history: {
+                replaceState: (_, __, url) => {
+                    invoked = true;
+                    expect(url).to.eql("https://glue42.com/core/?workspaceName=WSPSname");
+                }
+            }
+        };
+
+        global.document = {
+            title: "glue42"
+        };
+
+        startupReader.loadConfig();
+        
+        expect(invoked).to.be.true;
+    });
 });

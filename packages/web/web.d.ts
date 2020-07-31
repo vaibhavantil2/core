@@ -4,6 +4,7 @@
 import { UnsubscribeFunction } from "callback-registry";
 import { Glue42Core } from "@glue42/core";
 import { Glue42 } from "@glue42/desktop";
+import { Glue42Workspaces } from "@glue42/workspaces-api";
 
 /**
  * Factory function that creates a new glue instance.
@@ -65,6 +66,8 @@ export namespace Glue42Web {
      */
     export interface Config {
         /**
+         * @ignore
+         * @deprecated
          * By default @glue42/web will try to connect to a shared worker located in "/glue/worker.js". Use this ot override the shared worker location.
          * It is recommended to use `worker` to define a custom location for the worker script, if extends has been set to `false`.
          * @default "/glue/worker.js"
@@ -84,10 +87,12 @@ export namespace Glue42Web {
         layouts?: LayoutConfig;
 
         /**
+         * @ignore
+         * @deprecated
          * Defines a URL to a hosted `glue.config.json` file which the library will fetch and use to extend the built-in config defaults. We recommend setting thi to `false`, if you do not have said configuration file. Also keep in mind that if you define a custom URL, then the library will expect to find a `worker.js` file next to the config.
-         * @default "/glue/glue.config.json"
+         * @default true
          */
-        extends?: string | false;
+        extends?: string | boolean;
 
         /**
          * Connect with GW in memory.
@@ -112,6 +117,16 @@ export namespace Glue42Web {
          * Application name. If not specified the Application Manager API won't know about the application and its instances.
          */
         application?: string;
+
+        /**
+         * todo: An object exposing settings related to the Glue42 Core resources.
+         */
+        assets?: WebAssets;
+
+        /**
+         * A list of glue libraries which will be initiated internally and provide access to specific functionalities
+         */
+        libraries?: Array<(glue: Glue42Web.API, config?: Glue42Web.Config) => Promise<void>>;
     }
 
     /**
@@ -126,6 +141,7 @@ export namespace Glue42Web {
         notifications: Glue42Web.Notifications.API;
         channels: Glue42Web.Channels.API;
         appManager: Glue42Web.AppManager.API;
+        workspaces?: Glue42Workspaces.API;
     }
 
     /**
@@ -149,6 +165,23 @@ export namespace Glue42Web {
 
     /**
      * @docmenuorder 5
+     */
+    export interface WebAssets {
+        /**
+         * This defines the location of the Glue42 Core assets bundle (glue.layouts.json, glue.config.json, workspaces app and more).
+         * @default "/glue"
+         */
+        location?: string;
+
+        /**
+         * If set to true the initialization logic will fetch the glue.config.json and use the defined glue object there to extend the provided config. We recommend setting this to false if you do not have a glue.config.json.
+         * @default true
+         */
+        extendConfig?: boolean;
+    }
+
+    /**
+     * @docmenuorder 6
      * @intro
      */
     export namespace Windows {
@@ -214,6 +247,11 @@ export namespace Glue42Web {
              * @param left Relative distance left coordinates.
              */
             moveTo(top?: number, left?: number): Promise<WebWindow>;
+
+            /**
+             * Attempts to activate and bring to foreground the window. It is possible to fail due to client browser settings.
+             */
+            focus(): Promise<WebWindow>;
 
             /**
              * Closes the window
@@ -352,8 +390,31 @@ export namespace Glue42Web {
          * @docmenuorder 1
          */
         export interface API {
-            /** Lists all available layouts. */
-            list(): Layout[];
+            
+            /**
+             * Fetches a saved layout or returns undefined if a layout with the provided name and type does not exist.
+             * @param type Type of the layout to fetch.
+             * @param name Name of the layout to fetch.
+             */
+            get?(name: string, type: LayoutType): Promise<Layout | undefined>;
+
+            /**
+             * Returns a lightweight, summarized version of all layouts of the provided type.
+             * @param type Type of the layouts to fetch.
+             */
+            getAll?(type: LayoutType): Promise<LayoutSummary[]>;
+        
+            /**
+             * Returns all layouts from the provided type.
+             * @param type Type of the layouts to export.
+             */
+            export(layoutType?: LayoutType): Promise<Layout[]>;
+        
+            /**
+             * Stores a full layout.
+             * @param layout The layout object to be stored.
+             */
+            import(layouts: Layout[]): Promise<void>;
 
             /**
              * Saves a new layout.
@@ -372,14 +433,7 @@ export namespace Glue42Web {
              * @param type Type of the layout to remove.
              * @param name Name of the layout to remove.
              */
-            remove(type: string, name: string): Promise<void>;
-
-            /**
-             * Subscribes for layout save requests - your application has the option to save data (context) when a layout is saved.
-             * @param callback The callback passed as an argument will be invoked when a layout save is requested.
-             * @returns unsubscribe function.
-             */
-            onSaveRequested(callback: (context?: object) => SaveRequestResponse): UnsubscribeFunction;
+            remove(type: LayoutType, name: string): Promise<void>;
         }
 
         /**
@@ -396,18 +450,18 @@ export namespace Glue42Web {
             type: LayoutType;
 
             /** Array of component objects describing the applications that are saved in the layout. */
-            components: LayoutComponent[];
+            components: Array<WindowComponent | Glue42Workspaces.WorkspaceComponent>;
 
             /** Context object passed when the layout was saved. */
-            context: any;
+            context?: any;
 
             /** Metadata passed when the layout was saved. */
-            metadata: any;
+            metadata?: any;
         }
 
-        export type ComponentType = "activity" | "application";
+        export type ComponentType = "application" | "activity";
 
-        export interface LayoutComponent {
+        export interface WindowComponent {
             type: "window";
 
             /** Type of the component - can be application or activity. */
@@ -425,6 +479,20 @@ export namespace Glue42Web {
             id: string;
             parentId?: string;
             main: boolean;
+        }
+
+        export interface LayoutSummary {
+            /** Name of the layout. The name is unique per layout type. */
+            name: string;
+
+            /** Type of the layout. */
+            type: LayoutType;
+
+            /** Context object passed when the layout was saved. */
+            context: any;
+
+            /** Metadata passed when the layout was saved. */
+            metadata: any;
         }
 
         /**
