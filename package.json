@@ -13,7 +13,8 @@
     "release": "gulp release",
     "test:scripts": "mocha ./scripts/test/**/*spec.js",
     "lint:fix": "./node_modules/.bin/eslint --ignore-path .gitignore . --fix",
-    "release:live-examples": "node ./scripts/live-examples/reload-code-sandboxes.js"
+    "release:live-examples": "node ./scripts/live-examples/reload-code-sandboxes.js",
+    "announce": "lerna-changelog"
   },
   "devDependencies": {
     "@lerna/changed": "^3.20.0",
