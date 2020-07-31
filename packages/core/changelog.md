@@ -1,3 +1,5 @@
+5.1.2
+chore: bumped version after unified file endings for repo-wide npm audit script
 5.1.1
 fix: logger can try to invoke before interop is ready
 5.1.0
