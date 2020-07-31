@@ -6,6 +6,9 @@ export interface Glue42CoreConfig {
     gateway?: any;
     channels?: Glue42Web.Channels.ChannelContext[];
     appManager?: AppManagerConfig;
+    layouts?: {
+        remoteType: "none" | "json";
+    };
 }
 
 export interface AppManagerConfig {

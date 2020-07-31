@@ -1,8 +1,11 @@
 ## Overview
 
-The **Glue42 CLI** is a command line tool designed to simplify your development process with **Glue42 Core**. The Glue42 CLI provides the following basic commands:
+The **Glue42 CLI** is a command line tool designed to simplify your development process with **Glue42 Core**. The Glue42 CLI provides the following commands:
 
 - `init` - quickly sets up your project with the necessary configurations and dependencies;
+- `init -w` - sets up your project with support for [**Workspaces**](../../capabilities/workspaces/index.html);
+- `workspaces init` - adds support for Workspaces in a project that has already been set up with the `init` command;
+- `workspaces build` - opens the default browser and navigates to the Workspaces Builder;
 - `serve` - launches a dev server which acts as a reverse proxy for your locally served applications;
 - `build` - bundles all the necessary **Glue42 Core** files into one convenient folder that is ready for deployment;
 - `version` - returns the currently installed version of the Glue42 CLI;
@@ -17,13 +20,13 @@ npm install -g @glue42/cli-core
 
 ## Commands
 
-The Glue42 CLI offers several basic commands with no additional parameters. All the necessary configuration options are taken either from the `glue.config.dev.json` file in the current working directory (see [Configuration](#configuration) below) or from the built-in defaults.
+The Glue42 CLI offers several commands some of which accept modifiers. All the necessary configuration options are taken either from the `glue.config.dev.json` file in the current working directory (see [Configuration](#configuration) below) or from the built-in defaults.
 
 Below are described the available commands:
 
 - #### init
 
-```javascript
+```cmd
 gluec init
 ```
 
@@ -31,28 +34,61 @@ The `init` command will set up **Glue42 Core** for the current directory. This m
 
 - install with `npm` (and perform `npm init --yes` beforehand if no `package.json` file is found) all necessary dependencies that provide the [**Glue42 Environment**](../environment/overview/index.html) files;
 - create a `glue.config.dev.json` file with default settings and correct paths for all **Glue42 Core** assets;
-- create a `glue.config.json` file with default settings so that you can easily customize (if you need to) the settings in it. The Glue42 CLI will copy this file to the output directory when bundling your **Glue42 Core** files for deployment.
-- create a `glue.core.cli.log` file which will contain the log output of the Glue42 CLI if you set the `logging` setting in the `glue.config.dev.json` to `"full"`.
+- create a `glue.config.json` file with default settings so that you can customize (if you need to) the settings in it. The Glue42 CLI will copy this file to the output directory when bundling your **Glue42 Core** files for deployment;
+- create a `glue.layouts.json` file in which [**Workspaces**](../../capabilities/workspaces/index.html) layouts can be defined;
+- create a `glue.core.cli.log` file which will contain the log output of the Glue42 CLI if you set the `logging` setting in the `glue.config.dev.json` to `"full"`;
+
+- #### init -w
+
+```cmd
+gluec init -w
+```
+
+This command is short for `gluec init --workspaces`. It will execute the standard `gluec init` command which fetches all the necessary dependencies and scaffolds the configuration files. The `-w` flag will instruct the initialization process to prepare everything necessary for the project to use [**Workspaces**](../../capabilities/workspaces/index.html). This includes:
+
+- fetching the required Workspaces packages;
+- extending all configuration files with Workspaces defaults; 
+- building the default manifest file for the Workspaces App;
+
+Use this command when you are starting a brand new **Glue42 Core** project and you want to use Workspaces.
+
+- #### workspaces init
+
+```cmd
+gluec workspaces init
+```
+
+Use this command if you are already working on a project that was started with `gluec init` and now you just want to add [**Workspaces**](../../capabilities/workspaces/index.html) support to your development environment. This command will get all the required packages, create the necessary files and edit your existing configuration files by adding the Workspaces defaults.
+
+- #### workspaces build
+
+```cmd
+gluec workspaces build
+```
+
+This command will open your default browser and navigate to the Workspaces Builder page where you can build a Workspace and save its layout. 
+
+*For best experience, it is recommended to set Chrome as your default browser.*
 
 - #### serve
 
-```javascript
+```cmd
 gluec serve
 ```
 
-The `serve` command launches a dev server using the configuration provided in the `glue.config.dev.json` file.
-
-```javascript
-gluec build
-```
+The `serve` command launches a development server using the configuration provided in the `glue.config.dev.json` file.
 
 - #### build
+
+```cmd
+gluec build
+```
 
 The `build` command collects all the necessary **Glue42 Core** assets and bundles them in a `./glue` directory ready for deployment.
 
 - #### version
 
-```javascript
+```cmd
 gluec version
 ```
 
@@ -72,6 +108,7 @@ Below is the default configuration in the `glue.config.dev.json` file:
         },
         "worker": "./node_modules/@glue42/worker-web/dist/worker.js",
         "config": "./glue.config.json",
+        "layouts": "./glue.layouts.json",
         "route": "/glue"
     },
     "server": {
@@ -102,9 +139,15 @@ Below are described all available properties and settings in the `glue.config.de
 | `gateway.location` | `string`| The location of the Glue42 Gateway script file. | No | `"./node_modules/@glue42/gateway-web/web/gateway-web.js"` |
 | `gateway.gwLogAppender` | `string` | The location of a [custom log appender file](../environment/setup/index.html#advanced-extending_the_gateway_logging) for the Glue42 Gateway. | No | `-` |
 | `config` | `string`| The location of the `glue.config.json` file. | No | `"./glue.config.json"` |
+| `layouts` | `string` | The location of the `glue.layouts.json` file. | No | `"./glue.layouts.json"` |
 | `route` | `string` | The base route where the [**Glue42 Environment**](../environment/overview/index.html) files will be served by the dev server. | No | `"/glue"` |
+| `workspaces` | `object` | Configuration for Workspaces. | No | `-` |
+| `workspaces.appLocation` | `string` | Location of the Workspaces App. | No | `./"node_modules/@glue42/workspaces-app"` |
+| `workspaces.manifestLocation` | `string` | Location of the Workspaces App manifest file. | No | `"./workspaces.webmanifest"` |
+| `workspaces.frameCss` | `string` | The location of a custom CSS file for the Workspaces App. | No | `-` |
+| `workspaces.popupsCss` | `string` | The location of a custom CSS file for the popup windows of the Workspaces App | No | `-` |
 
-In the example below, the user has created a `/lib` directory and has decided to put there the deployment-ready files of the Shared Worker and the Glue42 Gateway. The Glue42 CLI will use these locations (for serving the files during development and for building the final **Glue42 Core** bundle) and will fail with an error if any of the files is missing. The user has also changed the default `route` to `"/shared/glue"`. This can be useful for keeping all shared resources (like images, scripts, styles, etc.) and all **Glue42 Core** files under the same base path. However, now all [**Glue42 Clients**](../glue42-client/overview/index.html) need to be instructed where to find the [**Glue42 Environment**](../environment/overview/sindex.html) files (see [Initializing a Glue42 Client: Custom Configuration](../glue42-client/index.html#initializing_a_glue42_client-custom_configuration)).
+In the example below, the user has created a `/lib` directory and has decided to put there the deployment-ready files of the Shared Worker and the Glue42 Gateway. The Glue42 CLI will use these locations (for serving the files during development and for building the final **Glue42 Core** bundle) and will fail with an error if any of the files is missing. The user has also changed the default `route` to `"/shared/glue"`. This can be useful for keeping all shared resources (like images, scripts, styles, etc.) and all **Glue42 Core** files under the same base path. However, now all [**Glue42 Clients**](../glue42-client/overview/index.html) need to be instructed where to find the [**Glue42 Environment**](../environment/overview/index.html) files (see [Initializing a Glue42 Client: Custom Configuration](../glue42-client/index.html#initializing_a_glue42_client-custom_configuration)).
 
 ```json
 {

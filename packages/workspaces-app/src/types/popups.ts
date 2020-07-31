@@ -5,6 +5,7 @@ export interface BasePopupPayload {
 
 export interface SaveWorkspacePopupPayload extends BasePopupPayload {
     workspaceId: string;
+    buildMode: boolean;
 }
 
 export interface AddApplicationPopupPayload extends BasePopupPayload {

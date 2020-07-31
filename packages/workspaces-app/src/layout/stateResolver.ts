@@ -157,8 +157,7 @@ export class LayoutStateResolver {
     private getWorkspaceTabIndex(workspaceId: string) {
         const workspaceLayoutStack = store.workspaceLayout.root.getItemsById(workspaceId)[0].parent;
         const workspaceIndex = ((workspaceLayoutStack as GoldenLayout.Stack).header)
-            .tabs
-            .findIndex((t) => t.contentItem.config.id === workspaceId);
+            .tabs.findIndex((t) => t.contentItem.config.id === workspaceId);
 
         return workspaceIndex;
     }
@@ -173,8 +172,8 @@ export class LayoutStateResolver {
         const userFriendlyParent = this.getUserFriendlyParent(windowContentItem);
 
         return {
-            itemId: windowId,
-            parentId: userFriendlyParent.config.id as string,
+            itemId: idAsString(windowContentItem.config.id),
+            parentId: idAsString(userFriendlyParent.config.id),
             config: {
                 frameId: this._frameId,
                 isFocused,

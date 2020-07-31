@@ -26,10 +26,9 @@ export const workspacesDefaults = {
     manifestLocation: "./workspaces.webmanifest"
 };
 
-export const layoutsDefaults: { name: string; data: { globals: any[]; workspaces: any[] } } = {
+export const layoutsDefaults: { name: string; data: { workspaces: any[] } } = {
     name: "glue.layouts.json",
     data: {
-        globals: [],
         workspaces: []
     }
 };
@@ -63,14 +62,18 @@ export const glueConfigDefaults = {
     name: "glue.config.json",
     data: {
         glue: {
-            worker: "./worker.js",
             layouts: {
                 autoRestore: false,
                 autoSaveWindowContext: false
+            },
+            channels: false,
+            appManager: false,
+            assets: {
+                location: "/glue"
             }
         },
-        gateway: {
-            location: "./gateway.js"
-        }
+        gateway: {},
+        appManager: {},
+        channels: [] as any[]
     }
 };

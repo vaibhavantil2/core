@@ -1,7 +1,7 @@
 const setFields = (stock) => {
 
     const elementTitle = document.querySelector('.text-center');
-    elementTitle.innerText = elementTitle.innerText + ` ${stock.RIC}`;
+    elementTitle.innerText = "Stock Details" + ` ${stock.RIC}`;
 
     const elementRIC = document.querySelectorAll('[data-ric]')[0];
     elementRIC.innerText = stock.RIC;

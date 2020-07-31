@@ -16,6 +16,8 @@ export interface GlueAssets {
     workspaces?: {
         appLocation: string;
         manifestLocation: string;
+        frameCss?: string;
+        popupsCss?: string;
     };
     worker?: string;
     config?: string;

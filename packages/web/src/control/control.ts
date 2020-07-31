@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { LocalWebWindow } from "../windows/my";
 import { LocalInstance } from "../app-manager/my";
 import { RemoteCommand, ControlDomain } from "./commands";

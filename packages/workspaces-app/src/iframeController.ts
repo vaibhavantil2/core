@@ -45,9 +45,14 @@ export class IFrameController {
                     childList: true,
                 };
 
-                observer.observe(target, config);
+                if (target) {
+                    observer.observe(target, config);
+                }
 
-                this._registry.execute("window-title-changed", id, frameDocument.title);
+                if (frameDocument.title) {
+                    this._registry.execute("window-title-changed", id, frameDocument.title);
+                }
+
             } catch (error) {
                 // tslint:disable-next-line: no-console
                 console.warn(error);
@@ -61,6 +66,12 @@ export class IFrameController {
 
         this._idToFrame[id] = frame;
         await this.waitForWindow(windowId);
+
+        if (context) {
+            const glueWindow = window.glue.windows.findById(windowId);
+            glueWindow.setContext(context);
+        }
+
         return frame;
     }
 
@@ -68,7 +79,6 @@ export class IFrameController {
         const frame = this._idToFrame[id];
 
         const jFrame = $(frame);
-
         jFrame.css("top", `${bounds.top}px`);
         jFrame.css("left", `${bounds.left}px`);
         jFrame.css("width", `${bounds.width}px`);
@@ -123,7 +133,12 @@ export class IFrameController {
         const frame = this._idToFrame[id];
         if (frame) {
             delete this._idToFrame[id];
-
+            try {
+                frame.contentWindow.dispatchEvent(new Event("beforeunload"));
+            } catch (error) {
+                // tslint:disable-next-line: no-console
+                console.warn(error);
+            }
             frame.remove();
         }
 

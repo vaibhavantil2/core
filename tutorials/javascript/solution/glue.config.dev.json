@@ -1,17 +1,18 @@
 {
     "glueAssets": {
+        "worker": "./node_modules/@glue42/worker-web/dist/worker.js",
         "gateway": {
             "location": "./node_modules/@glue42/gateway-web/web/gateway-web.js"
         },
-        "worker": "./node_modules/@glue42/worker-web/dist/worker.js",
         "config": "./glue.config.json",
-        "route": "/glue"
+        "layouts": "./glue.layouts.json",
+        "route": "/glue",
+        "workspaces": {
+            "appLocation": "./node_modules/@glue42/workspaces-app",
+            "manifestLocation": "./workspaces.webmanifest"
+        }
     },
     "server": {
-        "settings": {
-            "port": 4242,
-            "disableCache": true
-        },
         "apps": [
             {
                 "route": "/",
@@ -30,24 +31,34 @@
                 "file": {
                     "path": "./Stocks/"
                 }
+            },
+            {
+                "route": "/clientdetails",
+                "file": {
+                    "path": "./client-details/"
+                }
             }
         ],
+        "settings": {
+            "port": 4242,
+            "disableCache": true
+        },
         "sharedAssets": [
             {
-                "route": "/assets",
-                "path": "./assets/"
+                "path": "./assets/",
+                "route": "/assets"
             },
             {
-                "route": "/lib",
-                "path": "./lib/"
+                "path": "./lib/",
+                "route": "/lib"
             },
             {
-                "route": "/favicon.ico",
-                "path": "./favicon.ico"
+                "path": "./favicon.ico",
+                "route": "/favicon.ico"
             },
             {
-                "route": "/service-worker.js",
-                "path": "./service-worker.js"
+                "path": "./service-worker.js",
+                "route": "/service-worker.js"
             }
         ]
     },

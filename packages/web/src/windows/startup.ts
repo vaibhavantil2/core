@@ -3,7 +3,9 @@ import { StartingContext } from "../types";
 import { LocalWebWindow } from "./my";
 import { LocalInstance } from "../app-manager/my";
 
-export const registerChildStartupContext = (interop: Glue42Web.Interop.API, parent: string, id: string, name: string, options?: Glue42Web.Windows.CreateOptions) => {
+const createMethodName = (id: string): string => `"GC.Wnd."${id}`;
+
+export const registerChildStartupContext = (interop: Glue42Web.Interop.API, parent: string, id: string, name: string, options?: Glue42Web.Windows.CreateOptions): void => {
     const methodName = createMethodName(id);
     const startingContext: StartingContext = {
         context: options?.context ?? {},
@@ -29,5 +31,3 @@ export const initStartupContext = async (my: LocalWebWindow, interop: Glue42Web.
         }
     }
 };
-
-const createMethodName = (id: string) => `"GC.Wnd."${id}`;

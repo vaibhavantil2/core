@@ -1,0 +1,21 @@
+{
+    "glue": {
+        "appManager": true
+    },
+    "appManager": {
+        "localApplications": [
+            {
+                "name": "appA",
+                "details": {
+                    "url": "https://21fqd.csb.app/app-a/index.html"
+                }
+            },
+            {
+                "name": "appB",
+                "details": {
+                    "url": "https://21fqd.csb.app/app-b/index.html"
+                }
+            }
+        ]
+    }
+}

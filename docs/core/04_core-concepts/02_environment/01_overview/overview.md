@@ -2,9 +2,11 @@
 
 The Glue42 Environment is a set of JavaScript and JSON files. These files must be hosted at the same domain as your applications in order for your applications to have access to **Glue42 Core** functionalities. This set of files is not application-specific, but rather - domain-specific.
 
-The environment consists of the following files:
+The Glue42 Environment consists of the following files:
 
-- [**Configuration File**](#configuration_file) - an *optional* JSON configuration file that is used to define **Glue42 Core** settings and defaults;
+- [**Configuration File**](#configuration_file) (`glue.config.json`) - an *optional* JSON configuration file that is used to define **Glue42 Core** settings and defaults;
+- [**Workspace Layouts**](#workspace_layouts) (`glue.layouts.json`) - a file containing definitions of [**Workspaces**](../../../capabilities/workspaces/index.html) layouts;
+- [**Workspaces App**](#workspaces_app) - a directory containing the Workspaces App which is used to open and handle Workspaces;
 - [**Glue42 Gateway**](#glue42_gateway) - a script that handles the communication between all [**Glue42 Clients**](../../glue42-client/overview/index.html);
 - [**Shared Worker**](#shared_worker) - a [Shared Worker](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker) that functions as a central point to which all [**Glue42 Clients**](../../glue42-client/overview/index.html) to connect;
 
@@ -12,8 +14,7 @@ Environment requirements:
 
 - all files must be hosted on the same domain as your applications;
 - all files must be served from a path easily accessible by all [**Glue42 Clients**](../glue42-client/index.html);
-
-*Due to the current limitations of the [Shared Worker](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker) interface, it is recommended that all three files reside in the same directory within your project.*
+- all files must be located at the same level in the same directory;
 
 All files are described in more detail below. For step-by-step guides and examples on how to set up the Environment files depending on your project requirements, see the [**Glue42 Environment: Setup**](../setup/index.html) section.
 
@@ -25,22 +26,24 @@ Each Glue42 Client app can initialize the [**Glue42 Web**](../../../../reference
 
 If a `glue.config.json` file is not present, then all Glue42 Clients will initialize using the default library settings and will try to connect to the Shared Worker at the default location at `/glue/worker.js`. The Shared Worker will also try to connect to the Glue42 Gateway at the default location at `/glue/gateway.js`.
 
-Below you can see the default content and settings in the `glue.config.json` file:
+Below you can see the default content and settings of the `glue.config.json` file:
 
 ```json
 {
     "glue": {
-        "worker": "./worker.js",
         "layouts": {
             "autoRestore": false,
             "autoSaveWindowContext": false
+        },
+        "channels": false,
+        "appManager": false,
+        "assets": {
+            "location": "/glue"
         }
     },
-    "gateway": {
-        "location": "./gateway.js"
-    },
-    "channels": [],
-    "appManager": {}
+    "gateway": {},
+    "appManager": {},
+    "channels": []
 }
 ```
 
@@ -50,11 +53,14 @@ The `glue` top-level key has the following properties:
 
 | Property | Type | Description | Required | Default |
 |----------|------|-------------|----------|---------|
-| `extends` | `string \| false` | This property can be used by a [**Glue42 Client**](../../glue42-client/overview/index.html) during initialization of the Glue42 Web library to specify a URL for the location of the `glue.config.json` file (e.g., if you want to change the default location of the configration file). The library will fetch it and use it to extend the built-in configuration defaults. It is recommended to set this to `false`, if no configuration file is available. Also set to `false` if you don't want the Glue42 Client app to use the defaults from an existing configuration file. *Note that if you define a custom URL for the configuration file, then the library will expect to find a `worker.js` file in the same directory.* | No | `"/glue/glue.config.json"` |
-| `worker` | `string` | Specifies a Shared Worker location. It is recommended for a Glue42 Client app to use this property to define a custom location for the Shared Worker script, if `extends` has been set to `false` or if the `glue.config.json` file is not hosted at the default location. *Note that the Shared Worker script **must** be in the same directory as the `glue.config.json` file (if you have provided such file).* | No | `"./worker.js"` |
 | `layouts` | `object` | Enable or disable auto restoring windows and/or auto saving window context. | No | `-` |
 | `layouts.autoRestore` | `boolean` | If `true`, the set of windows opened by the application will be saved (in local storage) when the window is closed and restored when the application is started again. The saved data about each window includes URL, bounds and window context. | No | `false` |
 | `layouts.autoSaveWindowContext` | `boolean` | If `true`, will automatically save the context of the window. | No | `false` |
+| `channels` | `boolean` | Whether to enable the [Channels API](../../../../reference/core/latest/channels/index.html). | No | `false` |
+| `appManager` | `boolean` | Whether to enable the [Application Management API](../../../../reference/core/latest/appmanager/index.html). | No | `false` |
+| `assets` | `object` | Specifies the location of all Glue42 Environment files. It is recommended for a Glue42 Client app to use this property to define a custom location for the Glue42 Environment files, if the Glue42 Environment files are not hosted at the default location. | No | `-` |
+| `assets.location` | `string` | Defines the location of the **Glue42 Core** assets bundle (configuration file, layouts file, Workspaces App, etc.) | No | `"/glue"` |
+| `assets.extendConfig` | `boolean` | Whether to use the settings in the `glue` object of the `glue.config.json` file when initializing a [**Glue42 Client**](../../glue42-client/overview/index.html) application. Set to `false` if your project does not have a `glue.config.json` file, or if you want to initialize the [**Glue42 Web**](../../../../reference/core/latest/glue42%20web/index.html) library in this specific app with custom settings. | No | `true` |
 
 - `gateway` - An *optional* configuration object that defines settings used by the Shared Worker in order to initialize the Glue42 Gateway.
 
@@ -165,6 +171,52 @@ Below is an example configuration for defining local and remote application defi
 }
 ```
 
+## Workspace Layouts
+
+The `glue.layouts.json` file contains layout definitions of [**Workspaces**](../../../capabilities/workspaces/index.html). These definitions are used for restoring a previously saved Workspace. All Workspaces layouts must be defined in the `workspaces` top-level array of the `glue.layouts.json` file:
+
+```json
+{
+    "workspaces": [
+        // Workspace layout definition
+        {
+            "name": "my-workspace",
+            "type": "Workspace",
+            "components": [
+                ...
+            ]
+        }
+    ]
+}
+```
+
+## Workspaces App
+
+The `/workspaces` directory contains the files of the Workspaces App. This app is a Progressive Web App and is used to open and handle Workspaces. The `workspaces.webmanifest` file inside this directory is the application manifest file that defines the Workspaces App as a PWA. If your **Glue42 Core** project is not using Workspaces, this directory will not be created by the [Glue42 CLI](../../cli/index.html) when you build the project.
+
+### Customization
+
+You can customize the Workspaces App by providing custom CSS files for the app and for its popup windows (menus). Your custom CSS will be injected in the Workspaces App after all other styles. When you build your project, the custom CSS files will be automatically bundled with the production-ready build of the Workspaces App.
+
+To add your custom CSS files for the Workspaces App and/or for its popup windows, specify their location in the `glue.config.dev.json` file using the `frameCss` and `popupsCss` properties of the `glueAssets.workspaces` object:
+
+```json
+{
+    "glueAssets": {
+        ...
+        "workspaces": {
+            ...
+            "frameCss": "./custom-frame.css",
+            "popupsCss": "./custom-popups.css"
+        }
+    },
+    "server": ...,
+    "logging": ...
+}
+```
+
+Restart the development server if running for the changes to take effect.
+
 ## Glue42 Gateway
 
 The Glue42 Gateway is the backbone of the **Glue42 Core** environment. It facilitates the communication between all Glue42 Clients and is initialized by the Shared Worker. There are several configuration options for the Glue42 Gateway which you can set from the optional `glue.config.json` file.
@@ -172,5 +224,3 @@ The Glue42 Gateway is the backbone of the **Glue42 Core** environment. It facili
 ## Shared Worker
 
 The [Shared Worker](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker) instance is the central point to which all [**Glue42 Clients**](../../glue42-client/overview/index.html) connect when initializing the [**Glue42 Web**](../../../../reference/core/latest/glue42%20web/index.html) Javascript library. It is responsible for configuring, initializing and linking the Glue42 Clients to the Glue42 Gateway. The Shared Worker retrieves the user-defined settings for the Glue42 Gateway from the `glue.config.json` configuration file.
-
-*Note that the Shared Worker will expect to find the Glue42 Gateway script file and a configuration file that is named `glue.config.json` in the same directory. Due to the current limitations of the [Shared Worker](https://developer.mozilla.org/en-US/docs/Web/API/SharedWorker) interface, passing a different location for the files is impossible. Therefore, if a `glue.config.json` file is not found at that location, the worker will proceed with the default Glue42 Gateway settings.*

@@ -1,0 +1,31 @@
+{
+    "glue": {
+        "worker": "./worker.js",
+        "layouts": {
+            "autoRestore": false,
+            "autoSaveWindowContext": false
+        },
+        "channels": true,
+        "appManager": true,
+        "application": "TestRunner"
+    },
+    "gateway": {
+        "location": "./gateway.js"
+    },
+    "appManager": {
+        "localApplications": [
+            {
+                "name": "dummyApp",
+                "details": {
+                    "url": "http://localhost:9999/dummyApp"
+                }
+            },
+            {
+                "name": "supportApp",
+                "details": {
+                    "url": "http://localhost:9999/supportApp"
+                }
+            }
+        ]
+    }
+}

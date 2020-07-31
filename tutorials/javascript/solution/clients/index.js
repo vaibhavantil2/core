@@ -46,20 +46,21 @@ const clientClickedHandler = (client) => {
     //     window.glue.interop.invoke(selectClientStocks, { client });
     // }
 
-    window.glue.contexts.update('SelectedClient', client).catch(console.error);
+    // window.glue.contexts.update('SelectedClient', client).catch(console.error);
 
     // Update the context of the current channel with the newly selected client portfolio.
-    const myChannel = window.glue.channels.my();
+    // const myChannel = window.glue.channels.my();
 
-    if (myChannel) {
-        window.glue.channels.publish(client).catch(console.error);
-    }
+    // if (myChannel) {
+    //     window.glue.channels.publish(client).catch(console.error);
+    // }
 
-    const isStocksRunning = window.glue.appManager.application('Stocks').instances.length > 0;
+    // const isStocksRunning = window.glue.appManager.application('Stocks').instances.length > 0;
 
-    if (!isStocksRunning) {
-        window.glue.appManager.application('Stocks').start({ channel: myChannel }).catch(console.error);
-    }
+    // if (!isStocksRunning) {
+    //     window.glue.appManager.application('Stocks').start({ channel: myChannel }).catch(console.error);
+    // }
+    glue.workspaces.restoreWorkspace("client-space", { context: { client } }).catch(console.error);
 };
 
 const start = async () => {
@@ -75,38 +76,38 @@ const start = async () => {
     setupClients(clients);
 
     window.glue = await window.GlueWeb({
-        channels: true,
         appManager: true,
-        application: 'Clients'
+        application: 'Clients',
+        libraries: [window.GlueWorkspaces]
     });
 
     toggleGlueAvailable();
 
-    // The value that will be displayed inside the channel selector widget to leave the current channel.
-    const NO_CHANNEL_VALUE = 'No channel';
+    // // The value that will be displayed inside the channel selector widget to leave the current channel.
+    // const NO_CHANNEL_VALUE = 'No channel';
 
-    // Get the channel names and colors using the Channels API.
-    const channelContexts = await window.glue.channels.list();
-    const channelNamesAndColors = channelContexts.map(channelContext => ({
-        name: channelContext.name,
-        color: channelContext.meta.color
-    }));
+    // // Get the channel names and colors using the Channels API.
+    // const channelContexts = await window.glue.channels.list();
+    // const channelNamesAndColors = channelContexts.map(channelContext => ({
+    //     name: channelContext.name,
+    //     color: channelContext.meta.color
+    // }));
 
-    const onChannelSelected = (channelName) => {
-        if (channelName === NO_CHANNEL_VALUE) {
-            if (window.glue.channels.my()) {
-                window.glue.channels.leave().catch(console.error);
-            }
-        } else {
-            window.glue.channels.join(channelName).catch(console.error);
-        }
-    };
+    // const onChannelSelected = (channelName) => {
+    //     if (channelName === NO_CHANNEL_VALUE) {
+    //         if (window.glue.channels.my()) {
+    //             window.glue.channels.leave().catch(console.error);
+    //         }
+    //     } else {
+    //         window.glue.channels.join(channelName).catch(console.error);
+    //     }
+    // };
 
-    createChannelSelectorWidget(
-        NO_CHANNEL_VALUE,
-        channelNamesAndColors,
-        onChannelSelected
-    );
+    // createChannelSelectorWidget(
+    //     NO_CHANNEL_VALUE,
+    //     channelNamesAndColors,
+    //     onChannelSelected
+    // );
 };
 
 start().catch(console.error);

@@ -25,7 +25,8 @@ export const commands: CommandDefinition[] = [
     },
     {
         name: "serve",
-        action: async (config: CliConfig, logger: Logger): Promise<void> => {            
+        action: async (config: CliConfig, logger: Logger): Promise<void> => {
+            await workspacesController.intercept(config, logger);
             await coreDevServer.setup(config, logger);
             await coreDevServer.start();
         },
@@ -35,6 +36,7 @@ export const commands: CommandDefinition[] = [
     {
         name: "build",
         action: async (config: CliConfig, logger: Logger): Promise<void> => {
+            await workspacesController.intercept(config, logger);     
             await buildController.build(config, logger);
         },
         requiredConfig: true

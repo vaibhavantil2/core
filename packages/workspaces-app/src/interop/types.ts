@@ -122,6 +122,11 @@ export interface MoveWindowToRequest {
     operationArguments: MoveWindowToArguments;
 }
 
+export interface GenerateLayoutRequest {
+    operation: "generateLayout";
+    operationArguments: GenerateLayoutArguments;
+}
+
 //#endregion
 
 //#region Arguments
@@ -145,7 +150,7 @@ export interface ItemSelector {
 
 export interface OpenWorkspaceArguments {
     name: string;
-    options?: RestoreWorkspaceConfig;
+    restoreOptions?: RestoreWorkspaceConfig;
 }
 
 export interface SaveLayoutArguments {
@@ -237,6 +242,11 @@ export interface BundleWorkspaceArguments {
     workspaceId: string;
 }
 
+export interface GenerateLayoutArguments {
+    workspaceId: string;
+    name: string;
+}
+
 //#endregion
 
 export type ControlArguments = SaveLayoutRequest | DeleteLayoutRequest |
@@ -244,4 +254,4 @@ export type ControlArguments = SaveLayoutRequest | DeleteLayoutRequest |
     CloseItemRequest | MaximizeItemRequest | RestoreItemRequest | AddWindowRequest | AddContainerRequest | SetItemTitleRequest |
     AddWorkspaceChildrenRequest | EjectRequest | CreateWorkspaceRequest | ForceLoadWindowRequest | FocusItemRequest |
     BundleWorkspaceRequest | IsWindowInWorkspaceRequest | GetFrameSummaryRequest | MoveFrameRequest | GetFrameSnapshotRequest |
-    GetSnapshotRequest | MoveWindowToRequest;
+    GetSnapshotRequest | MoveWindowToRequest | GenerateLayoutRequest;
