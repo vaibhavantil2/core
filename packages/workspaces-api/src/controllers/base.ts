@@ -290,4 +290,21 @@ export class BaseController {
 
         return foundChildren;
     }
+
+    public notifyWindowAdded(windowId: string): Promise<void> {
+        return new Promise((resolve) => {
+            const unsubscribe = this.windows.onWindowAdded((win) => {
+
+                if (win.id !== windowId) {
+                    return;
+                }
+
+                if (unsubscribe) {
+                    unsubscribe();
+                }
+
+                resolve();
+            });
+        });
+    }
 }

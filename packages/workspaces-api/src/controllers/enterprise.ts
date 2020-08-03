@@ -216,7 +216,15 @@ export class EnterpriseController implements WorkspacesController {
     }
 
     public async forceLoadWindow(itemId: string): Promise<string> {
-        return await this.base.forceLoadWindow(itemId);
+        const windowId = await this.base.forceLoadWindow(itemId);
+
+        const foundGDWindow = this.base.getGDWindow(windowId);
+
+        if (!foundGDWindow) {
+            await this.base.notifyWindowAdded(windowId);
+        }
+
+        return windowId;
     }
 
     public async ejectWindow(itemId: string): Promise<void> {
