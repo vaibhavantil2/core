@@ -1453,6 +1453,8 @@ export namespace Glue42Core {
              */
             set(name: string, data: any): Promise<void>;
 
+            setPath(name: string, path: string, data: any): Promise<void>;
+
             /**
              * Subscribes for context events. Returns an unsubscribe function which you can use to stop receiving context updates.
              * @param name Name of the context to which you want to subscribe.
@@ -1468,28 +1470,6 @@ export namespace Glue42Core {
              */
             get(name: string, resolveImmediately?: boolean): Promise<any>;
         }
-
-        /** Context delta when updating or replacing a context. */
-        export interface ContextDelta {
-
-            /** Context properties that were added. */
-            added: ContextEntries;
-
-            /** Context properties that were updated. */
-            updated: ContextEntries;
-
-            /** Context properties that were removed. */
-            removed: string[];
-
-            /** Context properties that were reset. */
-            reset?: ContextEntries;
-        }
-
-        /** Context entries. Key/value pairs holding context data. */
-        export type ContextEntries = { [index: string]: any };
-
-        export type ContextName = string;
-        export type ContextSubscriptionKey = number;
     }
 
     /**

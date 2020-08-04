@@ -1,37 +1,52 @@
 import { Glue42Core } from "../../glue";
+import { ContextDelta } from "./bridges/types";
 
 export function applyContextDelta(
     context: any,
-    delta: Glue42Core.Contexts.ContextDelta) {
+    delta: ContextDelta) {
 
-    if (delta) {
-        if (delta.reset) {
-            context = { ...delta.reset };
-            return context;
+    if (!delta) {
+        return context;
+    }
+
+    if (delta.reset) {
+        context = { ...delta.reset };
+        return context;
+    }
+
+    context = deepClone(context, undefined);
+
+    if (delta.commands) {
+        for (const command of delta.commands) {
+            if (command.type === "remove") {
+                deletePath(context, command.path);
+            } else if (command.type === "set") {
+                setValueToPath(context, command.value, command.path);
+            }
         }
+        return context;
+    }
 
-        context = deepClone(context, undefined);
-        const added = delta.added;
-        const updated = delta.updated;
-        const removed = delta.removed;
+    const added = delta.added;
+    const updated = delta.updated;
+    const removed = delta.removed;
 
-        if (added) {
-            Object.keys(added).forEach((key) => {
-                context[key] = added[key];
-            });
-        }
+    if (added) {
+        Object.keys(added).forEach((key) => {
+            context[key] = added[key];
+        });
+    }
 
-        if (updated) {
-            Object.keys(updated).forEach((key) => {
-                mergeObjectsProperties(key, context, updated);
-            });
-        }
+    if (updated) {
+        Object.keys(updated).forEach((key) => {
+            mergeObjectsProperties(key, context, updated);
+        });
+    }
 
-        if (removed) {
-            removed.forEach((key) => {
-                delete context[key];
-            });
-        }
+    if (removed) {
+        removed.forEach((key) => {
+            delete context[key];
+        });
     }
 
     return context;
@@ -44,15 +59,15 @@ export function deepClone(obj: any, hash?: WeakMap<any, any>): any {
     if (obj instanceof Set) { return new Set(obj); } // See note about this!
     if (hash.has(obj)) { return hash.get(obj); } // cyclic reference
     const result = obj instanceof Date ? new Date(obj)
-                 : obj instanceof RegExp ? new RegExp(obj.source, obj.flags)
-                 : obj.constructor ? new obj.constructor()
-                 : Object.create(null);
+        : obj instanceof RegExp ? new RegExp(obj.source, obj.flags)
+            : obj.constructor ? new obj.constructor()
+                : Object.create(null);
     hash.set(obj, result);
     if (obj instanceof Map) {
-        Array.from(obj, ([key, val]) => result.set(key, deepClone(val, hash)) );
+        Array.from(obj, ([key, val]) => result.set(key, deepClone(val, hash)));
     }
-    return Object.assign(result, ...Object.keys(obj).map (
-        (key) => ({ [key]: deepClone(obj[key], hash) }) ));
+    return Object.assign(result, ...Object.keys(obj).map(
+        (key) => ({ [key]: deepClone(obj[key], hash) })));
 }
 
 /*
@@ -149,4 +164,25 @@ export function deepEqual(x: any, y: any) {
     }
 
     return true;
+}
+
+export function setValueToPath(obj: any, value: any, path: string) {
+    const pathArr = path.split(".");
+    let i;
+    for (i = 0; i < pathArr.length - 1; i++) {
+        if (!obj[pathArr[i]]) {
+            obj[pathArr[i]] = {};
+        }
+        obj = obj[pathArr[i]];
+    }
+    obj[pathArr[i]] = value;
+}
+
+function deletePath(obj: any, path: string) {
+    const pathArr = path.split(".");
+    let i;
+    for (i = 0; i < pathArr.length - 1; i++) {
+        obj = obj[pathArr[i]];
+    }
+    delete obj[pathArr[i]];
 }
