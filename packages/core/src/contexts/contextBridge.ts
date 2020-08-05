@@ -1,4 +1,5 @@
 import { ContextName, ContextSubscriptionKey } from "./bridges/types";
+import { Glue42Core } from "../../glue";
 
 export interface ContextBridge {
     all(): ContextName[];
@@ -8,6 +9,8 @@ export interface ContextBridge {
     set(name: ContextName, data: any): Promise<void>;
 
     setPath(name: ContextName, path: string, data: any): Promise<void>;
+
+    setPaths(name: ContextName,  paths: Glue42Core.Contexts.PathValue[]): Promise<void>;
 
     get(name: ContextName, returnImmediately: boolean): Promise<any>;
 

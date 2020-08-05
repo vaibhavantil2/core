@@ -342,17 +342,28 @@ export class GW3Bridge implements ContextBridge {
             });
     }
 
-    public setPath(name: ContextName, path: string, data: any): Promise<void> {
+    public setPath(name: ContextName, path: string, value: any): Promise<void> {
+
+        return this.setPaths(name, [{ path, value }]);
+    }
+
+    public setPaths(name: ContextName, pathValues: Glue42Core.Contexts.PathValue[]): Promise<void> {
 
         const contextData = this._contextNameToData[name];
 
         if (!contextData || !contextData.isAnnounced) {
             const obj = {};
-            setValueToPath(obj, data, path);
+            for (const pathValue of pathValues) {
+                setValueToPath(obj, pathValue.value, pathValue.path);
+            }
+
             return this.createContext(name, obj) as any as Promise<void>;
         }
 
-        const commands: ContextDeltaCommand[] = [{ type: "set", path, value: data }];
+        const commands: ContextDeltaCommand[] = [];
+        for (const pathValue of pathValues) {
+            commands.push({ type: "set", path: pathValue.path, value: pathValue.value });
+        }
         return this._gw3Session
             .send({
                 type: msg.GW_MESSAGE_UPDATE_CONTEXT,

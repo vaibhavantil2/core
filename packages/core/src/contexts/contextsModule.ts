@@ -62,7 +62,17 @@ export class ContextsModule implements Glue42Core.Contexts.API {
     public setPath(name: ContextName, path: string, data: any): Promise<void> {
         this.checkName(name);
 
+        if (!path || path === "") {
+            return this.set(name, data);
+        }
+
         return this._bridge.setPath(name, path, data);
+    }
+
+    public setPaths(name: ContextName, paths: Glue42Core.Contexts.PathValue[]): Promise<void> {
+        this.checkName(name);
+
+        return this._bridge.setPaths(name, paths);
     }
 
     /**

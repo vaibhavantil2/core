@@ -5,7 +5,7 @@ import { Glue42Core } from "../glue";
 let glues: Glue42Core.GlueCore[] = [];
 let id = 1;
 
-const logLevel = "trace";
+const logLevel = "off";
 export const defaultWSPort = 8385;
 export const defaultWS = `ws://localhost:${defaultWSPort}/gw`;
 

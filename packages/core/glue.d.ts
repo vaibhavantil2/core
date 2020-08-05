@@ -1453,7 +1453,20 @@ export namespace Glue42Core {
              */
             set(name: string, data: any): Promise<void>;
 
+            /**
+             * Sets a path in the context to some value. Use this to update values that are not on top level in the context.
+             * @param name Name of the context to be updated
+             * @param path Path to be updated. Path should be in the format "prop1.prop2"
+             * @param data The object that will be applied to the path
+             */
             setPath(name: string, path: string, data: any): Promise<void>;
+
+            /**
+             * Sets multiple paths in the context to some values in a single command.
+             * @param name Name of the context to be updated
+             * @param paths Array of paths and their values to be updated. Path should be in the format "prop1.prop2"
+             */
+            setPaths(name: string, paths: PathValue[]): Promise<void>;
 
             /**
              * Subscribes for context events. Returns an unsubscribe function which you can use to stop receiving context updates.
@@ -1469,6 +1482,11 @@ export namespace Glue42Core {
              * Otherwise, subscribes to the context and resolves the `Promise` as soon as the context is created.
              */
             get(name: string, resolveImmediately?: boolean): Promise<any>;
+        }
+
+        export interface PathValue {
+            path: string;
+            value: any;
         }
     }
 
