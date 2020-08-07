@@ -1463,10 +1463,8 @@ export namespace Glue42Core {
             /**
              * Return the context data immediately or asynchronously as soon as any data becomes available.
              * @param name Name of the context from which you want to get data.
-             * @param resolveImmediately If `true` (default), resolves inexistent contexts with `undefined`.
-             * Otherwise, subscribes to the context and resolves the `Promise` as soon as the context is created.
              */
-            get(name: string, resolveImmediately?: boolean): Promise<any>;
+            get(name: string): Promise<any>;
         }
 
         /** Context delta when updating or replacing a context. */

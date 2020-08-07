@@ -294,10 +294,10 @@ export class GW3Bridge implements ContextBridge {
         // TODO: explain why --> because this
         let currentContext = contextData.context;
         if (!contextData.hasCallbacks()) {
-            currentContext = await this.get(contextData.name, false);
+            currentContext = await this.get(contextData.name);
         }
 
-        const calculatedDelta = this.calculateContextDelta(currentContext , delta);
+        const calculatedDelta = this.calculateContextDelta(currentContext, delta);
 
         if (!Object.keys(calculatedDelta.added).length
             && !Object.keys(calculatedDelta.updated).length
@@ -343,28 +343,21 @@ export class GW3Bridge implements ContextBridge {
     /**
      * Return a context's data asynchronously as soon as any becomes available
      */
-    public get(name: Glue42Core.Contexts.ContextName, resolveImmediately: boolean): Promise<any> {
-
-        if (resolveImmediately === undefined) {
-            resolveImmediately = true;
-        }
+    public get(name: Glue42Core.Contexts.ContextName): Promise<any> {
 
         const contextData = this._contextNameToData[name];
-        if (!contextData ||
-            !contextData.isAnnounced ||
-            !contextData.hasCallbacks()) {
+        if (contextData && !contextData.hasCallbacks()) {
 
-            if (!resolveImmediately) {
-                return new Promise<any>(async (resolve, reject) => {
-                    this.subscribe(name, (data: any, delta: any, removed: string[], un: Glue42Core.Contexts.ContextSubscriptionKey) => {
-                        this.unsubscribe(un);
-                        resolve(data);
-                    });
+            return new Promise<any>(async (resolve, reject) => {
+                this.subscribe(name, (data: any, delta: any, removed: string[], un: Glue42Core.Contexts.ContextSubscriptionKey) => {
+                    this.unsubscribe(un);
+                    resolve(data);
                 });
-            }
+            });
         }
 
-        return Promise.resolve(contextData && contextData.context);
+        const context = contextData?.context ?? {};
+        return Promise.resolve(context);
     }
 
     /**
