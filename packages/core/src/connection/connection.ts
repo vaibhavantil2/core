@@ -184,7 +184,13 @@ export default class Connection implements Glue42Core.Connection.API {
                     try {
                         handler(message);
                     } catch (error) {
-                        this.logger.error(`Message handler failed with ${error.stack}`, error);
+                        try {
+                            // logger might not be there yet
+                            this.logger.error(`Message handler failed with ${error.stack}`, error);
+                        } catch (loggerError) {
+                            // tslint:disable-next-line:no-console
+                            console.log("Message handler failed", error);
+                        }
                     }
                 }
             });
