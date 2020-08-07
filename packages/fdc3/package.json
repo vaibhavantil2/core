@@ -17,7 +17,10 @@
     "homepage": "https://glue42.com/",
     "scripts": {
         "build": "tsc -p ./tsconfig.json && rollup -c",
-        "test": "echo \"Error: no test specified\" && exit 0"
+        "test": "echo \"Error: no test specified\" && exit 0",
+        "audit": "node ../../scripts/audit/index.js",
+        "preversion": "npm run build && npm run test && npm run audit",
+        "version": "npm run build"
     },
     "author": {
         "name": "Glue42",
