@@ -127,12 +127,16 @@ export class Logger implements Glue42Core.Logger.API {
         if (this.canPublish(level, this.publishLevel())) {
             const interop = Logger.Interop;
             if (interop) {
-                if (interop.methods({ name: Logger.InteropMethodName }).length > 0) {
-                    interop.invoke(Logger.InteropMethodName, {
-                        msg: `${message}`,
-                        logger: loggerName,
-                        level
-                    });
+                try {
+                    if (interop.methods({ name: Logger.InteropMethodName }).length > 0) {
+                        interop.invoke(Logger.InteropMethodName, {
+                            msg: `${message}`,
+                            logger: loggerName,
+                            level
+                        });
+                    }
+                } catch {
+                    // interop might not be ready yet
                 }
             }
         }
