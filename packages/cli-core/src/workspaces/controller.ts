@@ -162,7 +162,7 @@ export class WorkspacesController {
     }
 
     private async copyManifest(config: CliConfig): Promise<void> {
-        const source = join(config.rootDirectory, "node_modules", "@glue42", "workspaces-app", "manifest.webmanifest");
+        const source = join(config.rootDirectory, "node_modules", "@glue42", "workspaces-app", "workspaces.webmanifest");
         const destination = join(config.rootDirectory, "workspaces.webmanifest");
 
         return this.copyPromise(source, destination);
