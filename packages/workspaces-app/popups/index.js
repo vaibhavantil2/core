@@ -1,5 +1,5 @@
 
-import GlueWeb from "./lib/web.umd";
+import GlueWeb from "@glue42/web";
 import workspaces from "@glue42/workspaces-api";
 
 const config = {
@@ -61,8 +61,8 @@ GlueWeb(config).then(async (glue) => {
     const updatePopupSize = () => {
         const bodyBounds = document.body.getBoundingClientRect();
         const bodySize = {
-            width: bodyBounds.width,
-            height: bodyBounds.height
+            width: Math.ceil(bodyBounds.width),
+            height: Math.ceil(bodyBounds.height)
         }
 
         const instance = glue.agm.servers().find((i) => i.peerId === startInformation.peerId)
@@ -108,7 +108,7 @@ GlueWeb(config).then(async (glue) => {
             appElement.onclick = async () => {
                 const allWorkspaces = await glue.workspaces.getAllWorkspaces();
                 const currWorkspace = allWorkspaces.find(w => w.id === startInformation.workspaceId);
-                const parent = currWorkspace.getParent((p => p.id === startInformation.laneId)) || currWorkspace;
+                const parent = currWorkspace.getBox((p => p.id === startInformation.laneId)) || currWorkspace;
                 const rowColRadioButton = document.getElementById("rowColButton");
 
                 if (rowColRadioButton && rowColRadioButton.classList.contains("active")) {
@@ -230,8 +230,8 @@ GlueWeb(config).then(async (glue) => {
 
         const bodyBounds = document.body.getBoundingClientRect();
         const bodySize = {
-            width: bodyBounds.width,
-            height: bodyBounds.height
+            width: Math.ceil(bodyBounds.width),
+            height: Math.ceil(bodyBounds.height)
         }
 
         success(bodySize)
@@ -251,7 +251,7 @@ GlueWeb(config).then(async (glue) => {
         const allWorkspaces = await glue.workspaces.getAllWorkspaces();
         const currWorkspace = allWorkspaces.find(w => w.id === payload.workspaceId);
 
-        const lane = currWorkspace.getParent((p => p.id === payload.laneId)) || currWorkspace;
+        const lane = currWorkspace.getBox((p => p.id === payload.laneId)) || currWorkspace;
 
         startInformation = payload;
 
