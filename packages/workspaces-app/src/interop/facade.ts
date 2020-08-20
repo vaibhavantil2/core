@@ -31,6 +31,7 @@ import GoldenLayout, { RowConfig, ColumnConfig } from "@glue42/golden-layout";
 import { idAsString } from "../utils";
 import converter from "../config/converter";
 import { Glue42Web } from "@glue42/web";
+import factory from "../config/factory";
 
 declare const window: Window & { glue: Glue42Web.API };
 
@@ -138,7 +139,7 @@ class GlueFacade {
                     successCallback(await this.handleForceLoadWindow(args.operationArguments));
                     break;
                 case "focusItem":
-                    this.handleFocusItem(args.operationArguments);
+                    await this.handleFocusItem(args.operationArguments);
                     successCallback(undefined);
                     break;
                 case "bundleWorkspace":
@@ -272,8 +273,9 @@ class GlueFacade {
         if (operationArguments.definition.windowId) {
             const win = window.glue.windows.list().find((w) => w.id === operationArguments.definition.windowId);
             const url = await win.getURL();
-            // operationArguments.definition.appName = win.control.interop.instance.applicationName
+
             windowConfig.componentState.url = url;
+            windowConfig.componentState.appName = factory.getAppNameFromWindowId(win.id);
         }
 
         await manager.addWindow(windowConfig, operationArguments.parentId);

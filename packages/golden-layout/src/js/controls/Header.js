@@ -251,7 +251,10 @@ lm.utils.copy(lm.controls.Header.prototype, {
 		 * Maximize control - set the component to the full size of the layout
 		 */
 		if (this._getHeaderSetting('maximize')) {
-			maximize = lm.utils.fnBind(this.parent.toggleMaximise, this.parent); restoreLabel
+			if (this.layoutManager.config.settings.mode !== "workspace") {
+				maximize = lm.utils.fnBind(this.parent.toggleMaximise, this.parent);
+			}
+
 			maximizeLabel = this._getHeaderSetting('maximize');
 
 			// TODO
@@ -273,7 +276,9 @@ lm.utils.copy(lm.controls.Header.prototype, {
 		 * Close button
 		 */
 		if (this._isClosable()) {
-			closeStack = lm.utils.fnBind(this.parent.remove, this.parent);
+			if (this.layoutManager.config.settings.mode !== "workspace") {
+				closeStack = lm.utils.fnBind(this.parent.remove, this.parent);
+			}
 			label = this._getHeaderSetting('close');
 			this.closeButton = new lm.controls.HeaderButton(this, label, 'lm_close', closeStack);
 		}
