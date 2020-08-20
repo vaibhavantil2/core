@@ -148,7 +148,7 @@ export class LayoutController {
         }
 
         if (workspace.id === parentId) {
-            if (config.type === "column") {
+            if (config.type === "column" || config.type === "stack") {
                 this.bundleWorkspace(workspace.id, "row");
             }
             else if (config.type === "row") {
@@ -343,6 +343,7 @@ export class LayoutController {
         const item = store.getWindowContentItem(windowId);
 
         item.setTitle(title);
+        item.config.componentState.title = title;
     }
 
     public setWorkspaceTitle(workspaceId: string, title: string) {

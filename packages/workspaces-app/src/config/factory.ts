@@ -5,6 +5,9 @@ import { TitleGenerator } from "./titleGenerator";
 import { idAsString } from "../utils";
 import store from "../store";
 import { EmptyVisibleWindowName } from "../constants";
+import { Glue42Web } from "@glue42/web";
+
+declare const window: { glue: Glue42Web.API };
 
 class WorkspacesConfigurationFactory {
     private readonly _titleGenerator = new TitleGenerator();
@@ -161,8 +164,15 @@ class WorkspacesConfigurationFactory {
             workspaceLayout: workspacesConfig
         };
     }
+
     public wrapInGroup(content: GoldenLayout.ComponentConfig[]) {
         return this.wrap(content, "stack");
+    }
+
+    public getAppNameFromWindowId(windowId: string) {
+        const instance = window.glue.appManager.instances().find(i => i.agm.windowId === windowId);
+
+        return instance?.application.name;
     }
 
     private createWindowConfigurationCore(id?: string): GoldenLayout.ComponentConfig {

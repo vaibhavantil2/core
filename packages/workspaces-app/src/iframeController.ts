@@ -15,6 +15,17 @@ export class IFrameController {
             return this._idToFrame[id];
         }
 
+        const glueWinOutsideOfWorkspace = window.glue.windows.findById(windowId);
+        if (glueWinOutsideOfWorkspace) {
+            try {
+                // Glue windows with the given id should be closed
+                await glueWinOutsideOfWorkspace.close();
+            } catch (error) {
+                // because of chrome security policy this call can fail,
+                // however the opening of a new window should continue
+            }
+        }
+
         if (!url) {
             throw new Error(`The url of window with itemId ${id} is undefined`);
         }
