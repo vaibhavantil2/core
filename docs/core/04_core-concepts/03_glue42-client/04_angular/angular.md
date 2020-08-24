@@ -145,7 +145,7 @@ export class Glue42Service {
     constructor(private readonly glueStore: Glue42Store) { }
 
     public get glueAvailable() {
-        return !!this.glueStore.initError;
+        return !this.glueStore.initError;
     }
 
     public registerMethod(name: string, callback: () => void): Promise<void> {

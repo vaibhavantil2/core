@@ -10,4 +10,4 @@ The mission of FDC3 is to develop specific protocols and classifications to adva
 
 You can find the FDC3 specification [here](https://fdc3.finos.org/).
 
-You can find more information on the Glue42 FDC3 library [here](https://docs.glue42.com/core/capabilities/fdc3-compliancy/index.html).
+You can find more information on the Glue42 FDC3 library [here](https://docs.glue42.com/core/capabilities/fdc3-compliance/index.html).
