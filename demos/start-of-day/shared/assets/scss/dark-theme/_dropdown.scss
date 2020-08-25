@@ -1,0 +1,40 @@
+.dropdown {
+  .dropdown-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+
+    &:hover {
+      color: $white;
+    }
+
+    &.active {
+      &::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 8px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: $blue;
+        transform: translateY(-50%);
+        transition: $transition-base;
+      }
+
+      &:hover {
+        &::before {
+          left: -10px;
+        }
+      }
+    }
+  }
+
+  .dropdown-divider {
+    border-top: 1px solid $border-color;
+  }
+
+  .dropdown-toggle::after {
+    display: none;
+  }
+}

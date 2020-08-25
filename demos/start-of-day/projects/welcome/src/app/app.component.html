@@ -1,0 +1,85 @@
+<div class="container-fluid py-3 border-bottom bg-mid" *ngIf="!showAll">
+  <div class="container">
+    <h2 style="text-align: center;">Support for your browser is coming soon. You can see our progress <a href="https://github.com/Glue42/core/issues/29" style="color: #64b5f6;">here</a>.</h2>
+  </div>
+</div>
+
+<div class="container-fluid border-bottom sticky-top bg-dark-glass" *ngIf="showAll">
+  <div class="container">
+    <nav class="navbar d-flex align-items-center justify-content-between py-3">
+      <p class="navbar-brand mb-0" href="#">
+        <img src="../common/images/glue42-logo-light.svg" width="158" height="30" class="d-inline-block align-center"
+          alt="" />
+      </p>
+      <div class="w-50 text-center">
+        <client-search [clients]="clients" (onClientSelected)="handleClientSelect($event)"></client-search>
+      </div>
+      <div class="navbar-settings">
+        <div class="dropdown">
+          <button class="btn btn-icon dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false" (click)="toggleShowSettings()">
+            <i class="demo-icon icon-cog"></i>
+          </button>
+
+          <div [ngClass]="{'dropdown-menu': true, 'dropdown-menu-right': true, 'show': showSettings}"
+            (clickOutside)="onClickedOutside($event)">
+            <small class="dropdown-item disabled">Open Client Workspace in</small>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" (click)="workspaceReuse = true" [ngClass]="workspaceReuse ? 'active' : ''">Same
+              Workspace</a>
+            <a class="dropdown-item" (click)="workspaceReuse = false"
+              [ngClass]="workspaceReuse ? '' : 'active'">Different Workspace</a>
+          </div>
+
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<div class="container-fluid py-3 border-bottom bg-mid" *ngIf="showAll">
+  <div class="container">
+    <h2 class="section-title mb-3">
+      <i class="demo-icon icon-user"></i> Recent Customers
+    </h2>
+
+    <div class="d-flex flex-wrap">
+      <ng-container *ngFor="let c of clients; index as i">
+        <div *ngIf="i <= 6" class="recent-client-card m-1 mt-0">
+          <client-card [client]="c" (emitClientSelect)="handleClientSelect($event)"></client-card>
+        </div>
+      </ng-container>
+
+      <div class="recent-client-card d-flex align-items-center justify-content-center m-1 mt-0">
+        <button type="button" class="btn btn-icon" (click)="openBlankClientApp()">
+          <i class="demo-icon icon-login"></i> Open Client List
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container" *ngIf="showAll">
+  <div class="row">
+    <div class="col-md-6 py-3">
+      <h2 class="mb-3"><i class="demo-icon icon-chart-area"></i> Stocks</h2>
+
+      <div class="stocks-container">
+        <ng-container *ngFor="let s of stocks">
+          <stock-card [stock]="s" (emitStockSelect)="handleStockSelect($event)"></stock-card>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-6 py-3">
+      <h2 class="mb-3"><i class="demo-icon icon-newspaper"></i> News<span *ngIf="selectedStockSymbol"> -
+          {{selectedStockSymbol}}</span></h2>
+
+      <div class="news-container">
+        <ng-container *ngFor="let n of news">
+          <news-card [news]="n"></news-card>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

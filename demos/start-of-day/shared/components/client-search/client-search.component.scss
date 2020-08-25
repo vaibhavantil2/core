@@ -1,0 +1,32 @@
+@import "../../../shared/assets/scss/dark-theme/variables";
+
+.search-container {
+  position: relative;
+
+  &.show {
+    .search-results {
+      display: block;
+    }
+
+    .form-control {
+      border-bottom-left-radius: $border-radius;
+      border-bottom-right-radius: $border-radius;
+    }
+  }
+}
+
+.search-results {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 216px;
+  overflow-y: auto;
+  box-shadow: $box-shadow-hover;
+  z-index: 1;
+
+  .card {
+    background-color: transparent;
+  }
+}

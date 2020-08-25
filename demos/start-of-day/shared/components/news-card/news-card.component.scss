@@ -1,0 +1,40 @@
+@import "../../../shared/assets/scss/dark-theme/variables";
+
+.card-news {
+  max-height: 4.5rem;
+
+  .card-img-wrapper {
+    width: 4.5rem;
+    padding: 0.5rem;
+
+    .card-img {
+      width: 100%;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 0.25rem;
+    }
+  }
+
+  .card-body {
+    width: calc(100% - 4.5rem);
+  }
+
+  .card-date {
+    flex-shrink: 0;
+  }
+
+  .card-text {
+    max-height: 1.4rem;
+    white-space: normal;
+    transition: $transition-base;
+  }
+
+  &:hover,
+  &.show {
+    max-height: 75rem;
+
+    .card-text {
+      max-height: 75rem;
+    }
+  }
+}

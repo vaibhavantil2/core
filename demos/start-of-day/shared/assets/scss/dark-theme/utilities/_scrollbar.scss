@@ -1,0 +1,31 @@
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: $border-radius-lg;
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: $border-radius-lg;
+    background: rgba($white, .15);
+}
+
+::-webkit-resizer {
+    background: transparent;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb:hover,
+::-webkit-scrollbar-thumb:active {
+    background: rgba($white, .2);
+}

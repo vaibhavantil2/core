@@ -1,0 +1,87 @@
+<div class="container-fluid sticky-top py-3 border-bottom bg-dark-glass">
+  <div class="row mb-3">
+    <div class="col-12" *ngIf="inWorkspace">
+      <client-search [clients]="clients" (onClientSelected)="handleClientSelect($event)"></client-search>
+    </div>
+  </div>
+  <div class="row mb-3" *ngIf="!inWorkspace">
+    <div class="col-10">
+      <client-search [clients]="clients" (onClientSelected)="handleClientSelect($event)"></client-search>
+    </div>
+    <div class="col-2">
+      <button type="button" class="btn btn-icon" (click)="bringBackToWorkspace()">
+        <i class="demo-icon icon-login"></i>
+      </button>
+    </div>
+  </div>
+  <div class="row" *ngIf="selectedClient">
+    <div class="col-12">
+      <!-- TODO: Handle if client is selected -->
+      <div class="card card-client card-client-details border-bottom">
+        <div class="d-flex justify-content-center align-items-center h-100">
+          <div class="card-img-wrapper">
+            <img
+              class="card-img img-fluid rounded-circle border"
+              [src]="clientImageSrc()"
+            />
+          </div>
+          <div class="card-body text-left pl-1">
+            <p class="card-title text-white font-weight-bold mb-1">
+              {{selectedClient.firstName}} {{selectedClient.lastName}}
+            </p>
+            <p class="card-text text-primary text-uppercase font-weight-bold mb-1">
+              Portfolio Value: $ {{selectedClient.portfolioValue}}
+            </p>
+            <p class="card-title text-muted mb-1">
+              {{selectedClient.email}}
+            </p>
+            <p class="card-title text-muted mb-0">
+              {{selectedClient.phone}}
+            </p>
+          </div>
+        </div>
+        <div class="card-text mb-2 px-3">
+          {{selectedClient.about}}
+        </div>
+        <div class="card-text d-flex mb-2 px-1">
+          <!-- <button type="button" class="btn btn-icon">
+            <i class="demo-icon icon-suitcase"></i> View Portfolio
+          </button> -->
+          <button
+            (click)="openClientTransactions()"
+            type="button"
+            class="btn btn-icon"
+          >
+            <i class="demo-icon icon-credit-card-alt"></i> View Transactions
+          </button>
+        </div>
+      </div>
+
+      <!-- TODO: Handle if no client is selected -->
+      <!-- <div *ngIf="!hasSelectedClient" class="card border-bottom">
+        <div class="card-body text-left px-3">
+          No Client Selected
+        </div>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid my-3">
+  <div class="row">
+    <main class="col-12">
+      <!-- <p *ngIf="hasSelectedClient">{{ selectedClient.firstName }}</p>
+      <p *ngIf="!hasSelectedClient">no selection</p>
+      <p (click)="openClientTransactions()">View Transactions</p> -->
+
+      <ng-container *ngFor="let c of clients">
+        <div>
+          <client-card
+            [client]="c"
+            (emitClientSelect)="handleClientSelect($event)"
+          ></client-card>
+        </div>
+      </ng-container>
+    </main>
+  </div>
+</div>

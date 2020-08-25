@@ -1,0 +1,17 @@
+<!-- TODO: Toggle "show" class to display the whole news article -->
+<div class="card card-news border-bottom" (click)="isNewsExpanded = !isNewsExpanded" [ngClass]="isNewsExpanded ? 'show' : ''">
+  <div class="d-flex justify-content-center h-100">
+    <div class="card-img-wrapper">
+      <img class="card-img img-fluid border" [src]="getImageSrc()" />
+    </div>
+    <div class="card-body pl-1">
+      <div class="d-flex justify-content-between">
+        <p class="card-title text-muted mb-1">{{ news.title }}</p>
+        <p class="card-date text-muted text-right mb-1 ml-2">{{ news.elapsedTime.value }}{{ news.elapsedTime.period }} ago</p>
+      </div>
+      <p class="card-text card-news-article text-white font-weight-bold mb-0">
+        {{ news.content }}
+      </p>
+    </div>
+  </div>
+</div>

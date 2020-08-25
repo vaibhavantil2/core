@@ -1,0 +1,28 @@
+.btn {
+    border: $btn-border;
+    background-color: $btn-bg;
+    color: $text-color;
+    transition: $transition-base;
+
+    &:focus,
+    &:active {
+        outline: none;
+    }
+
+    &.active,
+    &:focus,
+    &:active,
+    &:hover {
+        color: $link-color;
+    }
+} 
+
+.btn-icon {
+    display: flex;
+    align-items: center;
+
+    .demo-icon {
+        padding: 0 .5rem;
+        font-size: 1.2rem;
+    }
+}
