@@ -1,0 +1,21 @@
+@import "../../../../shared/assets/scss/dark-theme/variables";
+
+.recent-client-card {
+  width: calc(25% - 0.5rem);
+
+  .card-client {
+    border: 1px solid $border-color;
+  }
+}
+
+.stocks-container,
+.news-container {
+  max-height: calc(7 * 72px);
+  overflow-y: auto;
+}
+
+@media only screen and (max-width: 768px) {
+  .recent-client-card {
+    width: calc(50% - 0.5rem);
+  }
+}

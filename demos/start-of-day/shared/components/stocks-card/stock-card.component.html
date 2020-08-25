@@ -1,0 +1,31 @@
+<!-- <div (click)="handleStockSelect()" class="card card-stocks card-stocks-rise border-bottom"> -->
+<div (click)="handleStockSelect()" class="card card-stocks border-bottom" [ngClass]="isPriceRising ? 'card-stocks-rise' : 'card-stocks-fall'">
+  <div class="card-body d-flex align-items-center px-0">
+    <div class="card-stocks-icon pl-3 pr-2">
+      <i [ngClass]="getIconClasses()"></i>
+    </div>
+    <div class="card-stocks-name px-2">
+      <p class="card-title text-muted mb-1">{{ stock.name }}</p>
+      <p class="card-text text-white font-weight-bold mb-0">{{ stock.symbol }}</p>    
+    </div>
+    <div id="chart" class="card-stocks-chart d-flex justify-content-center px-2">
+      <apx-chart 
+      [chart]="chartOptions.chart" 
+      [series]="chartOptions.series" 
+      [annotations] = "chartOptions.annotations"
+      [tooltip] = "chartOptions.tooltip"
+      [markers] = "chartOptions.markers"
+      [stroke] = "chartOptions.stroke"
+      [fill] = "chartOptions.fill"
+      [grid] = "chartOptions.grid"
+      [dataLabels]="chartOptions.dataLabels"
+      [yaxis]="chartOptions.yaxis"
+      [xaxis]="chartOptions.xaxis"
+      ></apx-chart>
+    </div>
+    <div class="card-stocks-description pl-2 pr-3 text-right">
+      <p class="card-title card-stocks-percentage mb-1">{{percentageChange}}%</p>
+      <p class="card-text mb-0">{{quantity}} <span class="text-white font-weight-bold">($ {{currentPrice}})</span></p>
+    </div>
+  </div>
+</div>

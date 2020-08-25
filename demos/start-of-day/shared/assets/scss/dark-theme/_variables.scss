@@ -1,0 +1,80 @@
+$white: #FFFFFF;
+$gray-100: #FAFAFA;
+$gray-200: #F9F9F9;
+$gray-300: #EFEFEF;
+$gray-600: #2D2D2D;
+$gray-700: #252525;
+$gray-800: #1E1E1E;
+$black: #000000;
+
+$blue: #64B5F6;
+$green: #05DAB2;
+$cyan: #7C64F7;
+$yellow: #FAD16E;
+$red: #FA6360;
+
+$stocks-rise-color: $blue;
+$stocks-rise-box-shadow: 0 10px 15px rgba($stocks-rise-color, .25);
+$stocks-rise-box-shadow-hover: 0 0 15px rgba($stocks-rise-color, .35);
+$stocks-fall-color: $red;
+$stocks-fall-box-shadow: 0 10px 15px rgba($stocks-fall-color, .25);
+$stocks-fall-box-shadow-hover: 0 0 15px rgba($stocks-fall-color, .35);
+
+$box-shadow: 0 0 0 rgba($black, 0);
+$box-shadow-hover: 0 0 15px rgba($black, .25);
+$transition-base: .3s all ease;
+
+$glass: rgba($white, .05);
+$glass-hover: rgba($white, .1);
+
+$font-size-base: .75rem;
+$h2-font-size: $font-size-base * 1.333;
+$h3-font-size: $font-size-base;
+
+$headings-color: $white;
+$text-color: rgba($white, .75);
+$text-muted: rgba($white, .5);
+$text-disabled: rgba($white, .25);
+
+$body-bg: $gray-800;
+$body-color: $text-color;
+$link-color: $white;
+
+$border-color: $glass;
+$border-radius: 0;
+$border-radius-lg: 1rem;
+
+$card-spacer-y: .75rem;
+$card-spacer-x: 1.25rem;
+$card-border-color: transparent;
+$card-bg: $glass;
+
+$btn-border: none;
+$btn-bg: transparent;
+
+$dropdown-padding-y: 0;
+$dropdown-item-padding-y: .5rem;
+$dropdown-bg: $gray-800;
+$dropdown-border-color: $border-color;
+$dropdown-divider-margin-y: 0;
+$dropdown-link-color: $body-color;
+$dropdown-link-disabled-color: $text-muted;
+$dropdown-link-hover-color: $link-color;
+$dropdown-link-hover-bg: $glass;
+$dropdown-box-shadow: $box-shadow-hover;
+$dropdown-link-active-bg: $glass;
+
+$input-padding-y: .5rem;
+$input-padding-x: 1.25rem;
+$input-border-radius: $border-radius-lg;
+$input-border-color: $glass;
+$input-color: $white;
+$input-bg: $gray-700;
+$input-focus-bg: $gray-800;
+
+$input-group-padding-x: 2.5rem;
+
+$table-cell-padding: .5rem;
+$table-bg: $glass;
+$table-dark-hover-color: $link-color;
+$table-hover-bg: $glass-hover;

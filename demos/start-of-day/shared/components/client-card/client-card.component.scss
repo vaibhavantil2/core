@@ -1,0 +1,17 @@
+.card-client {
+  height: 4.5rem;
+
+  .card-img-wrapper {
+    width: 4.5rem;
+    padding: .5rem;
+
+    .card-img {
+      filter: grayscale(1) brightness(1.25);
+    }
+  }
+
+  .card-body {
+    width: calc(100% - 4.5rem);
+  }
+}
+

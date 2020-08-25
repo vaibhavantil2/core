@@ -1,0 +1,13 @@
+@import "../../../../shared/assets/scss/dark-theme/variables";
+
+.card-client-details {
+    height: auto;
+
+    .card-text {
+        white-space: normal;
+    }
+}
+
+.sticky-top {
+    box-shadow: $box-shadow-hover;
+}

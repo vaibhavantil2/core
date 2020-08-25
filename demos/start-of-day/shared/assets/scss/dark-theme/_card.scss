@@ -1,0 +1,23 @@
+.card {
+  overflow: hidden;
+  box-shadow: $box-shadow;
+  cursor: pointer;
+  transition: $transition-base;
+
+  .card-body {
+    padding: $card-spacer-y $card-spacer-x;
+  }
+
+  .card-title,
+  .card-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: $transition-base;
+  }
+
+  &:hover {
+    background-color: $glass-hover;
+    box-shadow: $box-shadow-hover;
+  }
+}
