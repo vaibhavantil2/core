@@ -24,6 +24,7 @@ export function applyContextDelta(
                 setValueToPath(context, command.value, command.path);
             }
         }
+        // if there is a commands property ignore the rest (v1 added/updated/removed)
         return context;
     }
 

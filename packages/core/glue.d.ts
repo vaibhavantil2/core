@@ -961,7 +961,7 @@ export namespace Glue42Core {
             token: string;
             info: object;
             resolvedIdentity: object;
-            availableDomains: object[];
+            availableDomains: GWDomainInfo[];
             gatewayToken?: string;
             replayer?: MessageReplayer;
             isConnected: boolean;
@@ -1125,6 +1125,14 @@ export namespace Glue42Core {
             processMessage(type: string, msg: object): void;
 
             drain(name: string, callback: (msg: object) => void): void;
+        }
+
+        /**
+         * @ignore
+         */
+        export interface GWDomainInfo {
+            uri: string;
+            version: number;
         }
     }
 

@@ -188,6 +188,14 @@ export class GW3Bridge implements ContextBridge {
     // mapping announced contexts' name <-> id
     private _contextNameToId: { [contextName: string]: string } = {};
     private _contextIdToName: { [contextId: string]: string } = {};
+    private _protocolVersion?: number = undefined;
+    private get protocolVersion(): number {
+        if (!this._protocolVersion) {
+            const contextsDomainInfo = this._connection.availableDomains.find((d) => d.uri === "context");
+            this._protocolVersion = contextsDomainInfo?.version ?? 1;
+        }
+        return this._protocolVersion;
+    }
 
     public constructor(config: ContextsConfig) {
         this._connection = config.connection;
@@ -298,7 +306,10 @@ export class GW3Bridge implements ContextBridge {
             currentContext = await this.get(contextData.name, false);
         }
 
-        const calculatedDelta = this.calculateContextDelta(currentContext, delta);
+        const calculatedDelta =
+            this.protocolVersion === 2 ?
+                this.calculateContextDeltaV2(currentContext, delta) :
+                this.calculateContextDeltaV1(currentContext, delta);
 
         if (!Object.keys(calculatedDelta.added).length
             && !Object.keys(calculatedDelta.updated).length
@@ -845,25 +856,38 @@ export class GW3Bridge implements ContextBridge {
             }).then((_) => undefined);
     }
 
-    private calculateContextDelta(from: any, to: any): ContextDelta {
+    private calculateContextDeltaV1(from: any, to: any): ContextDelta {
+        const delta: ContextDelta = { added: {}, updated: {}, removed: [], reset: undefined };
+        if (from) {
+            for (const x of Object.keys(from)) {
+                if (Object.keys(to).indexOf(x) !== -1
+                    && to[x] !== null
+                    && !deepEqual(from[x], to[x])) {
+                    delta.updated[x] = to[x];
+                }
+            }
+        }
+        for (const x of Object.keys(to)) {
+            if (!from || (Object.keys(from).indexOf(x) === -1)) {
+                if (to[x] !== null) {
+                    delta.added[x] = to[x];
+                }
+            } else if (to[x] === null) {
+                delta.removed.push(x);
+            }
+        }
+        return delta;
+    }
+
+    private calculateContextDeltaV2(from: any, to: any): ContextDelta {
         const delta: ContextDelta = { added: {}, updated: {}, removed: [], reset: undefined, commands: [] };
 
-        // if (from) {
-        //     for (const x of Object.keys(from)) {
-        //         if (Object.keys(to).indexOf(x) !== -1
-        //             && to[x] !== null
-        //             && !deepEqual(from[x], to[x])) {
-        //             delta.commands?.push({ type: "set", path: x, value: to[x] });
-        //             // delta.updated[x] = to[x];
-        //         }
-        //     }
-        // }
-
         for (const x of Object.keys(to)) {
-            // if (!from || (Object.keys(from).indexOf(x) === -1)) {
             if (to[x] !== null) {
-                delta.added[x] = to[x];
-                delta.commands?.push({ type: "set", path: x, value: to[x] });
+                const fromX = from ? from[x] : null;
+                if (!deepEqual(fromX, to[x])) {
+                    delta.commands?.push({ type: "set", path: x, value: to[x] });
+                }
             } else {
                 delta.commands?.push({ type: "remove", path: x });
             }
