@@ -58,9 +58,9 @@
                 }
             },
             {
-                "name": "supportApp",
+                "name": "coreSupport",
                 "details": {
-                    "url": "http://localhost:9999/supportApp"
+                    "url": "http://localhost:9999/coreSupport"
                 }
             }
         ]

@@ -25,9 +25,9 @@
                 }
             },
             {
-                "route": "/supportApp",
+                "route": "/coreSupport",
                 "file": {
-                    "path": "./apps/supportApp"
+                    "path": "./apps/coreSupport"
                 }
             }
         ],

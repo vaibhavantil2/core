@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Glue42Core } from "@glue42/core";
+import { UnsubscribeFunction } from "callback-registry";
 
 export type LayoutSummary = { name: string; context: any; metadata: any };
 export type LayoutsAPI = {
@@ -20,6 +21,11 @@ export type GDWindow = {
     focus(): Promise<GDWindow>;
 };
 export type Subscription = Glue42Core.Interop.Subscription;
-export type WindowsAPI = { list(): GDWindow[]; my(): GDWindow; open(name: string, url: string, options?: any): Promise<GDWindow> };
+export type WindowsAPI = {
+    list(): GDWindow[];
+    my(): GDWindow;
+    open(name: string, url: string, options?: any): Promise<GDWindow>;
+    onWindowAdded(callback: (window: GDWindow) => void): UnsubscribeFunction;
+};
 export type Instance = Glue42Core.Interop.Instance;
 export type Bounds = { height?: number; width?: number; top?: number; left?: number };

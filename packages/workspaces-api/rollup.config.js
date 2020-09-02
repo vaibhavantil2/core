@@ -18,7 +18,8 @@ export default {
             file: './dist/workspaces.umd.min.js',
             name: 'workspaces.min',
             format: 'umd',
-            sourcemap: true
+            sourcemap: true,
+            plugins: [terser()]
         },
         {
             file: pkg.module,
@@ -34,13 +35,6 @@ export default {
     plugins: [
         typescript({
             typescript: require('typescript'),
-        }),
-        terser({
-            sourcemap: true,
-            output: {
-                comments: false
-            },
-            include: [/^.+\.min\.js$/],
         }),
         // Allow json resolution
         json(),

@@ -3,9 +3,7 @@ describe("what if? ", () => {
     let inst;
     let method;
 
-    before(() => {
-        return Promise.all([glueReady, gtfReady]);
-    });
+    before(() => coreReady);
 
     afterEach(async () => {
         if (inst) {
@@ -22,31 +20,29 @@ describe("what if? ", () => {
         expect(glue.appManager).to.not.be.an('undefined');
     });
 
-    it("can I fly 2", async () => {
-        const found = glue.appManager.application("supportApp");
-        expect(found).to.not.be.an('undefined');
+    it('asd0', () => {
+        expect(gtf).to.not.be.an('undefined');
+        expect(gtf.waitFor).to.not.be.an('undefined');
+        expect(gtf.getWindowName).to.not.be.an('undefined');
+        expect(gtf.getGlueConfigJson).to.not.be.an('undefined');
+        expect(gtf.getChannelNames).to.not.be.an('undefined');
+        expect(gtf.createApp).to.not.be.an('undefined');
     });
 
-    it("can I fly 3", async () => {
-        const found = glue.appManager.application("supportApp");
-        inst = await found.start();
-
-        expect(inst).to.not.be.an('undefined');
+    it('asd', async () => {
+        console.log(glue.windows.list().length);
+        const app = await gtf.createApp();
+        console.log(glue.windows.list().length);
+        await app.stop();
+        console.log(glue.windows.list().length);
     });
 
-    it("can I fly 4", (done) => {
-        const found = glue.appManager.application("supportApp");
+    it('asd2', async () => {
+        const app = await gtf.createApp();
+        await app.setContext("testMe", { test: 42 });
 
-        glue.interop
-            .register("G42Core.Hello", () => {
-                done();
-            })
-            .then(() => {
-                return found.start();
-            })
-            .then((ins) => {
-                inst = ins;
-            })
-            .catch(done);
+        const all = glue.contexts.all();
+        console.log(all);
+        await app.stop();
     });
 });

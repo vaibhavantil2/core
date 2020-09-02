@@ -144,7 +144,7 @@ export class Frame implements Glue42Workspaces.Frame {
 
         const config: SubscriptionConfig = {
             callback: wrappedCallback,
-            action: "added",
+            action: "opened",
             streamType: "workspace",
             level: "frame"
         };
