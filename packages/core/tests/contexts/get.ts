@@ -7,7 +7,7 @@ import { generate } from "shortid";
 import { PromiseWrapper } from "../../src/utils/pw";
 // tslint:disable:no-unused-expression
 
-describe.only("contexts.get", () => {
+describe("contexts.get", () => {
 
     let glue!: Glue42Core.GlueCore;
     let glue2!: Glue42Core.GlueCore;
@@ -56,7 +56,6 @@ describe.only("contexts.get", () => {
             pw.resolve();
         });
         return pw.promise;
-
     });
 
     it("gets works inside subscribe", async () => {

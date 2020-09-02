@@ -3,6 +3,7 @@ import { GW3Bridge } from "./bridges/gw3/bridge";
 import { ContextBridge } from "./contextBridge";
 import Connection from "../connection/connection";
 import { Logger } from "../logger/logger";
+import { ContextName, ContextSubscriptionKey } from "./bridges/types";
 
 /** @ignore */
 export interface ContextsConfig {
@@ -40,7 +41,7 @@ export class ContextsModule implements Glue42Core.Contexts.API {
      * @param name Name of the context to be updated
      * @param data The object that will be applied to the context
      */
-    public update(name: Glue42Core.Contexts.ContextName, delta: any): Promise<void> {
+    public update(name: ContextName, delta: any): Promise<void> {
         this.checkName(name);
 
         return this._bridge.update(name, delta);
@@ -52,10 +53,26 @@ export class ContextsModule implements Glue42Core.Contexts.API {
      * @param name Name of the context to be updated
      * @param data The object that will be applied to the context
      */
-    public set(name: Glue42Core.Contexts.ContextName, data: any): Promise<void> {
+    public set(name: ContextName, data: any): Promise<void> {
         this.checkName(name);
 
         return this._bridge.set(name, data);
+    }
+
+    public setPath(name: ContextName, path: string, data: any): Promise<void> {
+        this.checkName(name);
+
+        if (!path || path === "") {
+            return this.set(name, data);
+        }
+
+        return this._bridge.setPath(name, path, data);
+    }
+
+    public setPaths(name: ContextName, paths: Glue42Core.Contexts.PathValue[]): Promise<void> {
+        this.checkName(name);
+
+        return this._bridge.setPaths(name, paths);
     }
 
     /**
@@ -73,13 +90,13 @@ export class ContextsModule implements Glue42Core.Contexts.API {
      * @returns Function execute the returned function to unsubscribe
      */
     public subscribe(
-        name: Glue42Core.Contexts.ContextName,
+        name: ContextName,
         callback: (data: any, delta: any, removed: string[], unsubscribe: () => void, extraData?: any) => void): Promise<() => void> {
 
         this.checkName(name);
 
         return this._bridge
-            .subscribe(name, (data: any, delta: any, removed: string[], key: Glue42Core.Contexts.ContextSubscriptionKey, extraData?: any) => callback(data, delta, removed, () => this._bridge.unsubscribe(key), extraData))
+            .subscribe(name, (data: any, delta: any, removed: string[], key: ContextSubscriptionKey, extraData?: any) => callback(data, delta, removed, () => this._bridge.unsubscribe(key), extraData))
             .then((key) =>
                 () => {
                     this._bridge.unsubscribe(key);
@@ -90,7 +107,7 @@ export class ContextsModule implements Glue42Core.Contexts.API {
     /**
      * Return a context's data
      */
-    public get(name: Glue42Core.Contexts.ContextName): Promise<any> {
+    public get(name: ContextName): Promise<any> {
 
         return this._bridge.get(name);
     }
@@ -99,7 +116,7 @@ export class ContextsModule implements Glue42Core.Contexts.API {
         return Promise.resolve(this);
     }
 
-    private checkName(name: Glue42Core.Contexts.ContextName) {
+    private checkName(name: ContextName) {
         if (typeof name !== "string" ||
             name === "") {
             throw new Error("'name' must be non-empty string, got '" + name + "'");

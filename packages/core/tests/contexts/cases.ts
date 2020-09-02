@@ -28,27 +28,27 @@ export const testCases: TestItem[] = [
             { data: { a: null }, expected: {} }
         ]
     },
-    // {
-    //     title: "replacing object",
-    //     test: [
-    //         { data: { a: { aa: 1 }, b: 1 } },
-    //         { data: { a: { bb: 2 } }, expected: { a: { bb: 2 }, b: 1 } }
-    //     ]
-    // },
-    // {
-    //     title: "removing objects",
-    //     test: [
-    //         { data: { a: { aa: 1 }, b: 1 } },
-    //         { data: { a: null }, expected: { b: 1 } }
-    //     ]
-    // },
-    // {
-    //     title: "null on inner level",
-    //     test: [
-    //         { data: { a: { aa: 1, bb: 2 } } },
-    //         { data: { a: { aa: null, bb: 2 } }, expected: { a: { aa: null, bb: 2 } } }
-    //     ]
-    // }
+    {
+        title: "replacing object",
+        test: [
+            { data: { a: { aa: 1 }, b: 1 } },
+            { data: { a: { bb: 2 } }, expected: { a: { bb: 2 }, b: 1 } }
+        ]
+    },
+    {
+        title: "removing objects",
+        test: [
+            { data: { a: { aa: 1 }, b: 1 } },
+            { data: { a: null }, expected: { b: 1 } }
+        ]
+    },
+    {
+        title: "null on inner level",
+        test: [
+            { data: { a: { aa: 1, bb: 2 } } },
+            { data: { a: { aa: null, bb: 2 } }, expected: { a: { aa: null, bb: 2 } } }
+        ]
+    }
 
 ];
 

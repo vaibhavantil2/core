@@ -33,7 +33,8 @@ export default {
 
     plugins: [
         typescript({
-            typescript: require('typescript')
+            typescript: require('typescript'),
+            objectHashIgnoreUnknownHack: true, // https://github.com/vladshcherbin/rollup-plugin-copy/issues/16
         }),
         terser(),
         // Allow json resolution

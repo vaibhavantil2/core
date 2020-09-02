@@ -1,4 +1,4 @@
-const GW = require("@glue42/ws-gateway");
+const GW = require("@glue42/gateway-ws");
 import CreateGlue from "../src/index";
 import { Glue42Core } from "../glue";
 

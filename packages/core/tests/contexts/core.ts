@@ -3,11 +3,10 @@ import { createGlue, doneAllGlues } from "../initializer";
 import { Glue42Core } from "../../glue";
 import { dataStore } from "../data";
 import { Update, testCases, verify } from "./cases";
-import { generate } from "shortid";
 import { init } from "../core/base";
 // tslint:disable:no-unused-expression
 
-describe.only("contexts.core", () => {
+describe("contexts.core", () => {
 
     let glue!: Glue42Core.GlueCore;
     let glue2!: Glue42Core.GlueCore;
@@ -30,7 +29,6 @@ describe.only("contexts.core", () => {
         verify(glue, glue, data, done, true);
     });
 
-    // These should be enabled when the GW fix is in
     for (const testCase of testCases) {
         it("hear myself - " + testCase.title, (done) => {
             verify(glue, glue, testCase.test, done);

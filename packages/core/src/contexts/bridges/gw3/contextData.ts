@@ -1,4 +1,5 @@
 import { Glue42Core } from "../../../../glue";
+import { ContextSubscriptionKey } from "../types";
 
 export class GW3ContextData {
     // invariants:
@@ -38,7 +39,7 @@ export class GW3ContextData {
     public joinedActivity: boolean | undefined;
 
     // callbacks to invoke on context update
-    public updateCallbacks: { [index: number]: (data: any, delta: any, removed: string[], key: Glue42Core.Contexts.ContextSubscriptionKey, extraData?: any) => void } = {};
+    public updateCallbacks: { [index: number]: (data: any, delta: any, removed: string[], key: ContextSubscriptionKey, extraData?: any) => void } = {};
 
     // iff activity context, the id of the activity to which it belongs
     public activityId: string | undefined;
