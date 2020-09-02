@@ -1,0 +1,36 @@
+.input-group {
+    position: relative;
+
+    .form-control {
+        width: 100%;
+        padding: $input-padding-y $input-group-padding-x $input-padding-y $input-padding-x;
+        border: 1px solid $input-border-color;
+        border-radius: $input-border-radius;
+        line-height: 1.25;
+        color: $input-color;
+        background-color: $input-bg;
+        transition: $transition-base;
+
+        &:hover,
+        &:focus,
+        &:active {
+            background-color: $input-focus-bg;
+        }
+
+        &:focus,
+        &:active {
+            outline: none;
+        }
+    }
+
+    .input-group-append {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: $input-group-padding-x;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}

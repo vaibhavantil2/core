@@ -1,0 +1,8 @@
+.bg-mid {
+    background-color: $gray-700;
+}
+
+.bg-dark-glass {
+    background-color: rgba($gray-800, .8);
+    backdrop-filter: saturate(200%) blur(8px);
+}

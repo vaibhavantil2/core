@@ -1,0 +1,22 @@
+@import "../../../../shared/assets/scss/dark-theme/variables";
+
+.client-transactions {
+  .card-img-wrapper {
+    width: 2.5rem;
+
+    .card-img {
+      filter: grayscale(1) brightness(1.25);
+    }
+  }
+
+  .table {
+    th {
+      border-bottom: none;
+      font-weight: normal;
+    }
+  }
+}
+
+.sticky-top {
+  box-shadow: $box-shadow-hover;
+}

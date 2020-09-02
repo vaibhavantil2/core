@@ -135,12 +135,16 @@ lm.utils.copy( lm.items.RowOrColumn.prototype, {
 	 *
 	 * @returns {void}
 	 */
-	replaceChild: function( oldChild, newChild ) {
-		var size = oldChild.config[ this._dimension ];
-		lm.items.AbstractContentItem.prototype.replaceChild.call( this, oldChild, newChild );
-		newChild.config[ this._dimension ] = size;
-		this.callDownwards( 'setSize' );
-		this.emitBubblingEvent( 'stateChanged' );
+	replaceChild: function (oldChild, newChild) {
+		var size = oldChild.config[this._dimension];
+		// If the dimension of the new element is set after the replace call
+		// a recalculation occurs in replace child because the children won't ever add up to 100
+		// the recalculation appears to the user as a flicker/jump and moves the splitter with a few pixels
+		newChild.config = newChild.config || {};
+		newChild.config[this._dimension] = size;
+		lm.items.AbstractContentItem.prototype.replaceChild.call(this, oldChild, newChild);
+		this.callDownwards('setSize');
+		this.emitBubblingEvent('stateChanged');
 	},
 
 	/**
@@ -148,13 +152,13 @@ lm.utils.copy( lm.items.RowOrColumn.prototype, {
 	 *
 	 * @returns {void}
 	 */
-	setSize: function() {
-		if( this.contentItems.length > 0 ) {
+	setSize: function () {
+		if (this.contentItems.length > 0) {
 			this._calculateRelativeSizes();
 			this._setAbsoluteSizes();
 		}
-		this.emitBubblingEvent( 'stateChanged' );
-		this.emit( 'resize' );
+		this.emitBubblingEvent('stateChanged');
+		this.emit('resize');
 	},
 
 	/**

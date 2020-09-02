@@ -15,6 +15,10 @@ lm.controls.Header = function (layoutManager, parent) {
 		this.element.on('click touchstart', lm.utils.fnBind(this._onHeaderClick, this));
 	}
 
+	if (this.layoutManager.config.settings.mode === "workspace") {
+		this.element.addClass('header_double');
+	}
+
 	this.tabsContainer = this.element.find('.lm_tabs');
 	this.tabDropdownContainer = this.element.find('.lm_tabdropdown_list');
 	this.tabDropdownContainer.hide();
@@ -22,7 +26,7 @@ lm.controls.Header = function (layoutManager, parent) {
 	this.workspaceControlsContainer = this.layoutManager.config.settings.mode === "workspace" ? this.element.find('.lm_workspace_controls') : undefined;
 	this.tabsControlsContainer = this.layoutManager.config.settings.mode !== "workspace" ? this.element.find('.lm_tabs_controls') : undefined;
 	this.parent = parent;
-	this.parent.on('resize', this._updateTabSizes, this);
+	this.parent.on('resize', this._updateTabSizesWithoutDropdown, this);
 	this.tabs = [];
 	this.activeContentItem = null;
 	this.closeButton = null;
@@ -86,7 +90,7 @@ lm.utils.copy(lm.controls.Header.prototype, {
 		}
 
 		this.tabs.splice(index, 0, tab);
-		this._updateTabSizes();
+		this._updateTabSizesWithoutDropdown();
 	},
 
 	/**
@@ -140,7 +144,7 @@ lm.utils.copy(lm.controls.Header.prototype, {
 			}
 		}
 
-		this._updateTabSizes();
+		this._updateTabSizesWithoutDropdown();
 		this.parent.emitBubblingEvent('stateChanged');
 	},
 
@@ -247,7 +251,10 @@ lm.utils.copy(lm.controls.Header.prototype, {
 		 * Maximize control - set the component to the full size of the layout
 		 */
 		if (this._getHeaderSetting('maximize')) {
-			maximize = lm.utils.fnBind(this.parent.toggleMaximise, this.parent); restoreLabel
+			if (this.layoutManager.config.settings.mode !== "workspace") {
+				maximize = lm.utils.fnBind(this.parent.toggleMaximise, this.parent);
+			}
+
 			maximizeLabel = this._getHeaderSetting('maximize');
 
 			// TODO
@@ -269,7 +276,9 @@ lm.utils.copy(lm.controls.Header.prototype, {
 		 * Close button
 		 */
 		if (this._isClosable()) {
-			closeStack = lm.utils.fnBind(this.parent.remove, this.parent);
+			if (this.layoutManager.config.settings.mode !== "workspace") {
+				closeStack = lm.utils.fnBind(this.parent.remove, this.parent);
+			}
 			label = this._getHeaderSetting('close');
 			this.closeButton = new lm.controls.HeaderButton(this, label, 'lm_close', closeStack);
 		}
@@ -424,6 +433,60 @@ lm.utils.copy(lm.controls.Header.prototype, {
 				tabElement.css({ 'z-index': 'auto', 'margin-left': '' });
 				this.tabsContainer.append(tabElement);
 			}
+		}
+
+	},
+
+	/**
+	 * Applies the necessary tab styles without using a dropdown
+	 *
+	 * @returns {void}
+	 */
+	_updateTabSizesWithoutDropdown: function (showTabMenu) {
+		if (this.tabs.length === 0) {
+			return;
+		}
+
+		var size = function (val) {
+			return val ? 'width' : 'height';
+		};
+		this.element.css(size(!this.parent._sided), '');
+		// this.element[size(this.parent._sided)](this.layoutManager.config.dimensions.headerHeight);
+		var availableWidth = this.element.outerWidth() - this.controlsContainer.outerWidth() - this._tabControlOffset,
+			cumulativeTabWidth = 0,
+			visibleTabWidth = 0,
+			tabElement,
+			i,
+			j,
+			marginLeft,
+			overlap = 0,
+			tabWidth,
+			tabOverlapAllowance = this.layoutManager.config.settings.tabOverlapAllowance,
+			tabOverlapAllowanceExceeded = false,
+			activeIndex = (this.activeContentItem ? this.tabs.indexOf(this.activeContentItem.tab) : 0),
+			activeTab = this.tabs[activeIndex];
+		if (this.parent._sided)
+			availableWidth = this.element.outerHeight() - this.controlsContainer.outerHeight() - this._tabControlOffset;
+
+		for (i = 0; i < this.tabs.length; i++) {
+			tabElement = this.tabs[i].element;
+
+			//Put the tab in the tabContainer so its true width can be checked
+			this.tabsContainer.append(tabElement);
+			tabWidth = tabElement.outerWidth() + parseInt(tabElement.css('margin-right'), 10);
+
+			cumulativeTabWidth += tabWidth;
+
+			//Include the active tab's width if it isn't already
+			//This is to ensure there is room to show the active tab
+			if (activeIndex <= i) {
+				visibleTabWidth = cumulativeTabWidth;
+			} else {
+				visibleTabWidth = cumulativeTabWidth + activeTab.element.outerWidth() + parseInt(activeTab.element.css('margin-right'), 10);
+			}
+
+			tabElement.css({ 'z-index': 'auto', 'margin-left': '' });
+			this.tabsContainer.append(tabElement);
 		}
 
 	}

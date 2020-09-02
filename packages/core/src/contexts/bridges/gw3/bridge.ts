@@ -303,7 +303,7 @@ export class GW3Bridge implements ContextBridge {
         // TODO: explain why --> because this
         let currentContext = contextData.context;
         if (!contextData.hasCallbacks()) {
-            currentContext = await this.get(contextData.name, false);
+            currentContext = await this.get(contextData.name);
         }
 
         const calculatedDelta =
@@ -390,28 +390,32 @@ export class GW3Bridge implements ContextBridge {
     /**
      * Return a context's data asynchronously as soon as any becomes available
      */
-    public get(name: ContextName, resolveImmediately: boolean): Promise<any> {
-
-        if (resolveImmediately === undefined) {
-            resolveImmediately = true;
-        }
+    public get(name: ContextName): Promise<any> {
 
         const contextData = this._contextNameToData[name];
-        if (!contextData ||
-            !contextData.isAnnounced ||
-            !contextData.hasCallbacks()) {
+        // Three cases here:
+        // 1) The context does not exist and is not announced by the GW -> return {}
+        // 2) The context exists but we don't track it -> subscribe and return the object when we get the subscription result from GW
+        // 3) The context exists and we're tracking it -> just return the last state we have
 
-            if (!resolveImmediately) {
-                return new Promise<any>(async (resolve, reject) => {
-                    this.subscribe(name, (data: any, delta: any, removed: string[], un: ContextSubscriptionKey) => {
-                        this.unsubscribe(un);
-                        resolve(data);
-                    });
-                });
-            }
+        // 1)
+        if (!contextData || !contextData.isAnnounced) {
+            return Promise.resolve({});
         }
 
-        return Promise.resolve(contextData && contextData.context);
+        // 2)
+        if (contextData && !contextData.hasCallbacks()) {
+            return new Promise<any>(async (resolve, _) => {
+                this.subscribe(name, (data: any, _d: any, _r: string[], un: ContextSubscriptionKey) => {
+                    this.unsubscribe(un);
+                    resolve(data);
+                });
+            });
+        }
+
+        // 3)
+        const context = contextData?.context ?? {};
+        return Promise.resolve(context);
     }
 
     /**

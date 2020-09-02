@@ -3,6 +3,7 @@ import { createGlue, doneAllGlues } from "../initializer";
 import { Glue42Core } from "../../glue";
 import { dataStore } from "../data";
 import { Update, testCases, verify } from "./cases";
+import { init } from "../core/base";
 // tslint:disable:no-unused-expression
 
 describe("contexts.core", () => {

@@ -15,6 +15,7 @@ import { WorkspacesEventEmitter } from "./eventEmitter";
 import { Glue42Web } from "@glue42/web";
 import { RestoreWorkspaceConfig } from "./interop/types";
 import { EmptyVisibleWindowName } from "./constants";
+import { TitleGenerator } from "./config/titleGenerator";
 
 declare const window: Window & { glue: Glue42Web.API };
 
@@ -28,6 +29,7 @@ class WorkspacesManager {
     private readonly _appNameToURL: { [k: string]: string } = {};
     private _isLayoutInitialized = false;
     private _workspacesEventEmitter: WorkspacesEventEmitter;
+    private _titleGenerator = new TitleGenerator();
 
     public get stateResolver() {
         return this._stateResolver;
@@ -65,7 +67,8 @@ class WorkspacesManager {
 
     public async saveWorkspace(name: string, id?: string) {
         const workspace = store.getById(id) || store.getActiveWorkspace();
-        const result = await this._layoutsManager.save(name, workspace);
+        const result = await this._layoutsManager.save(name, workspace, name);
+
         store.getWorkspaceLayoutItemById(id).setTitle(name);
         return result;
     }
@@ -218,9 +221,12 @@ class WorkspacesManager {
         });
     }
 
-    public focusItem(itemId: string) {
+    public async focusItem(itemId: string) {
         const workspace = store.getById(itemId);
-        if (workspace) {
+
+        if (this._frameId === itemId) {
+            await window.glue.windows.my().focus();
+        } else if (workspace) {
             this._controller.focusWorkspace(workspace.id);
         } else {
             this._controller.focusWindow(itemId);
@@ -298,8 +304,14 @@ class WorkspacesManager {
 
             store.addWindow({ id: componentId, bounds: newWindowBounds, windowId }, workspace.id);
 
-            const workspaceContext = component?.layoutManager?.config?.workspacesOptions?.context;
+            let workspaceContext = component?.layoutManager?.config?.workspacesOptions?.context;
             let url = this._appNameToURL[componentState.appName] || componentState.url;
+
+            if (component.config.componentState?.context) {
+                workspaceContext = Object.assign(workspaceContext || {}, component.config.componentState.context);
+
+                delete component.config.componentState.context;
+            }
 
             if (!url && windowId) {
                 const win = window.glue.windows.list().find((w) => w.id === windowId);
@@ -317,15 +329,6 @@ class WorkspacesManager {
                 component.config.componentState.windowId = frame.name;
 
                 this._frameController.moveFrame(componentId, getElementBounds(component.element));
-
-
-                if (component.config.componentState?.context) {
-                    const win = window.glue.windows.findById(frame.name);
-
-                    await win.updateContext(component.config.componentState.context);
-
-                    delete component.config.componentState.context;
-                }
 
                 this._workspacesEventEmitter.raiseWindowEvent({
                     action: "added",
@@ -618,6 +621,9 @@ class WorkspacesManager {
             workspace.layout?.destroy();
             workspace.layout = undefined;
             this._controller.showAddButton(workspace.id);
+            const currentTitle = store.getWorkspaceTitle(workspace.id);
+            const title = factory.getWorkspaceTitle(store.workspaceTitles.filter((wt) => wt !== currentTitle));
+            this._controller.setWorkspaceTitle(workspace.id, title);
         } else {
             this._controller.removeWorkspace(workspace.id);
         }

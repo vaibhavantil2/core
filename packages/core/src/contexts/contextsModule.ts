@@ -105,16 +105,11 @@ export class ContextsModule implements Glue42Core.Contexts.API {
     }
 
     /**
-     * Return a context's data immediately, (or asynchronously as soon as any becomes available,
-     * if 'resolveImmediately' is false)
+     * Return a context's data
      */
-    public get(
-        name: ContextName,
-        resolveImmediately?: boolean): Promise<any> {
-        if (resolveImmediately === undefined) {
-            resolveImmediately = true;
-        }
-        return this._bridge.get(name, resolveImmediately);
+    public get(name: ContextName): Promise<any> {
+
+        return this._bridge.get(name);
     }
 
     public ready(): Promise<any> {

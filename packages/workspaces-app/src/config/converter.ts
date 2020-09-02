@@ -61,10 +61,17 @@ class ConfigConverter {
             }
             return glConfig;
         } else if (config.type === "window") {
+            let appName = config.config?.appName || (config as any).appName;
+            const windowId = config.config?.windowId;
+
+            if (!appName && windowId) {
+                appName = factory.getAppNameFromWindowId(windowId);
+            }
+
             const resultWindow = factory.createGDWindowConfig({
-                windowId: config.config?.windowId,
+                windowId,
                 id: config.id,
-                appName: config.config?.appName || (config as any).appName,
+                appName,
                 url: config.config?.url || (config as any).url,
                 title: config.config?.title || (config as any).title,
                 context: config.config?.context || (config as any).context

@@ -8,11 +8,11 @@ export interface ContextBridge {
 
     set(name: ContextName, data: any): Promise<void>;
 
+    get(name: ContextName): Promise<any>;
+
     setPath(name: ContextName, path: string, data: any): Promise<void>;
 
     setPaths(name: ContextName,  paths: Glue42Core.Contexts.PathValue[]): Promise<void>;
-
-    get(name: ContextName, returnImmediately: boolean): Promise<any>;
 
     subscribe(name: ContextName,
               callback: (data: any, delta: any, removed: string[], key: ContextSubscriptionKey, extraData?: any) => void): Promise<ContextSubscriptionKey>;

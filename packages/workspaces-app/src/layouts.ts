@@ -94,12 +94,17 @@ export class LayoutsManager {
         await window.glue.layouts.remove(this._layoutsType, name);
     }
 
-    public async save(name: string, workspace: Workspace): Promise<WorkspaceLayout> {
+    public async save(name: string, workspace: Workspace, title?: string): Promise<WorkspaceLayout> {
         if (!workspace.layout) {
             throw new Error("An empty layout cannot be saved");
         }
         workspace.layout.config.workspacesOptions.name = name;
+
         const workspaceConfig = await this.saveWorkspaceCore(workspace);
+
+        if (title) {
+            workspaceConfig.config.title = title;
+        }
         const layoutToImport = {
             name,
             type: this._layoutsType as "Workspace",
@@ -107,7 +112,8 @@ export class LayoutsManager {
             components: [{
                 type: this._layoutComponentType as "Workspace", state: {
                     children: workspaceConfig.children,
-                    config: workspaceConfig.config, context: {}
+                    config: workspaceConfig.config,
+                    context: workspaceConfig.config?.context || workspace.context || {}
                 }
             }]
         };
@@ -160,6 +166,8 @@ export class LayoutsManager {
         const workspaceItem = configConverter.convertToAPIConfig(workspaceConfig) as WorkspaceItem;
         this.removeWorkspaceItemIds(workspaceItem);
 
+        await this.addWindowContexts(workspaceItem);
+
         // The excess properties should be cleaned
         this.windowSummariesToWindowLayout(workspaceItem);
         this.addWindowUrlsToWindows(workspaceItem);
@@ -190,6 +198,26 @@ export class LayoutsManager {
         };
 
         transform(workspaceItem);
+    }
+
+    private async addWindowContexts(workspaceItem: WorkspaceItem) {
+        const add = async (item: AnyItem) => {
+            if (item.type === "window") {
+                if (item.config.windowId) {
+                    const win = window.glue.windows.findById(item.config.windowId);
+                    if (win) {
+                        const winContext = await win.getContext();
+                        item.config.context = Object.assign({}, item.config.context || {}, winContext);
+                    }
+                }
+
+                return;
+            }
+
+            await Promise.all((item.children as AnyItem[]).map(c => add(c)));
+        };
+
+        await add(workspaceItem);
     }
 
     private workspaceSummaryToWorkspaceLayout(workspaceItem: WorkspaceItem) {

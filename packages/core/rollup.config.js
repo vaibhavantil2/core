@@ -34,14 +34,9 @@ export default {
     plugins: [
         typescript({
             typescript: require('typescript'),
+            objectHashIgnoreUnknownHack: true, // https://github.com/vladshcherbin/rollup-plugin-copy/issues/16
         }),
-        terser({
-            sourcemap: true,
-            output: {
-                comments: false
-            },
-            include: [/^.+\.min\.js$/],
-        }),
+        terser(),
         // Allow json resolution
         json(),
         // // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)

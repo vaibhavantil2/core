@@ -90,6 +90,8 @@
 // Pane Header (container of Tabs for each pane)
 .lm_header {
   background-color: @glue42-mid-bg;
+  border-bottom: @glue42-border;
+
   &.lm_selectable {
     background-color: @glue42-dark-bg;
     &::before {
@@ -104,7 +106,7 @@
   .lm_tab {
     background-color: @glue42-mid-bg;
     &:after {
-      background-color: @glue42-border-color;
+       background-color: @glue42-dark-bg;
     }
     .lm_saveButton {
       &:before {
@@ -145,6 +147,9 @@
       .lm_title {
         color: @glue42-active-color;
       }
+    }
+    i {
+      background-color: @glue42-border-color;
     }
   }
 }

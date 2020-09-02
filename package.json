@@ -34,9 +34,10 @@
     "karma-mocha": "^2.0.1",
     "lerna": "^3.20.2",
     "lerna-changelog": "^1.0.0",
-    "lint-staged": "^10.0.8",
+    "lint-staged": "^10.2.11",
     "mocha": "^7.1.0",
     "mockery": "^2.1.0",
+    "rollup-plugin-typescript2": "^0.27.2",
     "simple-git": "^1.131.0",
     "typescript": "^3.8.3"
   },

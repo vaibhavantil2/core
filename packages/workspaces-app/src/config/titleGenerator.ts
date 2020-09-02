@@ -6,7 +6,7 @@ export class TitleGenerator {
         const titlesMatchingPattern = currentTitles.filter((t) => this._pattern.test(t));
 
         const titleNumbers = titlesMatchingPattern.map((t) => parseInt(this._pattern.exec(t)[1], 10));
-        const biggestNumber = titleNumbers.length ? titleNumbers.sort()[titleNumbers.length - 1] : 0;
+        const biggestNumber = titleNumbers.length ? titleNumbers.sort((a, b) => a - b)[titleNumbers.length - 1] : 0;
 
         return `Untitled ${biggestNumber + 1 + offset}`;
     }

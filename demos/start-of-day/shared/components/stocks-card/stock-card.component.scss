@@ -1,0 +1,76 @@
+@import "../../../shared/assets/scss/dark-theme/variables";
+
+.card-stocks {
+  height: 4.5rem;
+}
+
+.card-stocks-rise {
+  .demo-icon {
+    background-color: $stocks-rise-color;
+    box-shadow: $stocks-rise-box-shadow;
+
+    &::before {
+      transform: translateY(-2px);
+    }
+  }
+
+  .card-stocks-percentage {
+    color: $stocks-rise-color;
+  }
+
+  &:hover {
+    .demo-icon {
+      box-shadow: $stocks-rise-box-shadow-hover;
+    }
+  }
+}
+
+.card-stocks-fall {
+  .demo-icon {
+    background-color: $stocks-fall-color;
+    box-shadow: $stocks-fall-box-shadow;
+  }
+
+  .card-stocks-percentage {
+    color: $stocks-fall-color;
+  }
+
+  &:hover {
+    .demo-icon {
+      box-shadow: $stocks-fall-box-shadow-hover;
+    }
+  }
+}
+
+.card-stocks-icon {
+  .demo-icon {
+    position: relative;
+    margin: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+
+    &::before {
+      margin: 0;
+      font-size: 1rem;
+      color: $white;
+    }
+  }
+}
+
+.card-stocks-icon {
+  flex-basis: auto;
+}
+
+.card-stocks-name,
+.card-stocks-description {
+  flex-basis: auto;
+  max-width: 140px;
+}
+
+.card-stocks-chart {
+  flex-grow: 1;
+}

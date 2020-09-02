@@ -10,6 +10,7 @@ import configFactory from "../config/factory";
 import { LayoutStateResolver } from "./stateResolver";
 import { EmptyVisibleWindowName } from "../constants";
 import factory from "../config/factory";
+import { TabObserver } from "./tabObserver";
 
 export class LayoutController {
     private readonly _maximizedId = "__glMaximised";
@@ -35,6 +36,8 @@ export class LayoutController {
 
     public async init(config: FrameLayoutConfig) {
         this._frameId = config.frameId;
+        const tabObserver = new TabObserver();
+        tabObserver.init(this._workspaceLayoutElementId);
         await this.initWorkspaceConfig(config.workspaceLayout);
         this.refreshLayoutSize();
         await Promise.all(config.workspaceConfigs.map(async (c) => {
@@ -145,7 +148,7 @@ export class LayoutController {
         }
 
         if (workspace.id === parentId) {
-            if (config.type === "column") {
+            if (config.type === "column" || config.type === "stack") {
                 this.bundleWorkspace(workspace.id, "row");
             }
             else if (config.type === "row") {
@@ -340,6 +343,7 @@ export class LayoutController {
         const item = store.getWindowContentItem(windowId);
 
         item.setTitle(title);
+        item.config.componentState.title = title;
     }
 
     public setWorkspaceTitle(workspaceId: string, title: string) {
@@ -607,6 +611,8 @@ export class LayoutController {
             tab.element.mousedown(() => {
                 this.emitter.raiseEvent("tab-element-mouse-down", { tab });
             });
+
+            this.refreshTabSizeClass(tab);
         });
 
         layout.on("tabCloseRequested", (tab: GoldenLayout.Tab) => {
@@ -716,6 +722,8 @@ export class LayoutController {
                 if (!this._options.disableCustomButtons) {
                     tab.element[0].prepend(saveButton);
                 }
+
+                this.refreshTabSizeClass(tab);
             });
 
             store.workspaceLayout.on("tabCloseRequested", (tab: GoldenLayout.Tab) => {
@@ -737,6 +745,7 @@ export class LayoutController {
         this.emitter.onContentContainerResized((item) => {
             const currLayout = store.getById(id).layout;
             if (currLayout) {
+                // The size must be passed in order to handle resizes like maximize of the browser
                 currLayout.updateSize($(item.element).width(), $(item.element).height());
             }
         }, id);
@@ -877,5 +886,19 @@ export class LayoutController {
     private refreshLayoutSize() {
         const bounds = getElementBounds($(this._workspaceLayoutElementId));
         store.workspaceLayout.updateSize(bounds.width, bounds.height);
+    }
+
+    private refreshTabSizeClass(tab: GoldenLayout.Tab) {
+        const tabs = tab.header.tabs;
+        const haveClassSmall = tabs.map((t) => t.element).some((e) => e.hasClass("lm_tab_small"));
+        const haveClassMini = tabs.map((t) => t.element).some((e) => e.hasClass("lm_tab_mini"));
+
+        if (haveClassSmall) {
+            tab.element.addClass("lm_tab_small");
+        }
+
+        if (haveClassMini) {
+            tab.element.addClass("lm_tab_mini");
+        }
     }
 }

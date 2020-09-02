@@ -85,7 +85,8 @@ export const createFactoryFunction = (coreFactoryFunction: GlueCoreFactoryFuncti
                     logger: builtCoreConfig.glue?.logger,
                     channels: shouldInitializeChannels,
                     layouts: true,
-                    appManager: shouldInitializeAppManager
+                    appManager: shouldInitializeAppManager,
+                    libraries: config.libraries
                 });
             }
         }
