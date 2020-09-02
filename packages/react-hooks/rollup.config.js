@@ -29,6 +29,7 @@ export default {
             format: 'umd',
             sourcemap: true,
             globals,
+            plugins: [terser()]
         },
         {
             file: pkg.module,
@@ -44,13 +45,6 @@ export default {
         }),
         typescript({
             typescript: require('typescript'),
-        }),
-        terser({
-            sourcemap: true,
-            output: {
-                comments: false,
-            },
-            include: [/^.+\.min\.js$/],
         }),
         // Allow json resolution
         json(),
