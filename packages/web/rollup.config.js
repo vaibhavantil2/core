@@ -18,7 +18,8 @@ export default {
             file: './dist/web.umd.min.js',
             name: 'web.min',
             format: 'umd',
-            sourcemap: true
+            sourcemap: true,
+            plugins: [terser()]
         },
         {
             file: pkg.module,
@@ -35,7 +36,6 @@ export default {
         typescript({
             typescript: require('typescript')
         }),
-        terser(),
         // Allow json resolution
         json(),
         // // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
