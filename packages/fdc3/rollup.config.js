@@ -24,13 +24,7 @@ export default {
         typescript({
             typescript: require('typescript'),
         }),
-        terser({
-            sourcemap: true,
-            output: {
-                comments: false
-            },
-            include: [/^.+\.min\.js$/],
-        }),
+        terser(),
         // Allow json resolution
         json(),
         // // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)
