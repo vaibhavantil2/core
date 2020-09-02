@@ -25,6 +25,7 @@ const writePackageJson = (packageSource, contents) => {
 
         // normalizing EOL
         data = data.replace(/\r\n/gm, '\n');
+        data += "\n";
 
         writeFile(location, data, (err) => {
             if (err) {
