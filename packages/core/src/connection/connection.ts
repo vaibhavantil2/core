@@ -27,7 +27,7 @@ export default class Connection implements Glue42Core.Connection.API {
     public token!: string;
     public info!: object;
     public resolvedIdentity!: any;
-    public availableDomains!: object[];
+    public availableDomains!: Glue42Core.Connection.GWDomainInfo[];
     public gatewayToken: string | undefined;
     public replayer?: MessageReplayerImpl;
 
@@ -184,7 +184,13 @@ export default class Connection implements Glue42Core.Connection.API {
                     try {
                         handler(message);
                     } catch (error) {
-                        this.logger.error(`Message handler failed with ${error.stack}`, error);
+                        try {
+                            // logger might not be there yet
+                            this.logger.error(`Message handler failed with ${error.stack}`, error);
+                        } catch (loggerError) {
+                            // tslint:disable-next-line:no-console
+                            console.log("Message handler failed", error);
+                        }
                     }
                 }
             });

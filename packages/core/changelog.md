@@ -1,3 +1,8 @@
+5.2.0
+feat: contexts - GW context protocol v2 support G4E-3353
+fix: contexts - get was returning empty object G4E-3074
+fix: interop - add detailed information when the invocation is timed out G4E-3153
+fix: interop - legacy support - add missing missing method_added G4E-3152
 5.1.2
 chore: bumped version after unified file endings for repo-wide npm audit script
 5.1.1

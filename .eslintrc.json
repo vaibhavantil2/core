@@ -19,7 +19,8 @@
         "packages/workspaces-app/**/*.js",
         "packages/golden-layout/*",
         "docs/*",
-        "e2e/*"
+        "e2e/*",
+        "demos/*"
     ],
     "rules": {
         "indent": [

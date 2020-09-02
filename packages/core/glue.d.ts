@@ -961,7 +961,7 @@ export namespace Glue42Core {
             token: string;
             info: object;
             resolvedIdentity: object;
-            availableDomains: object[];
+            availableDomains: GWDomainInfo[];
             gatewayToken?: string;
             replayer?: MessageReplayer;
             isConnected: boolean;
@@ -1125,6 +1125,14 @@ export namespace Glue42Core {
             processMessage(type: string, msg: object): void;
 
             drain(name: string, callback: (msg: object) => void): void;
+        }
+
+        /**
+         * @ignore
+         */
+        export interface GWDomainInfo {
+            uri: string;
+            version: number;
         }
     }
 
@@ -1454,6 +1462,21 @@ export namespace Glue42Core {
             set(name: string, data: any): Promise<void>;
 
             /**
+             * Sets a path in the context to some value. Use this to update values that are not on top level in the context.
+             * @param name Name of the context to be updated
+             * @param path Path to be updated. Path should be in the format "prop1.prop2"
+             * @param data The object that will be applied to the path
+             */
+            setPath(name: string, path: string, data: any): Promise<void>;
+
+            /**
+             * Sets multiple paths in the context to some values in a single command.
+             * @param name Name of the context to be updated
+             * @param paths Array of paths and their values to be updated. Path should be in the format "prop1.prop2"
+             */
+            setPaths(name: string, paths: PathValue[]): Promise<void>;
+
+            /**
              * Subscribes for context events. Returns an unsubscribe function which you can use to stop receiving context updates.
              * @param name Name of the context to which you want to subscribe.
              * @param callback Function that will handle the updates.
@@ -1463,33 +1486,14 @@ export namespace Glue42Core {
             /**
              * Return the context data immediately or asynchronously as soon as any data becomes available.
              * @param name Name of the context from which you want to get data.
-             * @param resolveImmediately If `true` (default), resolves inexistent contexts with `undefined`.
-             * Otherwise, subscribes to the context and resolves the `Promise` as soon as the context is created.
              */
-            get(name: string, resolveImmediately?: boolean): Promise<any>;
+            get(name: string): Promise<any>;
         }
 
-        /** Context delta when updating or replacing a context. */
-        export interface ContextDelta {
-
-            /** Context properties that were added. */
-            added: ContextEntries;
-
-            /** Context properties that were updated. */
-            updated: ContextEntries;
-
-            /** Context properties that were removed. */
-            removed: string[];
-
-            /** Context properties that were reset. */
-            reset?: ContextEntries;
+        export interface PathValue {
+            path: string;
+            value: any;
         }
-
-        /** Context entries. Key/value pairs holding context data. */
-        export type ContextEntries = { [index: string]: any };
-
-        export type ContextName = string;
-        export type ContextSubscriptionKey = number;
     }
 
     /**

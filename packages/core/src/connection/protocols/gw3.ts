@@ -219,7 +219,7 @@ export default class GW3ProtocolImpl implements GW3Protocol {
 
             this.connection.peerId = welcomeMsg.peer_id;
             this.connection.resolvedIdentity = welcomeMsg.resolved_identity;
-            this.connection.availableDomains = welcomeMsg.available_domains;
+            this.connection.availableDomains = welcomeMsg.available_domains as any;
             if (welcomeMsg.options) {
                 this.connection.token = welcomeMsg.options.access_token;
                 this.connection.info = welcomeMsg.options.info;

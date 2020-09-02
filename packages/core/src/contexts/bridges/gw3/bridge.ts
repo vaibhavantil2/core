@@ -1,13 +1,14 @@
 import { Glue42Core } from "../../../../glue";
 import { ContextBridge } from "../../contextBridge";
 import { GW3ContextData as ContextData } from "./contextData";
-import { applyContextDelta, deepEqual, deepClone } from "../../helpers";
+import { applyContextDelta, deepEqual, deepClone, setValueToPath } from "../../helpers";
 import * as msg from "./messages";
 import { ContextMessage } from "./contextMessage";
 import { ContextMessageReplaySpec } from "../../contextMessageReplaySpec";
 import { Logger } from "../../../logger/logger";
 import Connection from "../../../connection/connection";
 import { ContextsConfig } from "../../contextsModule";
+import { ContextName, ContextSubscriptionKey, ContextDelta, ContextDeltaCommand } from "../types";
 
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // GW3Bridge implementation notes
@@ -187,6 +188,14 @@ export class GW3Bridge implements ContextBridge {
     // mapping announced contexts' name <-> id
     private _contextNameToId: { [contextName: string]: string } = {};
     private _contextIdToName: { [contextId: string]: string } = {};
+    private _protocolVersion?: number = undefined;
+    private get protocolVersion(): number {
+        if (!this._protocolVersion) {
+            const contextsDomainInfo = this._connection.availableDomains.find((d) => d.uri === "context");
+            this._protocolVersion = contextsDomainInfo?.version ?? 1;
+        }
+        return this._protocolVersion;
+    }
 
     public constructor(config: ContextsConfig) {
         this._connection = config.connection;
@@ -243,7 +252,7 @@ export class GW3Bridge implements ContextBridge {
         }
     }
 
-    public createContext(name: Glue42Core.Contexts.ContextName, data: any): Promise<string> {
+    public createContext(name: ContextName, data: any): Promise<string> {
         return this._gw3Session
             .send<ContextMessage>({
                 type: msg.GW_MESSAGE_CREATE_CONTEXT,
@@ -272,12 +281,12 @@ export class GW3Bridge implements ContextBridge {
             });
     }
 
-    public all(): Glue42Core.Contexts.ContextName[] {
+    public all(): ContextName[] {
         return Object.keys(this._contextNameToData)
             .filter((name) => this._contextNameToData[name].isAnnounced);
     }
 
-    public async update(name: Glue42Core.Contexts.ContextName, delta: any): Promise<void> {
+    public async update(name: ContextName, delta: any): Promise<void> {
 
         // - send context update message
         //
@@ -294,14 +303,18 @@ export class GW3Bridge implements ContextBridge {
         // TODO: explain why --> because this
         let currentContext = contextData.context;
         if (!contextData.hasCallbacks()) {
-            currentContext = await this.get(contextData.name, false);
+            currentContext = await this.get(contextData.name);
         }
 
-        const calculatedDelta = this.calculateContextDelta(currentContext , delta);
+        const calculatedDelta =
+            this.protocolVersion === 2 ?
+                this.calculateContextDeltaV2(currentContext, delta) :
+                this.calculateContextDeltaV1(currentContext, delta);
 
         if (!Object.keys(calculatedDelta.added).length
             && !Object.keys(calculatedDelta.updated).length
-            && !calculatedDelta.removed.length) {
+            && !calculatedDelta.removed.length
+            && !calculatedDelta.commands?.length) {
             return Promise.resolve();
         }
 
@@ -319,7 +332,7 @@ export class GW3Bridge implements ContextBridge {
             });
     }
 
-    public set(name: Glue42Core.Contexts.ContextName, data: any): Promise<void> {
+    public set(name: ContextName, data: any): Promise<void> {
 
         const contextData = this._contextNameToData[name];
 
@@ -340,31 +353,69 @@ export class GW3Bridge implements ContextBridge {
             });
     }
 
+    public setPath(name: ContextName, path: string, value: any): Promise<void> {
+
+        return this.setPaths(name, [{ path, value }]);
+    }
+
+    public setPaths(name: ContextName, pathValues: Glue42Core.Contexts.PathValue[]): Promise<void> {
+
+        const contextData = this._contextNameToData[name];
+
+        if (!contextData || !contextData.isAnnounced) {
+            const obj = {};
+            for (const pathValue of pathValues) {
+                setValueToPath(obj, pathValue.value, pathValue.path);
+            }
+
+            return this.createContext(name, obj) as any as Promise<void>;
+        }
+
+        const commands: ContextDeltaCommand[] = [];
+        for (const pathValue of pathValues) {
+            commands.push({ type: "set", path: pathValue.path, value: pathValue.value });
+        }
+        return this._gw3Session
+            .send({
+                type: msg.GW_MESSAGE_UPDATE_CONTEXT,
+                domain: "global",
+                context_id: contextData.contextId,
+                delta: { commands }
+            }, {}, { skipPeerId: false })
+            .then((gwResponse: any) => {
+                this.handleUpdated(contextData, { added: {}, removed: [], updated: {}, commands }, { updaterId: gwResponse.peer_id });
+            });
+    }
+
     /**
      * Return a context's data asynchronously as soon as any becomes available
      */
-    public get(name: Glue42Core.Contexts.ContextName, resolveImmediately: boolean): Promise<any> {
-
-        if (resolveImmediately === undefined) {
-            resolveImmediately = true;
-        }
+    public get(name: ContextName): Promise<any> {
 
         const contextData = this._contextNameToData[name];
-        if (!contextData ||
-            !contextData.isAnnounced ||
-            !contextData.hasCallbacks()) {
+        // Three cases here:
+        // 1) The context does not exist and is not announced by the GW -> return {}
+        // 2) The context exists but we don't track it -> subscribe and return the object when we get the subscription result from GW
+        // 3) The context exists and we're tracking it -> just return the last state we have
 
-            if (!resolveImmediately) {
-                return new Promise<any>(async (resolve, reject) => {
-                    this.subscribe(name, (data: any, delta: any, removed: string[], un: Glue42Core.Contexts.ContextSubscriptionKey) => {
-                        this.unsubscribe(un);
-                        resolve(data);
-                    });
-                });
-            }
+        // 1)
+        if (!contextData || !contextData.isAnnounced) {
+            return Promise.resolve({});
         }
 
-        return Promise.resolve(contextData && contextData.context);
+        // 2)
+        if (contextData && !contextData.hasCallbacks()) {
+            return new Promise<any>(async (resolve, _) => {
+                this.subscribe(name, (data: any, _d: any, _r: string[], un: ContextSubscriptionKey) => {
+                    this.unsubscribe(un);
+                    resolve(data);
+                });
+            });
+        }
+
+        // 3)
+        const context = contextData?.context ?? {};
+        return Promise.resolve(context);
     }
 
     /**
@@ -378,14 +429,14 @@ export class GW3Bridge implements ContextBridge {
      * of the callback.
      */
     public subscribe(
-        name: Glue42Core.Contexts.ContextName,
+        name: ContextName,
         callback: (
             data: any,
             delta: any,
             removed: string[],
-            key: Glue42Core.Contexts.ContextSubscriptionKey,
+            key: ContextSubscriptionKey,
             extraData?: any) => void)
-        : Promise<Glue42Core.Contexts.ContextSubscriptionKey> {
+        : Promise<ContextSubscriptionKey> {
 
         // - populate contextData's updateCallbacks with new entry
         //
@@ -458,7 +509,7 @@ export class GW3Bridge implements ContextBridge {
         }
     }
 
-    public unsubscribe(subscriptionKey: Glue42Core.Contexts.ContextSubscriptionKey): void {
+    public unsubscribe(subscriptionKey: ContextSubscriptionKey): void {
         for (const name of Object.keys(this._contextNameToData)) {
             const contextId = this._contextNameToId[name];
             const contextData = this._contextNameToData[name];
@@ -487,7 +538,7 @@ export class GW3Bridge implements ContextBridge {
         }
     }
 
-    private handleUpdated(contextData: ContextData, delta: Glue42Core.Contexts.ContextDelta, extraData?: any) {
+    private handleUpdated(contextData: ContextData, delta: ContextDelta, extraData?: any) {
         // for correctness proof, see note about serialized context
         // updates in subscribeToContextUpdatedMessages
 
@@ -709,7 +760,7 @@ export class GW3Bridge implements ContextBridge {
         } else if (updatedMessageType === msg.GW_MESSAGE_CONTEXT_UPDATED) {
             contextData.context = applyContextDelta(
                 contextData.context,
-                contextUpdatedMsg.delta as Glue42Core.Contexts.ContextDelta);
+                contextUpdatedMsg.delta as ContextDelta);
         } else {
             throw new Error("Unrecognized context update message " + updatedMessageType);
         }
@@ -721,7 +772,7 @@ export class GW3Bridge implements ContextBridge {
         }
     }
 
-    private invokeUpdateCallbacks(contextData: ContextData, data: any, delta?: Glue42Core.Contexts.ContextDelta, extraData?: any) {
+    private invokeUpdateCallbacks(contextData: ContextData, data: any, delta?: ContextDelta, extraData?: any) {
         delta = delta || { added: {}, updated: {}, reset: {}, removed: [] };
         for (const updateCallbackIndex in contextData.updateCallbacks) {
             if (contextData.updateCallbacks.hasOwnProperty(updateCallbackIndex)) {
@@ -809,8 +860,8 @@ export class GW3Bridge implements ContextBridge {
             }).then((_) => undefined);
     }
 
-    private calculateContextDelta(from: any, to: any): Glue42Core.Contexts.ContextDelta {
-        const delta: Glue42Core.Contexts.ContextDelta = { added: {}, updated: {}, removed: [], reset: undefined };
+    private calculateContextDeltaV1(from: any, to: any): ContextDelta {
+        const delta: ContextDelta = { added: {}, updated: {}, removed: [], reset: undefined };
         if (from) {
             for (const x of Object.keys(from)) {
                 if (Object.keys(to).indexOf(x) !== -1
@@ -829,6 +880,23 @@ export class GW3Bridge implements ContextBridge {
                 delta.removed.push(x);
             }
         }
+        return delta;
+    }
+
+    private calculateContextDeltaV2(from: any, to: any): ContextDelta {
+        const delta: ContextDelta = { added: {}, updated: {}, removed: [], reset: undefined, commands: [] };
+
+        for (const x of Object.keys(to)) {
+            if (to[x] !== null) {
+                const fromX = from ? from[x] : null;
+                if (!deepEqual(fromX, to[x])) {
+                    delta.commands?.push({ type: "set", path: x, value: to[x] });
+                }
+            } else {
+                delta.commands?.push({ type: "remove", path: x });
+            }
+        }
+
         return delta;
     }
 }

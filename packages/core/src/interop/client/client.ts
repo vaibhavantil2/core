@@ -348,7 +348,7 @@ export default class Client {
 
                     return Promise.race([
                         invokePromise,
-                        rejectAfter(timeout, {
+                        rejectAfter(timeout, invokePromise, {
                             invocationId: invId,
                             message: `Invocation timeout (${timeout} ms) reached for method name: ${method?.name}, target instance: ${JSON.stringify(server.instance)}, options: ${JSON.stringify(additionalOptionsCopy)}`,
                             status: InvokeStatus.Error,
