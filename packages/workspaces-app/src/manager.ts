@@ -26,7 +26,6 @@ class WorkspacesManager {
     private _popupManager: PopupManager;
     private _layoutsManager: LayoutsManager;
     private _stateResolver: LayoutStateResolver;
-    private readonly _appNameToURL: { [k: string]: string } = {};
     private _isLayoutInitialized = false;
     private _workspacesEventEmitter: WorkspacesEventEmitter;
     private _titleGenerator = new TitleGenerator();
@@ -41,13 +40,6 @@ class WorkspacesManager {
 
     public async init(frameId: string) {
         const startupConfig = scReader.loadConfig();
-
-        window.glue.appManager.applications().forEach((a) => {
-            const url = a.userProperties?.details?.url;
-            if (url) {
-                this._appNameToURL[a.name] = url;
-            }
-        });
 
         this._frameId = frameId;
         const eventEmitter = new LayoutEventEmitter(registryFactory());
@@ -162,7 +154,7 @@ class WorkspacesManager {
         const context = webWindow ? await webWindow.getContext() : workspaceContext;
 
         await this.closeItem(idAsString(item.config.id));
-        const ejectedWindowUrl = this._appNameToURL[appName] || url;
+        const ejectedWindowUrl = this.getUrlByAppName(appName) || url;
         await window.glue.windows.open(appName, ejectedWindowUrl, { context } as Glue42Web.Windows.CreateOptions);
     }
 
@@ -305,7 +297,7 @@ class WorkspacesManager {
             store.addWindow({ id: componentId, bounds: newWindowBounds, windowId }, workspace.id);
 
             let workspaceContext = component?.layoutManager?.config?.workspacesOptions?.context;
-            let url = this._appNameToURL[componentState.appName] || componentState.url;
+            let url = this.getUrlByAppName(componentState.appName) || componentState.url;
 
             if (component.config.componentState?.context) {
                 workspaceContext = Object.assign(workspaceContext || {}, component.config.componentState.context);
@@ -647,6 +639,10 @@ class WorkspacesManager {
                 }
             });
         });
+    }
+
+    private getUrlByAppName(appName: string): string {
+        return window.glue.appManager?.application(appName)?.userProperties?.details?.url;
     }
 }
 
