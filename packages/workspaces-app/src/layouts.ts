@@ -99,7 +99,7 @@ export class LayoutsManager {
             throw new Error("An empty layout cannot be saved");
         }
         workspace.layout.config.workspacesOptions.name = name;
-
+        
         const workspaceConfig = await this.saveWorkspaceCore(workspace);
 
         if (title) {
@@ -166,7 +166,11 @@ export class LayoutsManager {
         const workspaceItem = configConverter.convertToAPIConfig(workspaceConfig) as WorkspaceItem;
         this.removeWorkspaceItemIds(workspaceItem);
 
-        await this.addWindowContexts(workspaceItem);
+        try {
+            await this.addWindowContexts(workspaceItem);
+        } catch (error) {
+            // in before unload this would fail, however we want the save to continue
+        }
 
         // The excess properties should be cleaned
         this.windowSummariesToWindowLayout(workspaceItem);
