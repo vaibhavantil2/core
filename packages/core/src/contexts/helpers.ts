@@ -1,56 +1,66 @@
 import { Glue42Core } from "../../glue";
 import { ContextDelta } from "./bridges/types";
+import { Logger } from "../logger/logger";
 
 export function applyContextDelta(
     context: any,
-    delta: ContextDelta) {
+    delta: ContextDelta,
+    logger: Logger) {
 
-    if (!delta) {
-        return context;
-    }
-
-    if (delta.reset) {
-        context = { ...delta.reset };
-        return context;
-    }
-
-    context = deepClone(context, undefined);
-
-    if (delta.commands) {
-        for (const command of delta.commands) {
-            if (command.type === "remove") {
-                deletePath(context, command.path);
-            } else if (command.type === "set") {
-                setValueToPath(context, command.value, command.path);
-            }
+    try {
+        if (logger?.canPublish("trace")) {
+            logger?.trace(`applying context delta ${JSON.stringify(delta)} on context ${JSON.stringify(context)}`);
         }
-        // if there is a commands property ignore the rest (v1 added/updated/removed)
+        if (!delta) {
+            return context;
+        }
+
+        if (delta.reset) {
+            context = { ...delta.reset };
+            return context;
+        }
+
+        context = deepClone(context, undefined);
+
+        if (delta.commands) {
+            for (const command of delta.commands) {
+                if (command.type === "remove") {
+                    deletePath(context, command.path);
+                } else if (command.type === "set") {
+                    setValueToPath(context, command.value, command.path);
+                }
+            }
+            // if there is a commands property ignore the rest (v1 added/updated/removed)
+            return context;
+        }
+
+        const added = delta.added;
+        const updated = delta.updated;
+        const removed = delta.removed;
+
+        if (added) {
+            Object.keys(added).forEach((key) => {
+                context[key] = added[key];
+            });
+        }
+
+        if (updated) {
+            Object.keys(updated).forEach((key) => {
+                mergeObjectsProperties(key, context, updated);
+            });
+        }
+
+        if (removed) {
+            removed.forEach((key) => {
+                delete context[key];
+            });
+        }
+
+        return context;
+    } catch (e) {
+        logger?.error(`error applying context delta ${JSON.stringify(delta)} on context ${JSON.stringify(context)}`, e);
         return context;
     }
-
-    const added = delta.added;
-    const updated = delta.updated;
-    const removed = delta.removed;
-
-    if (added) {
-        Object.keys(added).forEach((key) => {
-            context[key] = added[key];
-        });
-    }
-
-    if (updated) {
-        Object.keys(updated).forEach((key) => {
-            mergeObjectsProperties(key, context, updated);
-        });
-    }
-
-    if (removed) {
-        removed.forEach((key) => {
-            delete context[key];
-        });
-    }
-
-    return context;
 }
 
 // https://stackoverflow.com/a/40294058/1527706
@@ -172,6 +182,11 @@ export function setValueToPath(obj: any, value: any, path: string) {
     let i;
     for (i = 0; i < pathArr.length - 1; i++) {
         if (!obj[pathArr[i]]) {
+            // path does not exist, create empty object
+            obj[pathArr[i]] = {};
+        }
+        if (typeof obj[pathArr[i]] !== "object") {
+            // handle the case where we have {a: 1} and we call set({a: {aa: 2}})
             obj[pathArr[i]] = {};
         }
         obj = obj[pathArr[i]];
@@ -183,6 +198,10 @@ function deletePath(obj: any, path: string) {
     const pathArr = path.split(".");
     let i;
     for (i = 0; i < pathArr.length - 1; i++) {
+        if (!obj[pathArr[i]]) {
+            // path does not exist, we're not removing anything
+            return;
+        }
         obj = obj[pathArr[i]];
     }
     delete obj[pathArr[i]];

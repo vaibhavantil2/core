@@ -197,6 +197,10 @@ export class GW3Bridge implements ContextBridge {
         return this._protocolVersion;
     }
 
+    public get setPathSupported() {
+        return this.protocolVersion >= 2;
+    }
+
     public constructor(config: ContextsConfig) {
         this._connection = config.connection;
         this._logger = config.logger;
@@ -263,20 +267,13 @@ export class GW3Bridge implements ContextBridge {
             })
             .then((createContextMsg: ContextMessage) => {
                 this._contextNameToId[name] = createContextMsg.context_id;
-                if (!this._contextIdToName[createContextMsg.context_id]) {
-                    this._contextIdToName[createContextMsg.context_id] = name;
-                    const contextData = this._contextNameToData[name] || new ContextData(createContextMsg.context_id, name, true, undefined);
-                    contextData.isAnnounced = true;
-                    contextData.name = name;
-                    contextData.contextId = createContextMsg.context_id;
-                    this._contextNameToData[name] = contextData;
-                    contextData.context = createContextMsg.data;
-                    contextData.sentExplicitSubscription = true;
-                    if (contextData.context) {
-                        this.invokeUpdateCallbacks(contextData, contextData.context, undefined);
-                    }
-                    return this.update(name, data).then(() => createContextMsg.context_id);
-                }
+                this._contextIdToName[createContextMsg.context_id] = name;
+                const contextData = this._contextNameToData[name] || new ContextData(createContextMsg.context_id, name, true, undefined);
+                contextData.isAnnounced = true;
+                contextData.name = name;
+                contextData.contextId = createContextMsg.context_id;
+                contextData.context = data;
+                this._contextNameToData[name] = contextData;
                 return createContextMsg.context_id;
             });
     }
@@ -354,12 +351,16 @@ export class GW3Bridge implements ContextBridge {
     }
 
     public setPath(name: ContextName, path: string, value: any): Promise<void> {
-
+        if (!this.setPathSupported) {
+            return Promise.reject("glue.contexts.setPath operation is not supported, use Glue42 3.10 or later");
+        }
         return this.setPaths(name, [{ path, value }]);
     }
 
     public setPaths(name: ContextName, pathValues: Glue42Core.Contexts.PathValue[]): Promise<void> {
-
+        if (!this.setPathSupported) {
+            return Promise.reject("glue.contexts.setPaths operation is not supported, use Glue42 3.10 or later");
+        }
         const contextData = this._contextNameToData[name];
 
         if (!contextData || !contextData.isAnnounced) {
@@ -373,7 +374,11 @@ export class GW3Bridge implements ContextBridge {
 
         const commands: ContextDeltaCommand[] = [];
         for (const pathValue of pathValues) {
-            commands.push({ type: "set", path: pathValue.path, value: pathValue.value });
+            if (pathValue.value === null) {
+                commands.push({ type: "remove", path: pathValue.path });
+            } else {
+                commands.push({ type: "set", path: pathValue.path, value: pathValue.value });
+            }
         }
         return this._gw3Session
             .send({
@@ -538,12 +543,26 @@ export class GW3Bridge implements ContextBridge {
         }
     }
 
+    public destroy(name: string) {
+        const contextData = this._contextNameToData[name];
+        if (!contextData) {
+            return Promise.reject(`context with ${name} does not exist`);
+        }
+
+        return this._gw3Session
+            .send({
+                type: msg.GW_MESSAGE_DESTROY_CONTEXT,
+                domain: "global",
+                context_id: contextData.contextId,
+            }).then((_) => undefined);
+    }
+
     private handleUpdated(contextData: ContextData, delta: ContextDelta, extraData?: any) {
         // for correctness proof, see note about serialized context
         // updates in subscribeToContextUpdatedMessages
 
         const oldContext = contextData.context;
-        contextData.context = applyContextDelta(contextData.context, delta);
+        contextData.context = applyContextDelta(contextData.context, delta, this._logger);
 
         if (this._contextNameToData[contextData.name] === contextData &&
             !deepEqual(oldContext, contextData.context)) {
@@ -760,7 +779,8 @@ export class GW3Bridge implements ContextBridge {
         } else if (updatedMessageType === msg.GW_MESSAGE_CONTEXT_UPDATED) {
             contextData.context = applyContextDelta(
                 contextData.context,
-                contextUpdatedMsg.delta as ContextDelta);
+                contextUpdatedMsg.delta as ContextDelta,
+                this._logger);
         } else {
             throw new Error("Unrecognized context update message " + updatedMessageType);
         }

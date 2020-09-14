@@ -1433,6 +1433,12 @@ export namespace Glue42Core {
     export namespace Contexts {
         export interface API {
             /**
+             * Flag indicating if setPath operation is supported (setPath works on Glue42 3.10 or later)
+             * @ignore
+             */
+            setPathSupported: boolean;
+
+            /**
              * Returns all existing context names. Using the context name you can subscribe for context changes, updates or set context values.
              */
             all(): string[];
@@ -1466,6 +1472,7 @@ export namespace Glue42Core {
              * @param name Name of the context to be updated
              * @param path Path to be updated. Path should be in the format "prop1.prop2"
              * @param data The object that will be applied to the path
+             * @since Glue42 3.10
              */
             setPath(name: string, path: string, data: any): Promise<void>;
 
@@ -1473,6 +1480,7 @@ export namespace Glue42Core {
              * Sets multiple paths in the context to some values in a single command.
              * @param name Name of the context to be updated
              * @param paths Array of paths and their values to be updated. Path should be in the format "prop1.prop2"
+             * @since Glue42 3.10
              */
             setPaths(name: string, paths: PathValue[]): Promise<void>;
 
@@ -1488,6 +1496,12 @@ export namespace Glue42Core {
              * @param name Name of the context from which you want to get data.
              */
             get(name: string): Promise<any>;
+
+            /**
+             * Destroys a context and all the data associated with it
+             * @param name Name of the context to be removed
+             */
+            destroy(name: string): Promise<any>;
         }
 
         export interface PathValue {

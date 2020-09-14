@@ -116,6 +116,14 @@ export class ContextsModule implements Glue42Core.Contexts.API {
         return Promise.resolve(this);
     }
 
+    public destroy(name: string): Promise<any> {
+        return this._bridge.destroy(name);
+    }
+
+    public get setPathSupported() {
+        return this._bridge.setPathSupported;
+    }
+
     private checkName(name: ContextName) {
         if (typeof name !== "string" ||
             name === "") {
