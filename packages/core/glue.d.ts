@@ -107,7 +107,7 @@ export namespace Glue42Core {
          */
         disableAutoAppSystem?: boolean;
 
-        pagePerformanceMetrics: PagePerformanceMetricsConfig;
+        pagePerformanceMetrics?: PagePerformanceMetricsConfig;
     }
 
     export interface PagePerformanceMetricsConfig {
