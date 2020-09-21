@@ -4,6 +4,8 @@ import { Glue42Core } from "../../glue";
 import { dataStore } from "../data";
 import { Update, testCases, verify } from "./cases";
 import { init } from "../core/base";
+import { generate } from "shortid";
+import { PromiseWrapper } from "../../src/utils/pw";
 // tslint:disable:no-unused-expression
 
 describe("contexts.core", () => {
@@ -27,6 +29,30 @@ describe("contexts.core", () => {
             };
         });
         verify(glue, glue, data, done, true);
+    });
+
+    it("subscribe for non-existing and then set", async () => {
+        const result = new PromiseWrapper();
+        const ctxName = generate();
+        glue.contexts.subscribe(ctxName, (ctx) => {
+            if (ctx.a === 1) {
+                result.resolve();
+            }
+        });
+        glue.contexts.set(ctxName, { a: 1 });
+        return result.promise;
+    });
+
+    it("subscribe for non-existing and then someone else set it", async () => {
+        const result = new PromiseWrapper();
+        const ctxName = generate();
+        glue.contexts.subscribe(ctxName, (ctx) => {
+            if (ctx.a === 1) {
+                result.resolve();
+            }
+        });
+        glue2.contexts.set(ctxName, { a: 1 });
+        return result.promise;
     });
 
     for (const testCase of testCases) {

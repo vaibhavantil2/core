@@ -3,7 +3,6 @@ import { createGlue, doneAllGlues } from "../initializer";
 import { Glue42Core } from "../../glue";
 import { generate } from "shortid";
 import { PromiseWrapper } from "../../src/utils/pw";
-// tslint:disable:no-unused-expression
 
 describe("contexts.setPath", () => {
 
@@ -75,7 +74,7 @@ describe("contexts.setPath", () => {
             initial: { person: { name: "john", address: { street: "11" } } },
             setPath: "person.address",
             setValue: null,
-            expected: { person: { name: "john", address: null } }
+            expected: { person: { name: "john" } }
         });
     });
 
@@ -98,7 +97,47 @@ describe("contexts.setPath", () => {
                 { path: "person.address.number", value: 10 },
                 { path: "person.lastName", value: "stevenson" },
             ],
-            expected: { person: { name: "steve", lastName: "stevenson", address: { street: null, number: 10 } }, removeMe: null },
+            expected: { person: { name: "steve", lastName: "stevenson", address: { number: 10 } } },
+        });
+    });
+
+    it("setting un-existing paths is ok", async () => {
+        return verify({
+            initial: {},
+            set: [
+                { path: "person.address.number", value: 10 },
+            ],
+            expected: { person: { address: { number: 10 } } },
+        });
+    });
+
+    it("switching type of data", async () => {
+        return verify({
+            initial: {
+                person: 1, address: { street: "pob" }, city: { name: "Sofia" }
+            },
+            set: [
+                { path: "person.name", value: "steve" },
+                { path: "address.street", value: { name: "pob" } },
+                { path: "city", value: "Sofia" },
+            ],
+            expected: {
+                person: { name: "steve" }, address: { street: { name: "pob" } }, city: "Sofia"
+            },
+        });
+    });
+
+    it("setting and removing invalid paths", async () => {
+        return verify({
+            initial: { person: 1 },
+            set: [
+                { path: "removeMe", value: null },
+                { path: "person.name", value: "steve" },
+                { path: "person2.address.street", value: null },
+                { path: "person2.address.number", value: 10 },
+                { path: "person2.lastName", value: "stevenson" },
+            ],
+            expected: { person: { name: "steve" }, person2: { lastName: "stevenson", address: { number: 10 } } },
         });
     });
 });

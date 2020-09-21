@@ -344,7 +344,7 @@ const GlueCore = (userConfig?: Glue42Core.Config, ext?: Glue42Core.Extension): P
                 // tslint:disable-next-line:only-arrow-functions
                 return function () {
                     // tslint:disable-next-line:no-console
-                    console.warn(`glue.js - 'glue.agm.${wrong}' method is deprecated, use 'glue.interop.${proper}' instead.`);
+                    glue.logger.warn(`glue.js - 'glue.agm.${wrong}' method is deprecated, use 'glue.interop.${proper}' instead.`);
                     fn.apply(glue.agm, arguments);
                 };
             };

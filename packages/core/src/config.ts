@@ -155,7 +155,7 @@ export default function (configuration: Glue42Core.Config, ext: Glue42Core.Exten
 
     function getLogger(): { console: Glue42Core.LogLevel; publish: Glue42Core.LogLevel } {
         let config = configuration.logger;
-        const defaultLevel = "error";
+        const defaultLevel = "warn";
         if (!config) {
             config = defaultLevel;
         }

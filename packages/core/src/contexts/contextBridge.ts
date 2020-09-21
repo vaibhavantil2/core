@@ -2,6 +2,8 @@ import { ContextName, ContextSubscriptionKey } from "./bridges/types";
 import { Glue42Core } from "../../glue";
 
 export interface ContextBridge {
+    setPathSupported: any;
+
     all(): ContextName[];
 
     update(name: ContextName, delta: any): Promise<void>;
@@ -18,4 +20,6 @@ export interface ContextBridge {
               callback: (data: any, delta: any, removed: string[], key: ContextSubscriptionKey, extraData?: any) => void): Promise<ContextSubscriptionKey>;
 
     unsubscribe(key: ContextSubscriptionKey): void;
+
+    destroy(name: string): Promise<any>;
 }

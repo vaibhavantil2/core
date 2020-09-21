@@ -3,26 +3,16 @@ import { useGlue, GlueContext } from '@glue42/react-hooks';
 import { REQUEST_OPTIONS } from './constants';
 import {
     createInstrumentStream,
-    openStockDetails,
-    registerSetClientMethod,
-    subscribeForSharedContext,
     subscribeForInstrumentStream,
-    setClientPortfolioSharedContext,
-    getChannelNamesAndColors,
-    joinChannel,
-    subscribeForChannels
+    setClientFromWorkspace,
+    openStockDetailsInWorkspace
 } from './glue';
-import ChannelSelectorWidget from './ChannelSelectorWidget';
 
 function Stocks() {
     const [portfolio, setPortfolio] = useState([]);
     const [prices, setPrices] = useState({});
     const [{ clientId, clientName }, setClient] = useState({});
     const setDefaultClient = () => setClient({ clientId: "", clientName: "" });
-    const [channelWidgetState, setChannelWidgetState] = useState(false);
-    // useGlue(registerSetClientMethod(setClient));
-    // useGlue(subscribeForSharedContext(setClient));
-    useGlue(subscribeForChannels(setClient));
     useGlue(createInstrumentStream);
     const subscription = useGlue(
         (glue, portfolio) => {
@@ -32,8 +22,7 @@ function Stocks() {
         },
         [portfolio]
     );
-    const onClick = useGlue(openStockDetails);
-    // const updateClientContext = useGlue(setClientPortfolioSharedContext);
+    const onClick = useGlue(openStockDetailsInWorkspace);
     useEffect(() => {
         const fetchPortfolio = async () => {
             try {
@@ -50,12 +39,8 @@ function Stocks() {
     }, [clientId]);
 
     const glue = useContext(GlueContext);
-
-    // Get the channel names and colors and pass them as props to the ChannelSelectorWidget component.
-    const channelNamesAndColors = useGlue(getChannelNamesAndColors);
-    // The callback that will join the newly selected channel. Pass it as props to the ChannelSelectorWidget component to be called whenever a channel is selected.
-    const onChannelSelected = useGlue(joinChannel);
-    return (
+    useGlue(setClientFromWorkspace(setClient));
+     return (
         <div className="container-fluid">
             <div className="row">
                 <div className="col-md-2">
@@ -75,20 +60,11 @@ function Stocks() {
                         Stocks
                     </h1>
                 </div>
-                <div className="col-md-2 align-self-center">
-                    <ChannelSelectorWidget
-                        key={channelWidgetState}
-                        channelNamesAndColors={channelNamesAndColors}
-                        onChannelSelected={onChannelSelected}
-                        onDefaultChannelSelected={setDefaultClient}
-                    />
-                </div>
             </div>
             <button
                 type="button"
                 className="mb-3 btn btn-primary"
                 onClick={() => {
-                    setChannelWidgetState(!channelWidgetState);
                     setDefaultClient();
                 }}
             >

@@ -1,3 +1,6 @@
+5.2.1
+fix: contexts - related to GW context protocol v2 support G4E-3353
+fix: logger - change default log level to warn
 5.2.0
 feat: contexts - GW context protocol v2 support G4E-3353
 fix: contexts - get was returning empty object G4E-3074

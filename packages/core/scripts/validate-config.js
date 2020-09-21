@@ -8,7 +8,7 @@ if (version.indexOf('-') === -1) {
     // remove lines that start with -
     lines = lines.filter((line) => !line.trim().startsWith('-'));
 
-    if (lines.indexOf(version) === -1) {
+    if (!lines.some((line) => line.includes(version))) {
         console.error(`missing info about ${version} in changelog.md, found versions are ${JSON.stringify(lines)}`);
         process.exit(1);
     }

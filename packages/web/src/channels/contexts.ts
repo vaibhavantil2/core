@@ -23,17 +23,21 @@ export class SharedContextSubscriber {
 
         const contextName = this.createContextName(name);
 
-        return this.contexts.subscribe(contextName, (data, _, __, ___, extraData) => {
-            callback(data.data, data, extraData?.updaterId);
+        return this.contexts.subscribe(contextName, (context, _, __, ___, extraData) => {
+            const contextWithDataObj = this.setContextDataToEmptyObjIfMissing(context);
+
+            callback(contextWithDataObj.data, contextWithDataObj, extraData?.updaterId);
         });
     }
 
     public async switchChannel(name: string): Promise<void> {
         this.unsubscribe();
         const contextName = this.createContextName(name);
-        this.unsubscribeFunc = await this.contexts.subscribe(contextName, (data, _, __, ___, extraData) => {
+        this.unsubscribeFunc = await this.contexts.subscribe(contextName, (context, _, __, ___, extraData) => {
+            const contextWithDataObj = this.setContextDataToEmptyObjIfMissing(context);
+
             if (this.callback) {
-                this.callback(data.data, data, extraData?.updaterId);
+                this.callback(contextWithDataObj.data, contextWithDataObj, extraData?.updaterId);
             }
         });
     }
@@ -64,23 +68,61 @@ export class SharedContextSubscriber {
 
             const contextName = this.createContextName(name);
 
-            this.contexts.subscribe(contextName, (data) => {
-                resolve(data);
+            this.contexts.subscribe(contextName, (context) => {
+                const contextWithDataObj = this.setContextDataToEmptyObjIfMissing(context);
+
+                resolve(contextWithDataObj);
             }).then((unsubscribeFunc) => unsubscribeFunc());
         });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public update(name: string, data: any): Promise<void> {
+    public updateChannel(name: string, data: { name: string, meta: any, data: any }): Promise<void> {
         const contextName = this.createContextName(name);
-        return this.contexts.update(contextName, data);
+        const newData: { name: string, meta: any, data?: any } = {
+            name: data.name,
+            meta: data.meta
+        };
+
+        if (data?.data && !this.isEmptyObject(data.data)) {
+            newData.data = data.data;
+        }
+
+        return this.contexts.update(contextName, newData);
+    }
+
+    public updateData(name: string, data: any) {
+        const contextName = this.createContextName(name);
+        if (this.contexts.setPathSupported) {
+            const pathValues: Glue42Web.Contexts.PathValue[] = Object.keys(data).map((key) => {
+                return {
+                    path: `data.${key}`,
+                    value: data[key]
+                };
+            });
+            return this.contexts.setPaths(contextName, pathValues);
+        } else {
+            // Pre @glue42/core 5.2.0. Note that we update the data property only.
+            return this.contexts.update(contextName, { data });
+        }
+    }
+
+    public isChannel(name: string): boolean {
+        return this.all().some((channelName) => channelName === name);
+    }
+
+    public setContextDataToEmptyObjIfMissing = (context: Glue42Web.Channels.ChannelContext): Glue42Web.Channels.ChannelContext => {
+        return {
+            ...context,
+            data: context.data || {}
+        };
     }
 
     private createContextName(name: string): string {
-        return CONTEXT_PREFIX + name;
+        return `${CONTEXT_PREFIX}${name}`;
     }
 
-    private isChannel(name: string): boolean {
-        return this.all().some((channelName) => channelName === name);
+    private isEmptyObject(obj: object): boolean {
+        return Object.keys(obj).length === 0 && obj.constructor === Object;
     }
 }
