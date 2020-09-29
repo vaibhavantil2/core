@@ -25,8 +25,8 @@ export class BaseMetric<T> implements Glue42Core.Metrics.Metric {
         transport.createMetric(this);
     }
 
-    public update(newValue: T) {
+    public update(newValue: T): Promise<void> {
         this.value = newValue;
-        this.transport.updateMetric(this);
+        return this.transport.updateMetric(this);
     }
 }

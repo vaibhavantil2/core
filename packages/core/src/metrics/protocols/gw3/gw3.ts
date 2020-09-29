@@ -82,100 +82,97 @@ export default function (connection: Connection, config: MetricsSettings): Proto
         });
     };
 
-    const createSystem = (system: Glue42Core.Metrics.System): void => {
+    const createSystem = async (system: Glue42Core.Metrics.System): Promise<void> => {
         if (system.parent === undefined) {
             return;
         }
 
-        joinPromise.then(() => {
-            const metric = {
-                name: normalizeMetricName(system.path.join("/") + "/" + system.name + "/State"),
-                type: "object",
-                composite: {
-                    Description: {
-                        type: "string",
-                        description: "",
-                    },
-                    Value: {
-                        type: "number",
-                        description: "",
-                    },
+        await joinPromise;
+        const metric = {
+            name: normalizeMetricName(system.path.join("/") + "/" + system.name + "/State"),
+            type: "object",
+            composite: {
+                Description: {
+                    type: "string",
+                    description: "",
                 },
-                description: "System state",
-                context: {},
-            };
+                Value: {
+                    type: "number",
+                    description: "",
+                },
+            },
+            description: "System state",
+            context: {},
+        };
 
-            const createMetricsMsg = {
-                type: "define",
-                metrics: [metric],
-            };
+        const createMetricsMsg = {
+            type: "define",
+            metrics: [metric],
+        };
 
-            session.send(createMetricsMsg);
-        });
+        session.send(createMetricsMsg);
     };
 
-    const updateSystem = (system: Glue42Core.Metrics.System, state: Glue42Core.Metrics.State): void => {
-        joinPromise.then(() => {
+    const updateSystem = async (system: Glue42Core.Metrics.System, state: Glue42Core.Metrics.State): Promise<void> => {
+        await joinPromise;
 
-            const shadowedUpdateMetric = {
-                type: "publish",
-                values: [{
-                    name: normalizeMetricName(system.path.join("/") + "/" + system.name + "/State"),
-                    value: {
-                        Description: state.description,
-                        Value: state.state,
-                    },
-                    timestamp: Date.now(),
-                }],
-            };
+        const shadowedUpdateMetric = {
+            type: "publish",
+            values: [{
+                name: normalizeMetricName(system.path.join("/") + "/" + system.name + "/State"),
+                value: {
+                    Description: state.description,
+                    Value: state.state,
+                },
+                timestamp: Date.now(),
+            }],
+        };
 
-            session.send(shadowedUpdateMetric);
+        session.send(shadowedUpdateMetric);
 
-            const stateObj = composeMsgForRootStateMetric(system);
-            const rootMetric = {
-                type: "publish",
-                peer_id: connection.peerId,
-                values: [{
-                    name: "/State",
-                    value: {
-                        Description: stateObj.description,
-                        Value: stateObj.value,
-                    },
-                    timestamp: Date.now(),
-                }],
-            };
+        const stateObj = composeMsgForRootStateMetric(system);
+        const rootMetric = {
+            type: "publish",
+            peer_id: connection.peerId,
+            values: [{
+                name: "/State",
+                value: {
+                    Description: stateObj.description,
+                    Value: stateObj.value,
+                },
+                timestamp: Date.now(),
+            }],
+        };
 
-            session.send(rootMetric);
-
-        });
+        session.send(rootMetric);
     };
 
-    const createMetric = (metric: Glue42Core.Metrics.Metric): void => {
+    const createMetric = async (metric: Glue42Core.Metrics.Metric): Promise<void> => {
         const metricClone = cloneMetric(metric);
-        joinPromise.then(() => {
-            const m = serializeMetric(metricClone);
+        await joinPromise;
+        const m = serializeMetric(metricClone);
 
-            const createMetricsMsg = {
-                type: "define",
-                metrics: [m],
-            };
+        const createMetricsMsg = {
+            type: "define",
+            metrics: [m],
+        };
 
-            session.send(createMetricsMsg);
-            if (typeof metricClone.value !== "undefined") {
-                // do not use updateMetric because it will dispatch the call (joinPromise.then)
-                // which leads to method calls reorder. It is safe to call updateMetricCore directly
-                // because we are being executed in joinPromise.then
-                updateMetricCore(metricClone);
-            }
-        });
+        session.send(createMetricsMsg);
+        if (typeof metricClone.value !== "undefined") {
+            // do not use updateMetric because it will dispatch the call (joinPromise.then)
+            // which leads to method calls reorder. It is safe to call updateMetricCore directly
+            // because we are being executed in joinPromise.then
+            updateMetricCore(metricClone);
+        }
     };
 
-    const updateMetric = (metric: Glue42Core.Metrics.Metric): void => {
+    const updateMetric = async (metric: Glue42Core.Metrics.Metric): Promise<void> => {
         const metricClone = cloneMetric(metric);
-        joinPromise.then(() => updateMetricCore(metricClone));
+        await joinPromise;
+        updateMetricCore(metricClone);
     };
 
-    const updateMetricCore = (metric: Glue42Core.Metrics.Metric): void => {
+    const updateMetricCore = (metric: Glue42Core.Metrics.Metric): Promise<void> => {
         if (canUpdate()) {
             const value = getMetricValueByType(metric);
             const publishMetricsMsg = {
@@ -186,8 +183,9 @@ export default function (connection: Connection, config: MetricsSettings): Proto
                     timestamp: Date.now(),
                 }],
             };
-            session.send(publishMetricsMsg);
+            return session.send(publishMetricsMsg);
         }
+        return Promise.resolve();
     };
 
     const cloneMetric = (metric: Glue42Core.Metrics.Metric): Glue42Core.Metrics.Metric => {

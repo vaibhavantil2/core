@@ -6,19 +6,19 @@ export class NullProtocol implements Protocol {
         // do nothing
     }
 
-    public createSystem(system: Glue42Core.Metrics.System): void {
-        // do nothing
+    public createSystem(system: Glue42Core.Metrics.System): Promise<void> {
+        return Promise.resolve();
     }
 
-    public updateSystem(metric: Glue42Core.Metrics.System, state: Glue42Core.Metrics.State): void {
-        // do nothing
+    public updateSystem(metric: Glue42Core.Metrics.System, state: Glue42Core.Metrics.State): Promise<void> {
+        return Promise.resolve();
     }
 
-    public createMetric(metric: Glue42Core.Metrics.Metric): void {
-        // do nothing
+    public createMetric(metric: Glue42Core.Metrics.Metric): Promise<void> {
+        return Promise.resolve();
     }
 
-    public updateMetric(metric: Glue42Core.Metrics.Metric): void {
-        // do nothing
+    public updateMetric(metric: Glue42Core.Metrics.Metric): Promise<void> {
+        return Promise.resolve();
     }
 }

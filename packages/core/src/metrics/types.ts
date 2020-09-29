@@ -19,8 +19,8 @@ export interface MetricsSettings {
 
 export interface Protocol {
     init(repo: Glue42Core.Metrics.Repository): void;
-    createSystem(system: Glue42Core.Metrics.System): void;
-    updateSystem(metric: Glue42Core.Metrics.System, state: Glue42Core.Metrics.State): void;
-    createMetric(metric: Glue42Core.Metrics.Metric): void;
-    updateMetric(metric: Glue42Core.Metrics.Metric): void;
+    createSystem(system: Glue42Core.Metrics.System): Promise<void>;
+    updateSystem(metric: Glue42Core.Metrics.System, state: Glue42Core.Metrics.State): Promise<void>;
+    createMetric(metric: Glue42Core.Metrics.Metric): Promise<void>;
+    updateMetric(metric: Glue42Core.Metrics.Metric): Promise<void>;
 }
