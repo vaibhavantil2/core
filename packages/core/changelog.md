@@ -1,3 +1,5 @@
+5.2.2
+fix: perf metrics - handle promise rejections
 5.2.1
 fix: contexts - related to GW context protocol v2 support G4E-3353
 fix: logger - change default log level to warn

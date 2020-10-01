@@ -9,9 +9,9 @@ export class ObjectMetric extends BaseMetric<object> implements Glue42Core.Metri
         super(definition, system, transport, value, metricTypes.OBJECT);
     }
 
-    public update(newValue: object) {
+    public update(newValue: object): Promise<void> {
         this.mergeValues(newValue);
-        this.transport.updateMetric(this);
+        return this.transport.updateMetric(this);
     }
 
     private mergeValues(values: any) {

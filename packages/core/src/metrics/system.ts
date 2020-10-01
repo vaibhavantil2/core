@@ -69,13 +69,10 @@ export default function system(name: string, repo: Glue42Core.Metrics.Repository
         return _getOrCreateMetric<TimestampMetric>(definition, MetricTypes.TIMESTAMP, value, (metricDef: Glue42Core.Metrics.MetricDefinition) => new TimestampMetric(metricDef, me, _transport, value));
     }
 
-    function _getOrCreateMetric<T extends Glue42Core.Metrics.Metric>(metricObject: Glue42Core.Metrics.MetricDefinition | string,
-                                                                     expectedType: number,
-                                                                     value: any,
-                                                                     createMetric: (metricDef: Glue42Core.Metrics.MetricDefinition, me?: Glue42Core.Metrics.System, _transport?: Protocol, value?: any) => T): T {
-        let metricDef = {name: ""};
+    function _getOrCreateMetric<T extends Glue42Core.Metrics.Metric>(metricObject: Glue42Core.Metrics.MetricDefinition | string, expectedType: number, value: any, createMetric: (metricDef: Glue42Core.Metrics.MetricDefinition, me?: Glue42Core.Metrics.System, _transport?: Protocol, value?: any) => T): T {
+        let metricDef = { name: "" };
         if (typeof metricObject === "string") {
-            metricDef = {name: metricObject};
+            metricDef = { name: metricObject };
         } else {
             metricDef = metricObject;
         }
@@ -89,7 +86,9 @@ export default function system(name: string, repo: Glue42Core.Metrics.Repository
             }
 
             if (typeof value !== "undefined") {
-                existing.update(value);
+                existing
+                    .update(value)
+                    .catch(() => { /** swallow */});
             }
 
             return existing as T;

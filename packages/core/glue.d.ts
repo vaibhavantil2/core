@@ -1294,7 +1294,7 @@ export namespace Glue42Core {
             value: any;
 
             /** Updates the value of the metric. */
-            update(value: any): void;
+            update(value: any): Promise<void>;
         }
 
         /** Count metric. */
@@ -1307,7 +1307,7 @@ export namespace Glue42Core {
              * Updates the value of the metric.
              * @param value Value with which to update the metric.
              */
-            update(value: number): void;
+            update(value: number): Promise<void>;
 
             /**
              * Increments the value of the metric by the specified number.
@@ -1338,7 +1338,7 @@ export namespace Glue42Core {
              * Updates the value of the metric.
              * @param value Value with which to update the metric.
              */
-            update(value: number): void;
+            update(value: number): Promise<void>;
 
             /**
              * Increments the value of the metric by the specified number.
@@ -1369,7 +1369,7 @@ export namespace Glue42Core {
              * Updates the value of the metric.
              * @param value Value with which to update the metric.
              */
-            update(value: any): void;
+            update(value: any): Promise<void>;
         }
 
         /** String metric. */
@@ -1382,7 +1382,7 @@ export namespace Glue42Core {
              * Updates the value of the metric.
              * @param value Value with which to update the metric.
              */
-            update(value: string): void;
+            update(value: string): Promise<void>;
         }
 
         /** Timestamp metric. */
@@ -1395,7 +1395,7 @@ export namespace Glue42Core {
              * Updates the value of the metric.
              * @param value Value with which to update the metric.
              */
-            update(value: Date): void;
+            update(value: Date): Promise<void>;
 
             /** Updates the metric with the current date and time. */
             now(): void;
