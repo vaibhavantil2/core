@@ -1,6 +1,6 @@
 {
     "name": "@glue42/workspaces-app",
-    "version": "1.1.8",
+    "version": "1.1.9",
     "description": "Glue42's PWA implementation of Workspaces",
     "browser": "dist/index.js",
     "scripts": {
@@ -32,8 +32,8 @@
     "license": "MIT",
     "dependencies": {
         "@glue42/golden-layout": "^1.1.2",
-        "@glue42/web": "^1.4.3",
-        "@glue42/workspaces-api": "^1.0.3",
+        "@glue42/web": "^1.4.4",
+        "@glue42/workspaces-api": "^1.0.4",
         "callback-registry": "^2.5.2",
         "jquery": "~3.5.1",
         "resize-observer-polyfill": "^1.5.1",
