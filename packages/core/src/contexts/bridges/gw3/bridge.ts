@@ -794,6 +794,24 @@ export class GW3Bridge implements ContextBridge {
 
     private invokeUpdateCallbacks(contextData: ContextData, data: any, delta?: ContextDelta, extraData?: any) {
         delta = delta || { added: {}, updated: {}, reset: {}, removed: [] };
+        if (delta.commands) {
+            // clear added, updated, removed, reset
+            delta.added = delta.updated = delta.reset = {};
+            delta.removed = [];
+            for (const command of delta.commands) {
+                if (command.type === "remove") {
+                    // push the removal of top level props only
+                    if (command.path.indexOf(".") === -1) {
+                        delta.removed.push(command.path);
+                    }
+                    setValueToPath(delta.updated, null, command.path);
+                } else if (command.type === "set") {
+                    setValueToPath(delta.updated, command.value, command.path);
+                }
+            }
+
+        }
+
         for (const updateCallbackIndex in contextData.updateCallbacks) {
             if (contextData.updateCallbacks.hasOwnProperty(updateCallbackIndex)) {
                 try {
