@@ -1,6 +1,6 @@
 {
     "name": "@glue42/web",
-    "version": "1.4.4",
+    "version": "1.5.0",
     "description": "",
     "main": "dist/web.umd.js",
     "module": "dist/web.es.js",
