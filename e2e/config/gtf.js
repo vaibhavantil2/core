@@ -1245,6 +1245,43 @@ var GtfCore = /*#__PURE__*/function () {
       });
     }
   }, {
+    key: "wait",
+    value: function wait(mSeconds, funcToCall) {
+      var fakePromiseResolve;
+      var isCancelled = false;
+      var fakePromise = new Promise(function (res, rej) {
+        fakePromiseResolve = res;
+      });
+      var promise = new Promise(function (res, rej) {
+        setTimeout(function () {
+          if (isCancelled) {
+            return;
+          }
+
+          try {
+            if (funcToCall) {
+              funcToCall();
+            }
+
+            res();
+          } catch (error) {
+            rej(error);
+          }
+        }, mSeconds);
+      });
+      fakePromise.then(function () {
+        isCancelled = true;
+      });
+      Promise.race([promise, fakePromise]);
+
+      var cancel = function cancel() {
+        fakePromiseResolve();
+      };
+
+      promise.cancel = cancel;
+      return promise;
+    }
+  }, {
     key: "waitFor",
     value: function waitFor(invocations, callback) {
       var left = invocations;

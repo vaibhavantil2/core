@@ -1,7 +1,7 @@
 import { Glue42Web } from "../../../packages/web/web.d";
 import { Glue42CoreConfig } from "../../../packages/web/src/glue.config";
 import { GtfApp } from "./app";
-import { Gtf } from "./types";
+import { CancellablePromise, Gtf } from "./types";
 
 export class GtfCore implements Gtf.Core {
     private readonly controlMethodName = "G42Core.E2E.Control";
@@ -22,6 +22,45 @@ export class GtfCore implements Gtf.Core {
                 h();
             }
         });
+    }
+
+    public wait(mSeconds: number, funcToCall: any): CancellablePromise<any> {
+        let fakePromiseResolve: (value?: unknown) => void;
+        let isCancelled = false;
+
+        const fakePromise = new Promise((res, rej) => {
+            fakePromiseResolve = res;
+        });
+
+        const promise = new Promise((res, rej) => {
+            setTimeout(() => {
+                if (isCancelled) {
+                    return;
+                }
+                try {
+                    if (funcToCall) {
+                        funcToCall();
+                    }
+                    res();
+                } catch (error) {
+                    rej(error);
+                }
+            }, mSeconds);
+        });
+
+        fakePromise.then(() => {
+            isCancelled = true;
+        });
+
+        Promise.race([promise, fakePromise]);
+
+        const cancel = () => {
+            fakePromiseResolve();
+        };
+
+        (promise as any).cancel = cancel;
+
+        return promise as CancellablePromise<any>;
     }
 
     public waitFor(invocations: number, callback: () => any): () => void {
