@@ -55,6 +55,20 @@ describe("contexts.core", () => {
         return result.promise;
     });
 
+    it("should get copy objects of the contexts", async () => {
+        const result = new PromiseWrapper();
+        const ctxName = generate();
+        await glue2.contexts.set(ctxName, { a: 1 });
+        glue.contexts.subscribe(ctxName, (ctx) => {
+            if (ctx.b === 1) {
+                result.resolve();
+            }
+            ctx.b = 1;
+            glue.contexts.update(ctxName, ctx);
+        });
+        return result.promise;
+    });
+
     for (const testCase of testCases) {
         it("hear myself - " + testCase.title, (done) => {
             verify(glue, glue, testCase.test, done);

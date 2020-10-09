@@ -478,9 +478,9 @@ export class GW3Bridge implements ContextBridge {
 
                 // if we've created the context ourselves using
                 // createContext
-                if (contextData.context &&
-                    contextData.sentExplicitSubscription) {
-                    callback(contextData.context, contextData.context, [], thisCallbackSubscriptionNumber);
+                if (contextData.context && contextData.sentExplicitSubscription) {
+                    const clone = deepClone(contextData.context);
+                    callback(clone, clone, [], thisCallbackSubscriptionNumber);
                     return Promise.resolve(thisCallbackSubscriptionNumber);
                 }
 
@@ -502,14 +502,16 @@ export class GW3Bridge implements ContextBridge {
                 // our activity, which we're tracking anyway
                 // no need to gw-subscribe, just push the snapshot to the new subscriber
 
-                callback(contextData.context, contextData.context, [], thisCallbackSubscriptionNumber);
+                const clone = deepClone(contextData.context);
+                callback(clone, clone, [], thisCallbackSubscriptionNumber);
                 return Promise.resolve(thisCallbackSubscriptionNumber);
             }
         } else {
             // not first subscriber; no need to gw-subscribe, just push snapshot
             // (3) -> (3)
 
-            callback(contextData.context, contextData.context, [], thisCallbackSubscriptionNumber);
+            const clone = deepClone(contextData.context);
+            callback(clone, clone, [], thisCallbackSubscriptionNumber);
             return Promise.resolve(thisCallbackSubscriptionNumber);
         }
     }
@@ -566,7 +568,7 @@ export class GW3Bridge implements ContextBridge {
 
         if (this._contextNameToData[contextData.name] === contextData &&
             !deepEqual(oldContext, contextData.context)) {
-            this.invokeUpdateCallbacks(contextData, contextData.context, delta, extraData);
+            this.invokeUpdateCallbacks(contextData, delta, extraData);
         }
     }
 
@@ -788,11 +790,11 @@ export class GW3Bridge implements ContextBridge {
         if (justSeen ||
             !deepEqual(contextData.context, oldContext) ||
             updatedMessageType === msg.GW_MESSAGE_SUBSCRIBED_CONTEXT) {
-            this.invokeUpdateCallbacks(contextData, contextData.context, contextUpdatedMsg.delta, { updaterId: contextUpdatedMsg.updater_id });
+            this.invokeUpdateCallbacks(contextData, contextUpdatedMsg.delta, { updaterId: contextUpdatedMsg.updater_id });
         }
     }
 
-    private invokeUpdateCallbacks(contextData: ContextData, data: any, delta?: ContextDelta, extraData?: any) {
+    private invokeUpdateCallbacks(contextData: ContextData, delta?: ContextDelta, extraData?: any) {
         delta = delta || { added: {}, updated: {}, reset: {}, removed: [] };
         if (delta.commands) {
             // clear added, updated, removed, reset
@@ -816,7 +818,7 @@ export class GW3Bridge implements ContextBridge {
             if (contextData.updateCallbacks.hasOwnProperty(updateCallbackIndex)) {
                 try {
                     const updateCallback = contextData.updateCallbacks[updateCallbackIndex];
-                    updateCallback(deepClone(data), Object.assign({}, delta.added || {}, delta.updated || {}, delta.reset || {}), delta.removed, parseInt(updateCallbackIndex, 10), extraData);
+                    updateCallback(deepClone(contextData.context), Object.assign({}, delta.added || {}, delta.updated || {}, delta.reset || {}), delta.removed, parseInt(updateCallbackIndex, 10), extraData);
                 } catch (err) {
                     this._logger.debug("callback error: " + JSON.stringify(err));
                 }

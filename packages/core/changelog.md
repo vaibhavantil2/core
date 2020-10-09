@@ -1,3 +1,5 @@
+5.2.4
+fix: contexts - clone context object when passing to subscribers
 5.2.3
 fix: contexts - missing delta in update callback
 5.2.2
