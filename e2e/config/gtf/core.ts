@@ -6,9 +6,22 @@ import { Gtf } from "./types";
 export class GtfCore implements Gtf.Core {
     private readonly controlMethodName = "G42Core.E2E.Control";
     private windowNameCounter = 0;
+    private activeWindowHooks: any[] = [];
 
     constructor(private readonly glue: Glue42Web.API) {
         console.log("GTF CREATED");
+    }
+
+    public addWindowHook(h: any): void {
+        this.activeWindowHooks.push(h);
+    }
+
+    public clearWindowActiveHooks(): void {
+        this.activeWindowHooks.forEach((h: any) => {
+            if (typeof h === "function") {
+                h();
+            }
+        });
     }
 
     public waitFor(invocations: number, callback: () => any): () => void {
@@ -57,7 +70,6 @@ export class GtfCore implements Gtf.Core {
         }
 
         const supportInstance = await foundApp.start();
-
         await this.waitForControlInstance(supportInstance.agm.instance);
 
         return new GtfApp(this.glue, supportInstance, this.controlMethodName);

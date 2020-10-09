@@ -6,6 +6,9 @@ export interface ControlArgs {
     params: any;
 }
 
+export interface CancellablePromise<T> extends Promise<T> {
+    cancel: () => void;
+}
 export namespace Gtf {
     export interface App {
         stop(): Promise<void>;

@@ -1033,22 +1033,137 @@ var GtfApp = /*#__PURE__*/function () {
           while (1) {
             switch (_context6.prev = _context6.next) {
               case 0:
-                console.log("Sending control message with args: ".concat(JSON.stringify(controlArgs)));
-                _context6.next = 3;
+                _context6.next = 2;
                 return this.glue.interop.invoke(this.controlMethodName, controlArgs, this.myInstance.agm);
 
-              case 3:
+              case 2:
                 invResult = _context6.sent;
-                console.log("Received response: ".concat(JSON.stringify(invResult.returned)));
                 return _context6.abrupt("return", invResult.returned.result);
 
-              case 6:
+              case 4:
               case "end":
                 return _context6.stop();
             }
           }
         }, _callee6, this);
       }));
+    }
+  }, {
+    key: "agm",
+    get: function get() {
+      var _this = this;
+
+      return {
+        register: function register(methodDefinition) {
+          var controlArgs = {
+            operation: 'register',
+            params: {
+              methodDefinition: methodDefinition
+            }
+          };
+          return _this.sendControl(controlArgs);
+        },
+        unregister: function unregister(methodDefinition) {
+          var controlArgs = {
+            operation: 'unregister',
+            params: {
+              methodDefinition: methodDefinition
+            }
+          };
+          return _this.sendControl(controlArgs);
+        },
+        registerAsync: function registerAsync(methodDefinition) {
+          var controlArgs = {
+            operation: 'registerAsync',
+            params: {
+              methodDefinition: methodDefinition
+            }
+          };
+          return _this.sendControl(controlArgs);
+        },
+        createStream: function createStream(methodDefinition) {
+          return new Promise(function (resolve, reject) {
+            return __awaiter(_this, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+              var _this2 = this;
+
+              var registerStreamOptions, closeStream, pushStream, streamFacade;
+              return regeneratorRuntime.wrap(function _callee8$(_context8) {
+                while (1) {
+                  switch (_context8.prev = _context8.next) {
+                    case 0:
+                      registerStreamOptions = {
+                        operation: "createStream",
+                        params: {
+                          methodDefinition: methodDefinition
+                        }
+                      };
+
+                      closeStream = function closeStream() {
+                        return __awaiter(_this2, void 0, void 0, /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+                          var closeStreamOptions;
+                          return regeneratorRuntime.wrap(function _callee7$(_context7) {
+                            while (1) {
+                              switch (_context7.prev = _context7.next) {
+                                case 0:
+                                  closeStreamOptions = {
+                                    operation: "closeStream",
+                                    params: {
+                                      methodDefinition: methodDefinition
+                                    }
+                                  };
+                                  _context7.next = 3;
+                                  return this.sendControl(closeStreamOptions);
+
+                                case 3:
+                                case "end":
+                                  return _context7.stop();
+                              }
+                            }
+                          }, _callee7, this);
+                        }));
+                      };
+
+                      pushStream = function pushStream(data, branches) {
+                        var pushStreamOptions = {
+                          operation: "pushStream",
+                          params: {
+                            data: data,
+                            branches: branches
+                          }
+                        };
+
+                        _this2.sendControl(pushStreamOptions);
+                      };
+
+                      _context8.prev = 3;
+                      _context8.next = 6;
+                      return this.sendControl(registerStreamOptions);
+
+                    case 6:
+                      streamFacade = {
+                        close: closeStream,
+                        push: pushStream,
+                        name: methodDefinition.name
+                      };
+                      resolve(streamFacade);
+                      _context8.next = 13;
+                      break;
+
+                    case 10:
+                      _context8.prev = 10;
+                      _context8.t0 = _context8["catch"](3);
+                      reject(_context8.t0);
+
+                    case 13:
+                    case "end":
+                      return _context8.stop();
+                  }
+                }
+              }, _callee8, this, [[3, 10]]);
+            }));
+          });
+        }
+      };
     }
   }]);
 
@@ -1111,10 +1226,25 @@ var GtfCore = /*#__PURE__*/function () {
     this.glue = glue;
     this.controlMethodName = "G42Core.E2E.Control";
     this.windowNameCounter = 0;
+    this.activeWindowHooks = [];
     console.log("GTF CREATED");
   }
 
   _createClass(GtfCore, [{
+    key: "addWindowHook",
+    value: function addWindowHook(h) {
+      this.activeWindowHooks.push(h);
+    }
+  }, {
+    key: "clearWindowActiveHooks",
+    value: function clearWindowActiveHooks() {
+      this.activeWindowHooks.forEach(function (h) {
+        if (typeof h === "function") {
+          h();
+        }
+      });
+    }
+  }, {
     key: "waitFor",
     value: function waitFor(invocations, callback) {
       var left = invocations;
@@ -1307,11 +1437,205 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.GtfAgm = void 0;
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var GtfAgm = function GtfAgm() {
-  _classCallCheck(this, GtfAgm);
-};
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var GtfAgm = /*#__PURE__*/function () {
+  function GtfAgm(glue) {
+    _classCallCheck(this, GtfAgm);
+
+    this.glue = glue;
+    this.counter = 0;
+  }
+
+  _createClass(GtfAgm, [{
+    key: "getMethodName",
+    value: function getMethodName() {
+      this.counter++;
+      return "agm.integration.tests.method.".concat(Date.now(), ".").concat(this.counter);
+    }
+  }, {
+    key: "clearMethod",
+    value: function clearMethod(name, targetAgmInstance) {
+      var _this = this;
+
+      return new Promise(function (resolve, reject) {
+        var cancel = setTimeout(function () {
+          reject("clearMethod timed out!");
+        }, 5000);
+
+        var un = _this.glue.interop.serverMethodRemoved(function (data) {
+          var server = data.server || {};
+          var method = data.method || {};
+
+          if (method.name !== name) {
+            return;
+          }
+
+          if (_this.isValidServer(server, targetAgmInstance)) {
+            un();
+            clearTimeout(cancel);
+            resolve();
+          }
+        });
+
+        var methodToRemove = _this.glue.interop.methods().find(function (method) {
+          return method.name === name;
+        });
+
+        if (methodToRemove === undefined) {
+          throw new Error("Method ".concat(name, " was not found"));
+        }
+
+        _this.glue.interop.unregister(methodToRemove);
+      });
+    }
+  }, {
+    key: "waitForMethod",
+    value: function waitForMethod(glueToUse, methodDefinition, targetAgmInstance, timeout) {
+      var _this2 = this;
+
+      if (glueToUse.agm) {
+        targetAgmInstance = targetAgmInstance || glueToUse.agm.instance;
+      } else {
+        throw new Error("The agm of the passed glue is undefined");
+      }
+
+      return new Promise(function (resolve, reject) {
+        var un;
+        var cancel = setTimeout(function () {
+          if (un) {
+            un();
+          }
+
+          reject("Timeout waiting for method: ".concat(JSON.stringify(methodDefinition), " from glue version: ").concat(glueToUse.version));
+        }, timeout || 5000);
+
+        if (glueToUse.agm) {
+          un = glueToUse.agm.serverMethodAdded(function (data) {
+            if (_typeof(methodDefinition) === "object" && methodDefinition.name !== data.method.name) {
+              return;
+            }
+
+            if (typeof methodDefinition === "string" && data.method.name !== methodDefinition) {
+              return;
+            }
+
+            if (typeof methodDefinition === "string" && data.method.name !== methodDefinition) {
+              return;
+            }
+
+            if (targetAgmInstance && _this2.isValidServer(data.server, targetAgmInstance)) {
+              if (un) {
+                un();
+              }
+
+              clearTimeout(cancel);
+              resolve();
+            } else if (!targetAgmInstance) {
+              reject("The agm of the passed glue is undefined");
+            }
+          });
+        } else {
+          reject("The agm of the passed glue is undefined");
+        }
+      });
+    }
+  }, {
+    key: "clearStream",
+    value: function clearStream(stream, targetAgmInstance) {
+      var _this3 = this;
+
+      return new Promise(function (resolve, reject) {
+        var cancel = setTimeout(function () {
+          reject("clearStream timed out!");
+        }, 5000);
+        var name = stream.name;
+
+        var un = _this3.glue.agm.serverMethodRemoved(function (data) {
+          var server = data.server;
+          var method = data.method;
+
+          if (method.name !== name) {
+            return;
+          }
+
+          if (_this3.isValidServer(server, targetAgmInstance)) {
+            _this3.persistentMethodCheck(name).then(function () {
+              un();
+              clearTimeout(cancel);
+              resolve();
+            });
+          }
+        });
+
+        stream.close();
+      });
+    }
+  }, {
+    key: "isValidServer",
+    value: function isValidServer(actualServer, expectedServer) {
+      var expectedInstance = expectedServer.instance;
+      var expectedApplication = expectedServer.application;
+
+      if (!actualServer) {
+        return false;
+      }
+
+      if (actualServer.instance && actualServer.instance === expectedInstance) {
+        return true;
+      }
+
+      if (!actualServer.instance && actualServer.application === expectedApplication) {
+        return true;
+      }
+
+      return false;
+    }
+  }, {
+    key: "persistentMethodCheck",
+    value: function persistentMethodCheck(name) {
+      var _this4 = this;
+
+      var method;
+
+      var methodExists = function methodExists() {
+        return typeof method !== "undefined";
+      };
+
+      return new Promise(function (resolve, reject) {
+        method = _this4.checkMethod(name);
+
+        if (methodExists()) {
+          var interval = setInterval(function () {
+            method = _this4.checkMethod(name);
+
+            if (!methodExists()) {
+              clearInterval(interval);
+              resolve();
+            }
+          }, 100);
+        } else {
+          resolve();
+        }
+      });
+    }
+  }, {
+    key: "checkMethod",
+    value: function checkMethod(name) {
+      return this.glue.agm.methods().find(function (m) {
+        return m.name === name;
+      });
+    }
+  }]);
+
+  return GtfAgm;
+}();
 
 exports.GtfAgm = GtfAgm;
 },{}],"yj11":[function(require,module,exports) {
@@ -1575,7 +1899,7 @@ var startGtf = function startGtf() {
             gtfCore = new _core.GtfCore(glue);
             window.glue = glue;
             window.gtf = Object.assign(gtfCore, {
-              agm: new _agm.GtfAgm()
+              agm: new _agm.GtfAgm(glue)
             }, {
               appManager: new _appManager.GtfAppManager(gtfCore)
             });
