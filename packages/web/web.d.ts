@@ -435,6 +435,24 @@ export namespace Glue42Web {
              * @param name Name of the layout to remove.
              */
             remove(type: LayoutType, name: string): Promise<void>;
+
+            /**
+             * Notifies when a layout is added.
+             * @param callback Callback function to handle the event. Receives the layout as a parameter and returns an unsubscribe function.
+             */
+            onAdded(callback: (layout: Layout) => void): () => void;
+
+            /**
+             * Notifies when a layout is changed.
+             * @param callback Callback function to handle the event. Receives the layout as a parameter and returns an unsubscribe function.
+             */
+            onChanged(callback: (layout: Layout) => void): () => void;
+
+            /**
+             * Notifies when a layout is removed.
+             * @param callback Callback function to handle the event. Receives the layout as a parameter and returns an unsubscribe function.
+             */
+            onRemoved(callback: (layout: Layout) => void): () => void;
         }
 
         /**
@@ -787,6 +805,12 @@ export namespace Glue42Web {
             /** Application version. */
             version: string;
 
+            /** Application icon. */
+            icon: string;
+
+            /** Application caption. */
+            caption: string;
+
             /** Generic object for passing properties, settings, etc., in the for of key/value pairs. */
             userProperties: PropertiesObject;
 
@@ -849,7 +873,12 @@ export namespace Glue42Web {
 
     /**
      * @docmenuorder 9
-     * @ignore
+     * In certain workflow scenarios, your application may need to start (or activate) a specific application.
+     * For instance, you may have an application showing client portfolios with financial instruments.
+     * When the user clicks on an instrument, you want to start an application which shows a chart for that instrument.
+     * In other cases, you may want to present the user with several options for executing an action or handling data from the current application.
+     *
+     * The [**Intents**](../../../../core/capabilities/intents/index.html) API makes all that possible by enabling applications to register, find and raise Intents.
      */
     namespace Intents {
         export interface API {
@@ -876,7 +905,7 @@ export namespace Glue42Web {
              * @param handler The callback that will handle a raised intent. Will be called with an {@link IntentContext} if it is provided by the raising application.
              * @returns An object with an unsubscribe function under the unsubscribe property.
              */
-            addIntentListener(intent: string | { intent: string, contextTypes?: string[], displayName?: string }, handler: (context: IntentContext) => any): { unsubscribe: UnsubscribeFunction };
+            addIntentListener(intent: string | AddIntentListenerRequest, handler: (context: IntentContext) => any): { unsubscribe: UnsubscribeFunction };
 
             /**
              * Searches for registered intents.
@@ -884,6 +913,15 @@ export namespace Glue42Web {
              * @returns Promise that resolves with the found intents that match the provided filtering criteria.
              */
             find(intentFilter?: string | IntentFilter): Promise<Intent[]>;
+        }
+
+        /** Use to define dynamic intents, that will have the same lifespan as your application instance */
+        export interface AddIntentListenerRequest {
+            intent: string;
+            contextTypes?: string[];
+            displayName?: string;
+            icon?: string;
+            description?: string;
         }
 
         /**
@@ -907,7 +945,7 @@ export namespace Glue42Web {
             /**
              * The name of the intent, such as `"CreateCall"`.
              */
-            readonly name: string;
+            name: string;
             /**
              * The set of {@link IntentHandler} that provide an implementation for the intent and can be used to handle an intent request.
              */
@@ -930,31 +968,45 @@ export namespace Glue42Web {
          */
         export interface IntentHandler {
             /**
-             * The name of the application which registered this intent implementation.
+             * The name of the application which registered this intent implementation, as specified in the application configuration.
              */
-            readonly applicationName: string;
+            applicationName: string;
+
+            /* The title of the application which registered this intent implementation, as specified in the application configuration. */
+            applicationTitle: string;
+
+            /* User friendly (longer) description of the application, as specified in the application configuration. */
+            applicationDescription?: string;
+
+            /* Icon URL of the application that has registered the intent handler, as specified in the application configuration. */
+            applicationIcon?: string;
+
             /**
              * The type of the handler.
              * "app" - An application that has declared itself as an implementor of the intent inside of its application definition.
              * "instance" - A running instance of an application that can handle the intent. Also includes dynamically added intents using `addIntentListener()`.
              */
-            readonly type: "app" | "instance";
+            type: "app" | "instance";
+
             /**
-             * The human-readable name of the intent handler.
+             * The human-readable name of the intent handler, as specified in the intent definition.
              */
-            readonly displayName?: string;
+            displayName?: string;
+
             /**
              * The context types this handler supports.
              */
-            readonly contextTypes?: string[];
+            contextTypes?: string[];
+
             /**
              * The id of the running application instance.
              */
-            readonly instanceId?: string;
+            instanceId?: string;
+
             /**
              * The window's title of the running application instance.
              */
-            readonly instanceTitle?: string;
+            instanceTitle?: string;
         }
 
         /**
