@@ -3,7 +3,7 @@ const basePolling = require('./ready-conditions/base-polling');
 module.exports = {
     run: [
         {
-            groupName: "agm"
+            groupName: "interop"
         },
         {
             groupName: "channels"

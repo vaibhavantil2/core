@@ -29,7 +29,12 @@ export class InteropTransport {
 
         if (window.glue42gd) {
             await Promise.all(
-                Object.values(METHODS).map((method) => this.verifyMethodLive(method.name, method.isStream))
+                Object.values(METHODS).map((method) => {
+                    if (method.name === METHODS.coreEvents.name) {
+                        return Promise.resolve();
+                    }
+                    return this.verifyMethodLive(method.name, method.isStream)
+                })
             );
         }
 
