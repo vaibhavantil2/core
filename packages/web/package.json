@@ -1,6 +1,6 @@
 {
     "name": "@glue42/web",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "description": "",
     "main": "dist/web.umd.js",
     "module": "dist/web.es.js",
@@ -33,7 +33,7 @@
     "license": "MIT",
     "dependencies": {
         "@glue42/core": "^5.2.4",
-        "@glue42/workspaces-api": "^1.1.0",
+        "@glue42/workspaces-api": "^1.1.1",
         "callback-registry": "^2.6.0",
         "decoder-validate": "0.0.1",
         "idb": "^5.0.4",
