@@ -4,9 +4,86 @@ import { Gtf, ControlArgs } from "./types";
 export class GtfApp implements Gtf.App {
     constructor(
         private readonly glue: Glue42Web.API,
-        private readonly myInstance: Glue42Web.AppManager.Instance,
+        public readonly myInstance: Glue42Web.AppManager.Instance,
         private readonly controlMethodName: string
     ) { }
+
+    // hristo react tutorial on tuesday
+    public get agm() {
+        return {
+            register: (methodDefinition: string | object) => {
+                    const controlArgs: ControlArgs = {
+                        operation: 'register',
+                        params: {
+                            methodDefinition
+                        }
+                    }
+                    return this.sendControl<void>(controlArgs);
+            },
+            unregister: (methodDefinition: string | object) => {
+                const controlArgs: ControlArgs = {
+                    operation: 'unregister',
+                    params: {
+                        methodDefinition
+                    }
+                }
+                return this.sendControl<void>(controlArgs);
+            },
+            registerAsync: (methodDefinition: string | object) => {
+                    const controlArgs: ControlArgs = {
+                        operation: 'registerAsync',
+                        params: {
+                            methodDefinition
+                        }
+                    }
+                    return this.sendControl<void>(controlArgs);
+            },
+            createStream: (methodDefinition: any): Promise<any> => {
+                return new Promise(async (resolve, reject) => {
+                    const registerStreamOptions: ControlArgs = {
+                        operation: "createStream",
+                        params: {
+                            methodDefinition
+                        }
+                    };
+                    const closeStream = async (): Promise<void> => {
+                        const closeStreamOptions: ControlArgs = {
+                            operation: "closeStream",
+                            params: {
+                                methodDefinition
+                            }
+                        };
+            
+                        await this.sendControl<void>(closeStreamOptions);
+                    };
+            
+                    const pushStream = (data: object, branches?: string | string[]) => {
+                        const pushStreamOptions: ControlArgs = {
+                            operation: "pushStream",
+                            params: {
+                                data,
+                                branches
+                            }
+                        };
+            
+                        this.sendControl<void>(pushStreamOptions);
+                    };
+
+                    try {
+                        await this.sendControl<void>(registerStreamOptions);
+                        const streamFacade = {
+                            close: closeStream,
+                            push: pushStream,
+                            name: methodDefinition.name
+                        };
+                        resolve(streamFacade);
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            }
+        }
+    }
 
     public async stop(): Promise<void> {
         const foundWindow = this.glue.windows.findById(this.myInstance.agm.windowId);
@@ -58,11 +135,8 @@ export class GtfApp implements Gtf.App {
     }
 
     private async sendControl<T>(controlArgs: ControlArgs): Promise<T> {
-        console.log(`Sending control message with args: ${JSON.stringify(controlArgs)}`);
 
         const invResult = await this.glue.interop.invoke<{ result: T }>(this.controlMethodName, controlArgs, this.myInstance.agm);
-
-        console.log(`Received response: ${JSON.stringify(invResult.returned)}`);
 
         return invResult.returned.result;
     }

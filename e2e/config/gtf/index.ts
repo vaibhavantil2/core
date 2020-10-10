@@ -19,7 +19,7 @@ const startGtf = async () => {
     window.glue = glue;
     window.gtf = Object.assign(
         gtfCore,
-        { agm: new GtfAgm() },
+        { agm: new GtfAgm(glue) },
         { appManager: new GtfAppManager(gtfCore) }
     );
 };

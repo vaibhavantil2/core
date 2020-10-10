@@ -1,14 +1,66 @@
 import { Glue42Web } from "../../../packages/web/web.d";
 import { Glue42CoreConfig } from "../../../packages/web/src/glue.config";
 import { GtfApp } from "./app";
-import { Gtf } from "./types";
+import { CancellablePromise, Gtf } from "./types";
 
 export class GtfCore implements Gtf.Core {
     private readonly controlMethodName = "G42Core.E2E.Control";
     private windowNameCounter = 0;
+    private activeWindowHooks: any[] = [];
 
     constructor(private readonly glue: Glue42Web.API) {
         console.log("GTF CREATED");
+    }
+
+    public addWindowHook(h: any): void {
+        this.activeWindowHooks.push(h);
+    }
+
+    public clearWindowActiveHooks(): void {
+        this.activeWindowHooks.forEach((h: any) => {
+            if (typeof h === "function") {
+                h();
+            }
+        });
+    }
+
+    public wait(mSeconds: number, funcToCall: any): CancellablePromise<any> {
+        let fakePromiseResolve: (value?: unknown) => void;
+        let isCancelled = false;
+
+        const fakePromise = new Promise((res, rej) => {
+            fakePromiseResolve = res;
+        });
+
+        const promise = new Promise((res, rej) => {
+            setTimeout(() => {
+                if (isCancelled) {
+                    return;
+                }
+                try {
+                    if (funcToCall) {
+                        funcToCall();
+                    }
+                    res();
+                } catch (error) {
+                    rej(error);
+                }
+            }, mSeconds);
+        });
+
+        fakePromise.then(() => {
+            isCancelled = true;
+        });
+
+        Promise.race([promise, fakePromise]);
+
+        const cancel = () => {
+            fakePromiseResolve();
+        };
+
+        (promise as any).cancel = cancel;
+
+        return promise as CancellablePromise<any>;
     }
 
     public waitFor(invocations: number, callback: () => any): () => void {
@@ -57,7 +109,6 @@ export class GtfCore implements Gtf.Core {
         }
 
         const supportInstance = await foundApp.start();
-
         await this.waitForControlInstance(supportInstance.agm.instance);
 
         return new GtfApp(this.glue, supportInstance, this.controlMethodName);
