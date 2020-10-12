@@ -1,3 +1,58 @@
+## Glue42 Core v1.2.0 (2020-10-12)
+
+#### :rocket: New Feature
+* `web`
+  * [#141](https://github.com/Glue42/core/pull/141) Implemented intents API ([@ggeorgievx](https://github.com/ggeorgievx))
+* `workspaces-api`, `workspaces-app`
+  * [#143](https://github.com/Glue42/core/pull/143) Implemented workspaces events ([@flashd2n](https://github.com/flashd2n)) ([@SvetozarMateev](https://github.com/SvetozarMateev))
+  * [#140](https://github.com/Glue42/core/pull/140) Implemented workspace contexts ([@flashd2n](https://github.com/flashd2n)) ([@SvetozarMateev](https://github.com/SvetozarMateev))
+* `fdc3`
+  * [#116](https://github.com/Glue42/core/pull/116) Added an implementation of the FDC3 Standard - the @glue42/fdc3 package ([@ggeorgievx](https://github.com/ggeorgievx))
+
+#### :bug: Bug Fix
+* `core`, `web`
+  * [#124](https://github.com/Glue42/core/pull/124) Fixed vulnerabilities found in numerous dependencies ([@flashd2n](https://github.com/flashd2n))
+* `web`
+  * [#135](https://github.com/Glue42/core/pull/135) Fixed the application start resolve condition ([@ggeorgievx](https://github.com/ggeorgievx))
+  * [#137](https://github.com/Glue42/core/pull/137) Fixed a bug where the channel's data is undefined instead of an empty object ([@ggeorgievx](https://github.com/ggeorgievx))
+* `fdc3`
+  * [#133](https://github.com/Glue42/core/pull/133) Fixed a bug where `getOrCreateChannel()` was not returning system channels ([@ggeorgievx](https://github.com/ggeorgievx))
+* `workspaces-app`
+  * [#129](https://github.com/Glue42/core/pull/129) Fixed a bug where remote apps cannot open in workspaces ([@flashd2n](https://github.com/flashd2n))
+* `golden-layout`, `workspaces-api`, `workspaces-app`
+  * [#122](https://github.com/Glue42/core/pull/122) Multiple fixes and improvements in workspaces and golden-layout ([@SvetozarMateev](https://github.com/SvetozarMateev))
+
+#### :nail_care: Enhancement
+* `fdc3`, `ng`, `react-hooks`, `web`
+  * [#144](https://github.com/Glue42/core/pull/144) Added optional icon and caption properties to the Application interface ([@ggeorgievx](https://github.com/ggeorgievx))
+  * [#130](https://github.com/Glue42/core/pull/130) Added a way for @glue42/fdc3 to accept the application's name ([@ggeorgievx](https://github.com/ggeorgievx))
+* `core`, `web`
+  * [#138](https://github.com/Glue42/core/pull/138) Added input validation to the @glue42/core's Contexts API ([@ggeorgievx](https://github.com/ggeorgievx))
+* `web`
+  * [#132](https://github.com/Glue42/core/pull/132) Publishing to a channel now utilizes the new `setPaths` contexts functionality for correct context merging ([@ggeorgievx](https://github.com/ggeorgievx))
+* `golden-layout`, `workspaces-app`
+  * [#120](https://github.com/Glue42/core/pull/120) Improved the workspaces tabs behavior ([@SvetozarMateev](https://github.com/SvetozarMateev))
+
+#### :memo: Documentation
+* `web`
+  * [#142](https://github.com/Glue42/core/pull/142) Added Intents docs ([@arjunah](https://github.com/arjunah))
+* Other
+  * [#121](https://github.com/Glue42/core/pull/121) Edited FDC3 docs and JS Tutorial Workspaces chapter ([@arjunah](https://github.com/arjunah))
+  * [#123](https://github.com/Glue42/core/pull/123) Added the Start of Day demo application ([@flashd2n](https://github.com/flashd2n))
+
+#### :hammer: Underlying Tools
+* [#128](https://github.com/Glue42/core/pull/128) Extended the end-to-end testing environment with support application manipulation. ([@flashd2n](https://github.com/flashd2n))
+* [#139](https://github.com/Glue42/core/pull/139) Moved interop tests from Enterprise to Core ([@GrigorPenev](https://github.com/GrigorPenev))
+* [#119](https://github.com/Glue42/core/pull/119) Moved and adapted the @glue42/web Channels API tests to e2e ([@ggeorgievx](https://github.com/ggeorgievx))
+
+#### Committers: 5
+- Georgi Georgiev ([@ggeorgievx](https://github.com/ggeorgievx))
+- Hristo Ivanov ([@arjunah](https://github.com/arjunah))
+- Kalin Kostov ([@flashd2n](https://github.com/flashd2n))
+- Svetozar Mateev ([@SvetozarMateev](https://github.com/SvetozarMateev))
+- Grigor Penev [@GrigorPenev](https://github.com/GrigorPenev)
+
+
 ## Glue42 Core v1.1.0 (2020-07-31)
 
 #### :rocket: New Feature
