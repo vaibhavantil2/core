@@ -8,6 +8,7 @@ import { Control } from "../control/control";
 import { RemoteCommand, LayoutRemoteCommand, SaveAutoLayoutCommandArgs } from "../control/commands";
 import { CallbackRegistry, default as CallbackRegistryFactory, UnsubscribeFunction } from "callback-registry";
 import { LayoutEvent } from "./types";
+import { promisePlus } from "../shared/promise-plus";
 
 export class LayoutsController {
 
@@ -51,12 +52,24 @@ export class LayoutsController {
     }
 
     public async import(layouts: Glue42Web.Layouts.Layout[]): Promise<void> {
+
         await Promise.all(layouts.map(async (layout) => {
             const layoutEvent = (await this.get(layout.name, layout.type)) ? "layoutChanged" : "layoutAdded";
 
             await this.storage.store(layout, layout.type);
 
+            const { eventPromise, unsubscribe } = this.waitHearLayout(layout.name, layoutEvent);
+
             this.emitLayoutEvent(layoutEvent, layout);
+
+            try {
+                await eventPromise;
+                unsubscribe();
+            } catch (error) {
+                unsubscribe();
+                return Promise.reject(error);
+            }
+
         }));
     }
 
@@ -191,6 +204,28 @@ export class LayoutsController {
 
     public onLayoutRemoved(callback: (layout: Glue42Web.Layouts.Layout) => void): UnsubscribeFunction {
         return this._registry.add("layoutRemoved", callback);
+    }
+
+    private waitHearLayout(name: string, layoutEvent: "layoutChanged" | "layoutAdded"): { eventPromise: Promise<void>; unsubscribe: UnsubscribeFunction } {
+        let unsubscribe: UnsubscribeFunction;
+
+        const eventPromise = promisePlus<void>(() => {
+            return new Promise((resolve) => {
+
+                const cb = (layout: Glue42Web.Layouts.Layout): void => {
+                    if (layout.name === name) {
+                        resolve();
+                    }
+                };
+
+                unsubscribe = layoutEvent === "layoutAdded" ?
+                    this.onLayoutAdded(cb) :
+                    this.onLayoutChanged(cb);
+            });
+
+        }, 5000, `Timed out waiting to hear ${layoutEvent} for layout name: ${name}`);
+
+        return { eventPromise, unsubscribe };
     }
 
     private restoreComponents(layout: Glue42Web.Layouts.Layout): void {
