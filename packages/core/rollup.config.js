@@ -18,7 +18,14 @@ export default {
             file: "./dist/core.umd.min.js",
             name: "core.min",
             format: 'umd',
-            sourcemap: true
+            sourcemap: true,
+            plugins:[
+                terser({
+                    output: {
+                        comments: false
+                    }
+                })
+            ]
         },
         {
             file: pkg.module,
@@ -34,13 +41,6 @@ export default {
     plugins: [
         typescript({
             typescript: require('typescript'),
-        }),
-        terser({
-            sourcemap: true,
-            output: {
-                comments: false
-            },
-            include: [/^.+\.min\.js$/],
         }),
         // Allow json resolution
         json(),

@@ -391,10 +391,21 @@ export default function (configuration: Glue42Core.Config, ext: Glue42Core.Exten
     const contexts = getContexts(connection);
     const channels = getChannels(contexts);
     const bus = getBus(connection);
+    let application: string = getApplication();
+    if (typeof window !== "undefined") {
+        const windowAsAny = window as any;
+        const containerApplication = windowAsAny.htmlContainer ?
+            `${windowAsAny.htmlContainer.containerName}.${windowAsAny.htmlContainer.application}` :
+            windowAsAny?.glue42gd?.application;
+        if (containerApplication) {
+            application = containerApplication;
+        }
+    }
 
     return {
         bus,
         identity: metricsIdentity,
+        application,
         auth: getAuth(),
         logger: getLogger(),
         connection,

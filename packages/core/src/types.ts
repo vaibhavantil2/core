@@ -10,6 +10,7 @@ export interface Timer {
 export interface InternalConfig {
     identity: Glue42Core.Metrics.Identity;
     connection: Glue42Core.Connection.Settings;
+    application: string | undefined;
     logger: Glue42Core.LoggerConfig;
     customLogger: Glue42Core.CustomLogger;
     auth: Glue42Core.Auth | string | number;

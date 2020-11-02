@@ -1,3 +1,5 @@
+4.8.7
+- fix: bring back glue.config.application property
 4.8.6
 - fix: log throws G4E-2712
 4.8.5
