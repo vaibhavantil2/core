@@ -177,9 +177,20 @@ export default function (configuration: Glue42Core.Config, ext: Glue42Core.Exten
     }
 
     const connection = getConnection();
+    let application: string = getApplication();
+    if (typeof window !== "undefined") {
+        const windowAsAny = window as any;
+        const containerApplication = windowAsAny.htmlContainer ?
+            `${windowAsAny.htmlContainer.containerName}.${windowAsAny.htmlContainer.application}` :
+            windowAsAny?.glue42gd?.application;
+        if (containerApplication) {
+            application = containerApplication;
+        }
+    }
 
     return {
         bus: configuration.bus ?? false,
+        application,
         auth: getAuth(),
         logger: getLogger(),
         connection,

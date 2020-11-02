@@ -1,20 +1,38 @@
 import { Glue42Web } from "../../web";
 import { Control } from "../control/control";
+import { promisePlus } from "../shared/promise-plus";
 
 export class RemoteInstance implements Glue42Web.AppManager.Instance {
+    public context: object;
     private WINDOW_DID_NOT_HAVE_TIME_TO_RESPOND = "Peer has left while waiting for result";
 
-    constructor(public id: string, public application: Glue42Web.AppManager.Application, private control: Control, public context: object, public agm: Glue42Web.Interop.Instance) {
+    // window can be undefined in the case when `serverMethodAdded()` is fired after the window is already closed.
+    constructor(public id: string, public application: Glue42Web.AppManager.Application, private control: Control, public agm: Glue42Web.Interop.Instance, private appManager: Glue42Web.AppManager.API, private window?: Glue42Web.Windows.WebWindow) {
+        // `getContext()` relies on the control having been started.
+        const unsub = control.onStart(() => {
+            this.window?.getContext().then((context: object) => {
+                unsub();
+                this.context = context;
+            });
+        });
     }
 
-    public async stop(): Promise<void> {
-        try {
-            await this.callControl("stop", {}, false);
-        } catch (error) {
-            if (error.message !== this.WINDOW_DID_NOT_HAVE_TIME_TO_RESPOND) {
-                throw new Error(error);
-            }
-        }
+    public stop(): Promise<void> {
+        const instanceStoppedPromise: Promise<void> = new Promise((resolve, reject) => {
+            this.appManager.onInstanceStopped((instance) => {
+                if (instance.id === this.id) {
+                    resolve();
+                }
+            });
+
+            this.callControl("stop", {}, false).catch((error) => {
+                if (error.message !== this.WINDOW_DID_NOT_HAVE_TIME_TO_RESPOND) {
+                    reject(error);
+                }
+            });
+        });
+
+        return promisePlus<void>(() => instanceStoppedPromise, 10000, `Instance ${this.id} stop timeout!`);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

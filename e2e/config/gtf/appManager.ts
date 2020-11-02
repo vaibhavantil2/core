@@ -3,7 +3,7 @@ import { Glue42CoreApplicationConfig, FDC3ApplicationConfig } from "../../../pac
 import { Gtf } from "./types";
 
 export class GtfAppManager implements Gtf.AppManager {
-    constructor(private readonly gtfCore: Gtf.Core) {
+    constructor(private readonly glue: Glue42Web.API, private readonly gtfCore: Gtf.Core) {
     }
 
     public async getLocalApplications(): Promise<Array<Glue42CoreApplicationConfig | FDC3ApplicationConfig>> {
@@ -34,5 +34,16 @@ export class GtfAppManager implements Gtf.AppManager {
         const data = await (await this.gtfCore.post(url, JSON.stringify(applications))).json();
 
         return data.applications;
+    }
+
+    public async stopAllOtherInstances(): Promise<void> {
+        const myInstanceId = this.glue.appManager.myInstance.id;
+
+        const otherInstances = this.glue.appManager.instances().filter((instance) => instance.id !== myInstanceId);
+
+        console.log(`My instance id: ${myInstanceId}`);
+        console.log(`Stopping instances: ${otherInstances.map(instance => instance.id)}`);
+
+        await Promise.all(otherInstances.map((instance) => instance.stop().then(() => console.log(`Stopped instance ${instance.id}`))));
     }
 }

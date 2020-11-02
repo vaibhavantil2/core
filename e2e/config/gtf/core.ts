@@ -75,12 +75,13 @@ export class GtfCore implements Gtf.Core {
     }
 
     public async waitForFetch(): Promise<void> {
-        const pollingInterval = (await this.getGlueConfigJson()).appManager.remoteSources[0].pollingInterval;
+        const pollingInterval = (await this.getGlueConfigJson()).appManager?.remoteSources?.[0]?.pollingInterval || 3000;
+        const extraInterval = 2000;
 
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve();
-            }, pollingInterval);
+            }, pollingInterval + extraInterval);
         });
     }
 

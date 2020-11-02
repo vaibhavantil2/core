@@ -24,7 +24,7 @@
         "ng": "ng",
         "start": "ng serve",
         "build": "ng build --prod && node ./publish/removeRedundantDist.js",
-        "test": "ng test --watch=false --browsers=ChromeHeadless",
+        "test": "ng test --source-map=false --watch=false --browsers=ChromeHeadless",
         "lint": "ng lint",
         "audit": "node ../../scripts/audit/index.js",
         "preversion": "npm run build && npm run test && npm run audit",
