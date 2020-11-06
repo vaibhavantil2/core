@@ -183,7 +183,7 @@ export default function (connection: Connection, config: MetricsSettings): Proto
                     timestamp: Date.now(),
                 }],
             };
-            return session.send(publishMetricsMsg);
+            return session.sendFireAndForget(publishMetricsMsg);
         }
         return Promise.resolve();
     };

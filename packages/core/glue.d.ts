@@ -1074,7 +1074,7 @@ export namespace Glue42Core {
             sendFireAndForget(msg: {
                 request_id?: string;
                 [key: string]: any;
-            }): void;
+            }): Promise<void>;
             /**
              * Subscribe for messages from GW
              */
