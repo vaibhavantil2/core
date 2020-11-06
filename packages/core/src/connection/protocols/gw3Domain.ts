@@ -234,14 +234,14 @@ export default function (domain: string, connection: Connection, logger: Logger,
         });
     }
 
-    function sendFireAndForget(msg: GW3Message) {
+    function sendFireAndForget(msg: GW3Message): Promise<void> {
         // Allows function caller to override request_id
         msg.request_id = msg.request_id ? msg.request_id : getNextRequestId();
         // Allows function caller to override domain (join/leave messages are in global domain)
         msg.domain = msg.domain || domain;
         msg.peer_id = connection.peerId;
 
-        connection.send(msg);
+        return connection.send(msg);
     }
 
     return {

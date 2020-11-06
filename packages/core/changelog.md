@@ -1,3 +1,5 @@
+5.2.6
+perf: metrics - optimize memory usage (do not wait for response on metrics publish requests)
 5.2.5
 fix: config - exposed glue.config.application (legacy)
 5.2.4
