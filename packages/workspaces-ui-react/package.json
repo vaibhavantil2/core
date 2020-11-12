@@ -18,6 +18,9 @@
         "preversion": "npm run build && npm run test && npm run audit",
         "version": "npm run build"
     },
+    "publishConfig": {
+        "access": "public"
+    },
     "dependencies": {
         "@glue42/workspaces-ui-core": "^0.0.1-alpha.0",
         "reactjs-popup": "^2.0.4"
