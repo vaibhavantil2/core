@@ -188,7 +188,7 @@ describe("methods", () => {
         return Promise.resolve();
     });
 
-    it ("methods filter check", async () => {
+    it("methods filter check", async () => {
         const glue2 = await createGlue();
         const name = getMethodName();
         const objectTypes = ["1", "2"];
@@ -207,6 +207,14 @@ describe("methods", () => {
             displayName,
         };
         await glue.interop.register(method, () => {/** DO NOTHING */ });
+        await new Promise((resolve) => {
+            const unsub = glue2.interop.methodAdded((addedMethod) => {
+                if (addedMethod.name === name) {
+                    unsub();
+                    resolve();
+                }
+            });
+        });
 
         const checkMethod = (filter: any, msg: string) => {
             // tslint:disable-next-line:no-console

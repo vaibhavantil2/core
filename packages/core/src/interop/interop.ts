@@ -14,6 +14,7 @@ export default class Interop implements Glue42Core.AGM.API {
 
     public client!: Client;
     public server!: Server;
+    public unwrappedInstance: InstanceWrapper;
     private protocol!: Protocol;
     private clientRepository: ClientRepository;
     private serverRepository: ServerRepository;
@@ -37,9 +38,9 @@ export default class Interop implements Glue42Core.AGM.API {
         }
 
         // Initialize our modules
-        InstanceWrapper.API = this;
-        this.instance = new InstanceWrapper(undefined, connection).unwrap();
-        this.clientRepository = new ClientRepository(configuration.logger.subLogger("cRep"));
+        this.unwrappedInstance = new InstanceWrapper(this, undefined, connection);
+        this.instance = this.unwrappedInstance.unwrap();
+        this.clientRepository = new ClientRepository(configuration.logger.subLogger("cRep"), this);
         this.serverRepository = new ServerRepository();
         let protocolPromise: Promise<Protocol>;
 
