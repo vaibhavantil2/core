@@ -12,7 +12,7 @@ export default WorkspacesFactory;
  *
  * The Glue42 Workspaces enable the users to compose a custom arrangement of applications by treating each application as an individual building block that can be added, removed, moved or resized within the unifying Frame. The Frame can hold multiple Workspaces (as tabs) and can also be maximized, minimized or resized. 
  *
- * See also the [**Workspaces**](../../../../core/capabilities/interop/workspaces/index.html) documentation for more details.
+ * See also the [Glue42 Enterprise: Workspaces](https://docs.glue42.com/glue42-concepts/windows/workspaces/javascript/index.html) and [Glue42 Core: Workspaces](https://docs.glue42.com/core/capabilities/workspaces/index.html) documentation for more details.
  */
 export namespace Glue42Workspaces {
 
@@ -182,6 +182,9 @@ export namespace Glue42Workspaces {
 
         /** States whether or not the workspace should have focus when opened. */
         isFocused?: boolean;
+
+        /** Provides the opportunity to open a workspace with no tab header */
+        noTabHeader?: boolean;
     }
 
     /** An object describing the possible options when defining a new workspace */
@@ -402,6 +405,12 @@ export namespace Glue42Workspaces {
          * @param callback Callback function to handle the event. Receives the added workspace as a parameter.
          */
         onWorkspaceOpened(callback: (workspace: Workspace) => void): Promise<Unsubscribe>;
+
+        /**
+         * Notifies when a workspace is selected in this frame and returns an unsubscribe function.
+         * @param callback Callback function to handle the event. Receives the selected workspace as a parameter.
+         */
+        onWorkspaceSelected(callback: (workspace: Workspace) => void): Promise<Unsubscribe>;
 
         /**
          * Notifies when a workspace present in this frame was closed and returns an unsubscribe function.
