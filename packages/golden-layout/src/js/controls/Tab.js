@@ -131,12 +131,18 @@ lm.utils.copy(lm.controls.Tab.prototype, {
 		if (this.contentItem.parent.isMaximized === true) {
 			this.contentItem.parent.toggleMaximise();
 		}
-		if (this.contentItem.parent.header.tabs.length < 2 && this.contentItem.layoutManager.config.settings.mode === "workspace") {
+		const isWorkspaceLayout = this.contentItem.layoutManager.config.settings.mode === "workspace";
+		const hasLessThanTwoTabs = this.contentItem.parent.header.tabs.length < 2;
+		const isMissingWindowId = !this.contentItem.config.windowId && !this.contentItem.config.componentState.windowId;
+
+		if (isWorkspaceLayout && hasLessThanTwoTabs) {
 			return;
 		}
-		if (this.contentItem.layoutManager.config.settings.mode !== "workspace" && !this.contentItem.config.windowId) {
+
+		if (!isWorkspaceLayout && isMissingWindowId) {
 			return;
 		}
+
 		const newProxy = new lm.controls.DragProxy(
 			x,
 			y,
