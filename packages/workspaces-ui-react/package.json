@@ -22,7 +22,7 @@
         "access": "public"
     },
     "dependencies": {
-        "@glue42/workspaces-ui-core": "^0.0.4-alpha.0",
+        "@glue42/workspaces-ui-core": "^0.0.4-beta.0",
         "reactjs-popup": "^2.0.4"
     },
     "peerDependencies": {
