@@ -23,7 +23,7 @@
   },
   "command": {
     "version": {
-      "allowBranch": "release"
+      "allowBranch": "release-V2"
     }
   }
 }
