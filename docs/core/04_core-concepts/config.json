@@ -2,5 +2,6 @@
     "menuItem": "Core Concepts",
     "title": "Core Concepts",
     "displayTitle": true,
-    "expanded": true
+    "expanded": true,
+    "titleType": "subtitle"
 }
