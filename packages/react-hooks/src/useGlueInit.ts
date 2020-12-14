@@ -6,7 +6,7 @@ export const useGlueInit: UseGlueInitFunc = (settings) => {
     useEffect(() => {
         const initialize = async () => {
             try {
-                if (settings.web && settings.web) {
+                if (settings.web && settings.webPlatform) {
                     throw new Error("Cannot initialize, because the settings are over-specified: defined are both web and webPlatform. Please set one or the other");
                 }
 
