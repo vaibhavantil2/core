@@ -22,11 +22,8 @@ export const useGlueInit: UseGlueInitFunc = (settings) => {
                     return;
                 }
 
-                const webFactory = settings.web?.factory || (window as any).GlueWeb;
-                const webPlatformFactory = settings.webPlatform?.factory || (window as any).GlueWebPlatform;
-
                 const config = settings.web?.config || settings.webPlatform?.config;
-                const factory = webFactory || webPlatformFactory;
+                const factory = settings.web?.factory || settings.webPlatform?.factory || (window as any).GlueWeb || (window as any).GlueWebPlatform;
 
                 const glue = await factory(config);
                 setGlue(glue);

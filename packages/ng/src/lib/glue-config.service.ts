@@ -31,10 +31,7 @@ export class GlueConfigService {
                 (window as any).Glue;
         }
 
-        const webFactory = this._userSettings.web?.factory || (window as any).GlueWeb;
-        const webPlatformFactory = this._userSettings.webPlatform?.factory || (window as any).GlueWebPlatform;
-
-        return webFactory || webPlatformFactory;
+        return this._userSettings.web?.factory || this._userSettings.webPlatform?.factory || (window as any).GlueWeb || (window as any).GlueWebPlatform;
     }
 
     public getConfig(): Glue42NgFactoryConfig | undefined {
