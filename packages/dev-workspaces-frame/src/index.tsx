@@ -12,10 +12,10 @@ declare const window: Window & { glue42gd: any };
 
 ReactDOM.render(
   <React.StrictMode>
-    <GlueProvider glueFactory={(config: Glue42.Config | Glue42Web.Config | undefined) => {
+    <GlueProvider glueFactory={(config: any) => {
       return window.glue42gd ?
         Glue(Object.assign(config, { libraries: [GlueWorkspaces], appManager: "skipIcons" }) as Glue42.Config) :
-        GlueWeb(Object.assign(config, { libraries: [GlueWorkspaces] }) as Glue42Web.Config)
+        GlueWeb(Object.assign(config, { libraries: [GlueWorkspaces] }) as Glue42Web.Config) as any
     }}>
       <App />
     </GlueProvider>

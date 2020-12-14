@@ -319,13 +319,13 @@ export namespace Glue42Web {
              * @param type Type of the layout to fetch.
              * @param name Name of the layout to fetch.
              */
-            get?(name: string, type: LayoutType): Promise<Layout | undefined>;
+            get(name: string, type: LayoutType): Promise<Layout | undefined>;
 
             /**
              * Returns a lightweight, summarized version of all layouts of the provided type.
              * @param type Type of the layouts to fetch.
              */
-            getAll?(type: LayoutType): Promise<LayoutSummary[]>;
+            getAll(type: LayoutType): Promise<LayoutSummary[]>;
 
             /**
              * Returns all layouts from the provided type.
