@@ -1,3 +1,7 @@
+5.3.0
+feat: official release with support for web transport
+5.2.8-beta.0
+feat: added web platform transport and beta core release
 5.2.7
 fix: fixed an issue which will cause the reconnection attempts after disconnect to fail because of a wrong this and also provided the correct reconnect interval
 5.2.6

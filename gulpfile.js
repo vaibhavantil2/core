@@ -123,19 +123,6 @@ const publish = async () => {
     await command.runner;
 };
 
-// exports.release = series(
-//     validateReleasePackages,
-//     checkoutRelease,
-//     syncAllContentsExceptPackages,
-//     syncPackagesToRelease,
-//     bootstrap,
-//     versionSync,
-//     commitIsolatedPackages,
-//     publish,
-//     checkoutMaster
-// );
-
-// stopped publish and checkoutMaster to allow for dist-tags
 exports.release = series(
     validateReleasePackages,
     checkoutRelease,
@@ -143,5 +130,18 @@ exports.release = series(
     syncPackagesToRelease,
     bootstrap,
     versionSync,
-    commitIsolatedPackages
+    commitIsolatedPackages,
+    publish,
+    checkoutMaster
 );
+
+// stopped publish and checkoutMaster to allow for dist-tags
+// exports.release = series(
+//     validateReleasePackages,
+//     checkoutRelease,
+//     syncAllContentsExceptPackages,
+//     syncPackagesToRelease,
+//     bootstrap,
+//     versionSync,
+//     commitIsolatedPackages
+// );
