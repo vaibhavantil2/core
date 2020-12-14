@@ -10,7 +10,7 @@ const sync = require('./scripts/preversion/sync.js');
 
 const stableBranch = 'master';
 const releaseBranch = 'release-V2';
-const ignored = ['.git', '.log', 'node_modules', 'packages', '.md', 'package-lock', '.vscode', 'demos', 'live-examples', '.cache', 'archive'];
+const ignored = ['.git', '.log', 'node_modules', 'packages', '.md', 'package-lock', '.vscode', 'demos', 'live-examples', '.cache', 'archive', 'e2e'];
 const packagesDirectory = join(__dirname, '/packages/');
 let packagesDirNamesToRelease = [];
 let fullRelease = false;
@@ -123,19 +123,6 @@ const publish = async () => {
     await command.runner;
 };
 
-// exports.release = series(
-//     validateReleasePackages,
-//     checkoutRelease,
-//     syncAllContentsExceptPackages,
-//     syncPackagesToRelease,
-//     bootstrap,
-//     versionSync,
-//     commitIsolatedPackages,
-//     publish,
-//     checkoutMaster
-// );
-
-// stopped publish and checkoutMaster to allow for dist-tags
 exports.release = series(
     validateReleasePackages,
     checkoutRelease,
@@ -143,5 +130,18 @@ exports.release = series(
     syncPackagesToRelease,
     bootstrap,
     versionSync,
-    commitIsolatedPackages
+    commitIsolatedPackages,
+    publish,
+    checkoutMaster
 );
+
+// stopped publish and checkoutMaster to allow for dist-tags
+// exports.release = series(
+//     validateReleasePackages,
+//     checkoutRelease,
+//     syncAllContentsExceptPackages,
+//     syncPackagesToRelease,
+//     bootstrap,
+//     versionSync,
+//     commitIsolatedPackages
+// );

@@ -6,7 +6,7 @@
         "url": "https://www.glue42.com"
     },
     "license": "MIT",
-    "description": "Glue42's version of golden-layout",
+    "description": "Glue42's version of golden-layout.",
     "main": "./dist/goldenlayout.js",
     "typings": "./index.d.ts",
     "files": [
