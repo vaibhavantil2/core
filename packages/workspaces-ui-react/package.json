@@ -26,7 +26,7 @@
         "reactjs-popup": "^2.0.4"
     },
     "peerDependencies": {
-        "@glue42/react-hooks": "^1.2.3",
+        "@glue42/react-hooks": "^2.0.0",
         "react": "^16.8.0",
         "react-dom": "^16.8.0"
     },

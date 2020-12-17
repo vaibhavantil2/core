@@ -37,8 +37,8 @@ const CustomWorkspaces = () => {
 
     useGlue(async (glue) => {
         const myFrame = await waitForMyFrame(glue);
-        const docsWorkspace = await myFrame.createWorkspace(getDocsWorkspace("dummyApp"));
-        const clientWorkspace = await myFrame.createWorkspace(getClientWorkspace("dummyApp", "dummyApp"));
+        const docsWorkspace = await myFrame.createWorkspace(getDocsWorkspace("SimpleOne"));
+        const clientWorkspace = await myFrame.createWorkspace(getClientWorkspace("SimpleOne", "SimpleOne"));
 
         setDocsWorkspace(docsWorkspace);
         setClientWorkspace(clientWorkspace);
