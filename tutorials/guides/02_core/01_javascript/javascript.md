@@ -168,7 +168,7 @@ Find the `toggleGlueAvailable()` function marked with a `TODO: Chapter 2` commen
 toggleGlueAvailable();
 ```
 
-*Note that when you refresh these apps, you will see that the Glue42 initialization is unsuccessful. This is because they cannot currently connect to the Glue42 environment provided by the [Main application](../../../core/core-concepts/web-platform/overview/index.html) and therefore cannot discover the Main app or each other. To be able to connect to Glue42, all [Web Client](../../../core/core-concepts/web-client/overview/index.html) apps **must** be opened by the [Web Platform application](](../../../core/core-concepts/web-platform/overview/index.html)) or by another [Web Client](../../../core/core-concepts/web-client/overview/index.html) application already connected to the Glue42 environment.*
+*Note that when you refresh these apps, you will see that the Glue42 initialization is unsuccessful. This is because they cannot currently connect to the Glue42 environment provided by the [Main application](../../../core/core-concepts/web-platform/overview/index.html) and therefore cannot discover the Main app or each other. To be able to connect to Glue42, all [Web Client](../../../core/core-concepts/web-client/overview/index.html) apps **must** be opened by the [Web Platform application](../../../core/core-concepts/web-platform/overview/index.html)) or by another [Web Client](../../../core/core-concepts/web-client/overview/index.html) application already connected to the Glue42 environment.*
 
 To verify that the initializations are correct, open the browser console of the **Clients** app (press `F12`) and execute the following:
 

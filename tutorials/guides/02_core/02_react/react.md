@@ -1505,7 +1505,7 @@ Use the [Workspaces API](../../../reference/core/latest/workspaces/index.html) d
 
 ### 8.1. Setup
 
-All workspaces are contained in a specialized, standalone web application called "Workspaces Frame". It is outside the scope of this tutorial to cover building and customizing this applications, so you have a ready-to-go application located at /workspace. This application is already being hosted by the npm start script at http://localhost:9300/, so there is nothing you need to do.
+All workspaces are contained in a specialized, standalone web application called "Workspaces Frame". It is outside the scope of this tutorial to cover building and customizing this applications, so you have a ready-to-go application located at /workspace. This application is already being hosted by the npm start script at `http://localhost:9300/`, so there is nothing you need to do.
 
 #### Create the Client Details App
 
