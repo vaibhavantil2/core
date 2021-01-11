@@ -188,7 +188,7 @@ describe("methods", () => {
         return Promise.resolve();
     });
 
-    it ("methods filter check", async () => {
+    it("methods filter check", async () => {
         const glue2 = await createGlue();
         const name = getMethodName();
         const objectTypes = ["1", "2"];
@@ -242,5 +242,14 @@ describe("methods", () => {
         const m2 = glue2.interop.methods(method2Name);
         expect(m2.length).to.be.eq(1);
         expect(m2[0].name).to.be.eq(method2Name);
+    });
+
+    it("adding a flag to a method should be visible to other clients ", async () => {
+        const glue2 = await createGlue();
+        const methodName = getMethodName();
+        await glue.interop.register({ name: methodName, flags: { test: "meta" } }, () => {/** DO NOTHING */ });
+
+        const m = await glue2.interop.waitForMethod(methodName);
+        expect(m.flags.test).to.be.eq("meta");
     });
 });

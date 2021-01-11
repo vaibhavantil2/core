@@ -90,6 +90,7 @@ export default class ClientRepository {
             accepts: method.input_signature,
             returns: method.result_signature,
             supportsStreaming: typeof method.flags !== "undefined" ? method.flags.streaming : false,
+            flags: method.flags ?? {},
             getServers: () => {
                 return that.getServersByMethod(identifier);
             }

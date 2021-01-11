@@ -7,6 +7,7 @@ import ServerRepository from "./server/repository";
 import { UnsubscribeFunction } from "callback-registry";
 import gW3ProtocolFactory from "./protocols/gw3/factory";
 import { InstanceWrapper } from "./instance";
+import { PromiseWrapper } from "../utils/pw";
 
 export default class Interop implements Glue42Core.AGM.API {
     public instance: Glue42Core.AGM.Instance;
@@ -120,5 +121,17 @@ export default class Interop implements Glue42Core.AGM.API {
 
     public invoke(methodFilter: string | Glue42Core.AGM.MethodDefinition, argumentObj?: object, target?: Glue42Core.AGM.InstanceTarget | Glue42Core.AGM.Instance | Glue42Core.AGM.Instance[], additionalOptions?: Glue42Core.AGM.InvokeOptions, success?: (result: Glue42Core.AGM.InvocationResult<any>) => void, error?: (error: { method: Glue42Core.AGM.MethodDefinition; called_with: object; executed_by: Glue42Core.AGM.Instance; message: string; status: number; returned: object; }) => void): Promise<Glue42Core.AGM.InvocationResult<any>> {
         return this.client.invoke(methodFilter, argumentObj, target, additionalOptions, success, error);
+    }
+
+    public waitForMethod(name: string): Promise<Glue42Core.Interop.Method> {
+        const pw = new PromiseWrapper<Glue42Core.Interop.Method>();
+        const unsubscribe = this.client.methodAdded((m) => {
+            if (m.name === name) {
+                unsubscribe();
+                pw.resolve(m);
+            }
+        });
+
+        return pw.promise;
     }
 }
