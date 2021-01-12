@@ -322,6 +322,7 @@ export default class Client {
                         getServers: () => [],
                         supportsStreaming: false,
                         objectTypes: methodDefinition.objectTypes ?? [],
+                        flags: methodDefinition.flags ?? {}
                     };
                     const errorObj: InvocationResult = {
                         method,
