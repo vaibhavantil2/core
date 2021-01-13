@@ -13,6 +13,7 @@ export default class ClientRepository {
     // each server has format {id:'', info:{}, methods:{}}
     // where methods has format {id:'', info:{}}
     private servers: { [id: string]: ServerInfo } = {};
+    private myServer: ServerInfo;
 
     // object keyed by method identifier - value is number of servers that offer that method
     private methodsCount: { [id: string]: number } = {};
@@ -20,8 +21,15 @@ export default class ClientRepository {
     // store for callbacks
     private callbacks = CallbackRegistryFactory();
 
-    constructor(private logger: Logger) {
-
+    constructor(private logger: Logger, private API: Glue42Core.AGM.API & { unwrappedInstance: InstanceWrapper }) {
+        const peerId = this.API.instance.peerId as string;
+        this.myServer = {
+            id: peerId,
+            methods: {},
+            instance: this.API.instance,
+            wrapper: this.API.unwrappedInstance,
+        };
+        this.servers[peerId] = this.myServer;
     }
 
     // add a new server to internal collection
@@ -33,7 +41,7 @@ export default class ClientRepository {
             return current.id;
         }
 
-        const wrapper = new InstanceWrapper(info);
+        const wrapper = new InstanceWrapper(this.API, info);
         const serverEntry: ServerInfo = {
             id: serverId,
             methods: {},
@@ -237,8 +245,9 @@ export default class ClientRepository {
         Object.keys(this.servers).forEach((key) => {
             this.removeServerById(key, "reset");
         });
-
-        this.servers = {};
+        this.servers = {
+            [this.myServer.id]: this.myServer
+        };
         this.methodsCount = {};
     }
 

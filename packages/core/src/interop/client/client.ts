@@ -535,46 +535,23 @@ export default class Client {
                     && prop[0] !== "_";
             });
 
-        return filterProps.reduce<boolean>((isMatch, prop) => {
+        return filterProps.every((prop) => {
+            let isMatch;
+
             const filterValue = filter[prop];
             const repoMethodValue = repoMethod[prop];
 
             if (prop === "objectTypes") {
-                const containsAllFromFilter = (filterObjTypes: string[], repoObjectTypes: string[]) => {
-                    const objTypeToContains = filterObjTypes.reduce<{ [objType: string]: boolean }>(
-                        (object, objType: string) => {
-                            object[objType] = false;
-                            return object;
-                        }, {}
-                    );
-
-                    repoObjectTypes.forEach((repoObjType: string) => {
-                        if (objTypeToContains[repoObjType] !== undefined) {
-                            objTypeToContains[repoObjType] = true;
-                        }
-                    });
-
-                    const filterIsFullfilled = () => Object.keys(objTypeToContains).reduce<boolean>((isFullfiled, objType: string) => {
-                        if (!objTypeToContains[objType]) {
-                            isFullfiled = false;
-                        }
-                        return isFullfiled;
-                    }, true);
-
-                    return filterIsFullfilled();
-                };
-
-                if (filterValue.length > repoMethodValue.length
-                    || containsAllFromFilter(filterValue, repoMethodValue) === false) {
-                    isMatch = false;
-                }
-
-            } else if (String(filterValue).toLowerCase() !== String(repoMethodValue).toLowerCase()) {
-                isMatch = false;
+                // filterValue needs to be a subset of repoMethodValue.
+                isMatch = (filterValue as string[]).every((filterValueEl) => {
+                    return (repoMethodValue as string[]).includes(filterValueEl);
+                });
+            } else {
+                isMatch = String(filterValue).toLowerCase() === String(repoMethodValue).toLowerCase();
             }
 
             return isMatch;
-        }, true);
+        });
     }
 
     private getMethods(methodFilter: Glue42Core.AGM.MethodDefinition): ClientMethodInfo[] {

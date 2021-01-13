@@ -207,6 +207,14 @@ describe("methods", () => {
             displayName,
         };
         await glue.interop.register(method, () => {/** DO NOTHING */ });
+        await new Promise((resolve) => {
+            const unsub = glue2.interop.methodAdded((addedMethod) => {
+                if (addedMethod.name === name) {
+                    unsub();
+                    resolve();
+                }
+            });
+        });
 
         const checkMethod = (filter: any, msg: string) => {
             // tslint:disable-next-line:no-console
