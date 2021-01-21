@@ -153,7 +153,7 @@ const platformConfig = {
     ]
   },
   workspaces: {
-    src: "/workspaces/"
+    src: "/workspaces/index.html"
   },
   glue: {
     libraries: [window.GlueWorkspaces],
