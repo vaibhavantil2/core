@@ -103,7 +103,7 @@ class WorkspacesManager {
         const result = await this._layoutsManager.save({
             name,
             workspace,
-            title: name,
+            title: store.getWorkspaceTitle(workspace.id),
             saveContext
         });
 
@@ -111,7 +111,7 @@ class WorkspacesManager {
         if (workspace.layout.config.workspacesOptions.noTabHeader) {
             delete workspace.layout.config.workspacesOptions.noTabHeader;
         }
-        store.getWorkspaceLayoutItemById(id).setTitle(name);
+
         return result;
     }
 
@@ -398,7 +398,7 @@ class WorkspacesManager {
             let { windowId } = componentState;
             const componentId = idAsString(component.config.id);
             const applicationTitle = this.getTitleByAppName(appName);
-            const windowTitle = title || applicationTitle || appName || "Glue";
+            const windowTitle = title || component.config.title || applicationTitle || appName || "Glue";
             const windowContext = component?.config.componentState?.context;
             let url = this.getUrlByAppName(componentState.appName) || componentState.url;
 
