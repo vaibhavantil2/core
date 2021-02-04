@@ -5,7 +5,7 @@ import { Glue42Workspaces } from "@glue42/workspaces-api";
 import { BridgeOperation, CoreClientData, InternalPlatformConfig, LibController } from "../../common/types";
 import { addContainerConfigDecoder, addItemResultDecoder, addWindowConfigDecoder, bundleConfigDecoder, deleteLayoutConfigDecoder, exportedLayoutsResultDecoder, frameHelloDecoder, frameSnapshotResultDecoder, frameStateConfigDecoder, frameStateResultDecoder, frameSummariesResultDecoder, frameSummaryDecoder, getFrameSummaryConfigDecoder, isWindowInSwimlaneResultDecoder, layoutSummariesDecoder, moveFrameConfigDecoder, moveWindowConfigDecoder, openWorkspaceConfigDecoder, resizeItemConfigDecoder, setItemTitleConfigDecoder, simpleItemConfigDecoder, simpleWindowOperationSuccessResultDecoder, voidResultDecoder, workspaceCreateConfigDecoder, workspaceLayoutDecoder, workspaceLayoutSaveConfigDecoder, workspacesLayoutImportConfigDecoder, workspaceSnapshotResultDecoder, workspacesOperationDecoder, workspaceSummariesResultDecoder } from "./decoders";
 import { FramesController } from "./frames";
-import { AddContainerConfig, AddItemResult, AddWindowConfig, BundleConfig, DeleteLayoutConfig, ExportedLayoutsResult, FrameHello, FrameSnapshotResult, FrameStateConfig, FrameStateResult, FrameSummariesResult, FrameSummaryResult, GetFrameSummaryConfig, IsWindowInSwimlaneResult, LayoutSummariesResult, LayoutSummary, MoveFrameConfig, MoveWindowConfig, OpenWorkspaceConfig, ResizeItemConfig, SetItemTitleConfig, SimpleItemConfig, SimpleWindowOperationSuccessResult, WorkspaceCreateConfigProtocol, WorkspacesLayoutImportConfig, WorkspaceSnapshotResult, WorkspacesOperationsTypes, WorkspaceSummariesResult, WorkspaceSummaryResult } from "./types";
+import { AddContainerConfig, AddItemResult, AddWindowConfig, BundleConfig, DeleteLayoutConfig, ExportedLayoutsResult, FrameHello, FrameSnapshotResult, FrameStateConfig, FrameStateResult, FrameSummariesResult, FrameSummaryResult, GetFrameSummaryConfig, IsWindowInSwimlaneResult, LayoutSummariesResult, LayoutSummary, MoveFrameConfig, MoveWindowConfig, OpenWorkspaceConfig, ResizeItemConfig, SetItemTitleConfig, SimpleItemConfig, SimpleWindowOperationSuccessResult, WorkspaceConfigWithReuseWorkspaceId, WorkspaceCreateConfigProtocol, WorkspacesLayoutImportConfig, WorkspaceSnapshotResult, WorkspacesOperationsTypes, WorkspaceSummariesResult, WorkspaceSummaryResult } from "./types";
 import logger from "../../shared/logger";
 import { Glue42WebPlatform } from "../../../platform";
 import { GlueController } from "../../controllers/glue";
@@ -198,7 +198,8 @@ export class WorkspacesController implements LibController {
 
         const frameInstanceConfig = {
             frameId: config.frame?.reuseFrameId,
-            newFrame: config.frame?.newFrame
+            newFrame: config.frame?.newFrame,
+            itemId: (config.config as WorkspaceConfigWithReuseWorkspaceId)?.reuseWorkspaceId
         };
 
         const frame = await this.framesController.getFrameInstance(frameInstanceConfig);
@@ -296,7 +297,13 @@ export class WorkspacesController implements LibController {
     private async openWorkspace(config: OpenWorkspaceConfig, commandId: string): Promise<WorkspaceSnapshotResult> {
         this.logger?.trace(`[${commandId}] handling openWorkspace command for name: ${config.name}`);
 
-        const frame = await this.framesController.getFrameInstance({ frameId: config.restoreOptions?.frameId, newFrame: config.restoreOptions?.newFrame });
+        const frameQueryConfig = {
+            frameId: config.restoreOptions?.frameId,
+            newFrame: config.restoreOptions?.newFrame,
+            itemId: (config.restoreOptions as WorkspaceConfigWithReuseWorkspaceId)?.reuseWorkspaceId
+        };
+
+        const frame = await this.framesController.getFrameInstance(frameQueryConfig);
 
         const result = await this.glueController.callFrame<OpenWorkspaceConfig, WorkspaceSnapshotResult>(this.operations.openWorkspace, config, frame.windowId);
 
