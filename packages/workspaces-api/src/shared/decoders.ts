@@ -142,7 +142,8 @@ export const workspaceDefinitionDecoder: Decoder<Glue42Workspaces.WorkspaceDefin
         title: optional(nonEmptyStringDecoder),
         position: optional(nonNegativeNumberDecoder),
         isFocused: optional(boolean()),
-        noTabHeader: optional(boolean())
+        noTabHeader: optional(boolean()),
+        reuseWorkspaceId: optional(nonEmptyStringDecoder)
     })),
     frame: optional(object({
         reuseFrameId: optional(nonEmptyStringDecoder),
@@ -293,7 +294,8 @@ export const windowLayoutItemDecoder: Decoder<Glue42Workspaces.WindowLayoutItem>
     type: constant("window"),
     config: object({
         appName: nonEmptyStringDecoder,
-        url: optional(nonEmptyStringDecoder)
+        url: optional(nonEmptyStringDecoder),
+        title: optional(string())
     })
 });
 

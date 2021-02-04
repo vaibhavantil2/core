@@ -103,7 +103,7 @@ class WorkspacesManager {
         const result = await this._layoutsManager.save({
             name,
             workspace,
-            title: name,
+            title: store.getWorkspaceTitle(workspace.id),
             saveContext
         });
 
@@ -111,7 +111,7 @@ class WorkspacesManager {
         if (workspace.layout.config.workspacesOptions.noTabHeader) {
             delete workspace.layout.config.workspacesOptions.noTabHeader;
         }
-        store.getWorkspaceLayoutItemById(id).setTitle(name);
+
         return result;
     }
 
@@ -155,9 +155,21 @@ class WorkspacesManager {
 
             return idAsString(savedConfig.id);
         } else if (name) {
-            savedConfig.id = this._configFactory.getId();
+            savedConfig.id = options?.reuseWorkspaceId || this._configFactory.getId();
 
-            await this.addWorkspace(idAsString(savedConfig.id), savedConfig);
+            if (options?.reuseWorkspaceId) {
+                const workspace = store.getById(savedConfig.id);
+
+                workspace.windows.map((w) => store.getWindowContentItem(w.id))
+                    .filter((w) => w)
+                    .map((w) => this.closeTab(w, false));
+                await this._controller.reinitializeWorkspace(savedConfig.id, savedConfig);
+                if (savedConfig.workspacesOptions?.context) {
+                    await this._glue.contexts.set(getWorkspaceContextName(savedConfig.id), savedConfig.workspacesOptions.context);
+                }
+            } else {
+                await this.addWorkspace(idAsString(savedConfig.id), savedConfig);
+            }
 
             return idAsString(savedConfig.id);
         }
@@ -249,9 +261,21 @@ class WorkspacesManager {
             return idAsString(config.id);
         }
 
-        const id = this._configFactory.getId();
+        const id = config.workspacesOptions?.reuseWorkspaceId || this._configFactory.getId();
 
-        await this.addWorkspace(id, config);
+        if (config.workspacesOptions?.reuseWorkspaceId) {
+            const workspace = store.getById(id);
+
+            workspace.windows.map((w) => store.getWindowContentItem(w.id))
+                .filter((w) => w)
+                .map((w) => this.closeTab(w, false));
+            await this._controller.reinitializeWorkspace(id, config);
+            if (config.workspacesOptions.context) {
+                await this._glue.contexts.set(getWorkspaceContextName(id), config.workspacesOptions.context);
+            }
+        } else {
+            await this.addWorkspace(id, config);
+        }
 
         return id;
     }
@@ -398,7 +422,7 @@ class WorkspacesManager {
             let { windowId } = componentState;
             const componentId = idAsString(component.config.id);
             const applicationTitle = this.getTitleByAppName(appName);
-            const windowTitle = title || applicationTitle || appName || "Glue";
+            const windowTitle = title || component.config.title || applicationTitle || appName || "Glue";
             const windowContext = component?.config.componentState?.context;
             let url = this.getUrlByAppName(componentState.appName) || componentState.url;
 
@@ -888,7 +912,7 @@ class WorkspacesManager {
     }
 
     private waitForFrameLoaded(itemId: string) {
-        return new Promise((res, rej) => {
+        return new Promise<void>((res, rej) => {
             let unsub = () => {
                 // safety
             };

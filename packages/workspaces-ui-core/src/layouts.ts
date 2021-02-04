@@ -126,11 +126,11 @@ export class LayoutsManager {
         if (title) {
             workspaceConfig.config.title = title;
         }
-        let workspaceContext = {};
+        let workspaceContext = undefined;
 
         if (saveContext) {
             try {
-                workspaceContext = await this.getWorkspaceContext(workspace.id) || {}
+                workspaceContext = await this.getWorkspaceContext(workspace.id);
             } catch (error) {
                 // can throw an exception when reloading
             }
@@ -193,6 +193,10 @@ export class LayoutsManager {
             return undefined;
         }
         const workspaceConfig = this.resolver.getWorkspaceConfig(workspace.id);
+
+        if ((workspaceConfig.workspacesOptions as any).layoutName) {
+            (delete workspaceConfig.workspacesOptions as any).layoutName;
+        }
         this.removeWorkspaceIds(workspaceConfig);
         await this.applyWindowLayoutState(workspaceConfig);
 
