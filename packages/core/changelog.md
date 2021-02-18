@@ -1,3 +1,6 @@
+5.4.1
+fix: metrics - default service to application name
+fix: metrics - use toJSON method of performance entries
 5.4.0
 feat: expose method's flags in interop (G4E-3780)
 feat: added interop.waitForMethod method that allows waiting for a method to appear
