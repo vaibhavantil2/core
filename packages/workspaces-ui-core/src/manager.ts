@@ -422,9 +422,11 @@ class WorkspacesManager {
             let { windowId } = componentState;
             const componentId = idAsString(component.config.id);
             const applicationTitle = this.getTitleByAppName(appName);
-            const windowTitle = title || component.config.title || applicationTitle || appName || "Glue";
+            const windowTitle = this.vaidateTitle(title) || this.vaidateTitle(applicationTitle) || this.vaidateTitle(appName) || "Glue";
             const windowContext = component?.config.componentState?.context;
             let url = this.getUrlByAppName(componentState.appName) || componentState.url;
+            console.log("WINDow title", windowTitle);
+            console.log("componentState", component.config);
 
             const isNewWindow = !store.getWindow(componentId);
 
@@ -477,7 +479,7 @@ class WorkspacesManager {
             }
 
             try {
-                await this.notifyFrameWillStart(windowId, appName, windowContext, title);
+                await this.notifyFrameWillStart(windowId, appName, windowContext, windowTitle);
                 await this._frameController.startFrame(componentId, url, undefined, windowId);
                 const newlyAddedWindow = store.getWindow(componentId) as WorkspacesWindow;
 
@@ -486,7 +488,9 @@ class WorkspacesManager {
 
                 const newlyOpenedWindow = this._glue.windows.findById(windowId);
                 newlyOpenedWindow.getTitle().then((winTitle) => {
-                    component.setTitle(winTitle);
+                    if (this.vaidateTitle(windowTitle)) {
+                        component.setTitle(winTitle);
+                    }
                 }).catch((e) => {
                     console.warn("Failed while setting the window title", e);
                 });
@@ -972,6 +976,14 @@ class WorkspacesManager {
                 windowId,
             }
         });
+    }
+
+    private vaidateTitle(title: string) {
+        if (!title?.length) {
+            return undefined;
+        }
+
+        return title;
     }
 }
 

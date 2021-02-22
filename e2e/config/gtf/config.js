@@ -47,6 +47,13 @@ const localApplicationsConfig = [
         }
     },
     {
+        name: "noGlueApp",
+        type: "window",
+        details: {
+            url: "http://localhost:4242/noGlueApp/index.html"
+        }
+    },
+    {
         name: "dummyApp",
         type: "window",
         details: {
