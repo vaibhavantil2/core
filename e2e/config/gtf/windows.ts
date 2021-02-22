@@ -47,14 +47,6 @@ export class GtfWindows implements Gtf.Windows {
             actualWindow.getURL(), actualWindow.getTitle(), actualWindow.getBounds(), actualWindow.getContext(),
             expectedWindow.getURL(), expectedWindow.getTitle(), expectedWindow.getBounds(), expectedWindow.getContext()
         ]);
-        console.log('debug ~ file: windows.ts ~ line 58 ~ actualUrl', actualUrl);
-        console.log('debug ~ file: windows.ts ~ line 58 ~ actualTitle', actualTitle);
-        console.log('debug ~ file: windows.ts ~ line 58 ~ actualBounds', actualBounds);
-        console.log('debug ~ file: windows.ts ~ line 58 ~ actualContext', actualContext);
-        console.log('debug ~ file: windows.ts ~ line 58 ~ expectedUrl', expectedUrl);
-        console.log('debug ~ file: windows.ts ~ line 58 ~ expectedTitle', expectedTitle);
-        console.log('debug ~ file: windows.ts ~ line 58 ~ expectedBounds', expectedBounds);
-        console.log('debug ~ file: windows.ts ~ line 58 ~ expectedContext', expectedContext);
 
         return actualWindow.id === expectedWindow.id &&
             actualWindow.name === expectedWindow.name &&

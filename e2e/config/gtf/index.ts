@@ -12,8 +12,9 @@ import { Glue42WebPlatform, Glue42WebPlatformFactoryFunction } from "../../../pa
 import { WorkspacesFactoryFunction } from "../../../packages/workspaces-api/workspaces";
 // TODO: Add building and serving the Workspaces application to the e2e script.
 const {
-    channelsConfig,
     localApplicationsConfig,
+    layoutsConfig,
+    channelsConfig,
     workspacesConfig,
     gatewayConfig
 } = require("./config");
@@ -41,9 +42,7 @@ const startGtf = async () => {
         applications: {
             local: localApplicationsConfig
         },
-        layouts: {
-            mode: "session"
-        },
+        layouts: layoutsConfig,
         channels: channelsConfig,
         glue: glueWebConfig,
         workspaces: workspacesConfig,

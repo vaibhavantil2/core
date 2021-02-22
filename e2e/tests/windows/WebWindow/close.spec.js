@@ -40,7 +40,6 @@ describe('close()', () => {
             const windowNames = Array.from({ length: openWindowsCount }).map(() => gtf.windows.getWindowName());
 
             const newlyOpenedWindows = await Promise.all(windowNames.map((windowName) => glue.windows.open(windowName, gtf.windows.SUPPORT_DETAILS.url)));
-            console.log('debug ~ file: close.spec.js ~ line 42 ~ newlyOpenedWindows', newlyOpenedWindows);
 
             const listWindowsBefore = glue.windows.list();
 

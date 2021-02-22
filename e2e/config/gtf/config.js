@@ -154,16 +154,22 @@ const gatewayConfig = {
     }
 };
 
+const layoutsConfig = {
+    mode: "session"
+};
+
 if (typeof global === "undefined") {
     window.channelsConfig = channelsConfig;
     window.localApplicationsConfig = localApplicationsConfig;
     window.workspacesConfig = workspacesConfig;
     window.gatewayConfig = gatewayConfig;
+    window.layoutsConfig = layoutsConfig;
 } else {
     module.exports = {
         channelsConfig,
         localApplicationsConfig,
         workspacesConfig,
-        gatewayConfig
+        gatewayConfig,
+        layoutsConfig
     };
 }

@@ -87,7 +87,7 @@ describe('all()', () => {
         expect(instanceIntentHandlers).to.be.of.length(1);
         const onlyInstanceIntentHandler = instanceIntentHandlers[0];
         expect(onlyInstanceIntentHandler.intentName).to.equal(intentName);
-        if (RUNNER === 'PLatform') {
+        if (RUNNER === 'Platform') {
             expect(onlyInstanceIntentHandler.applicationName).to.equal(RUNNER);
         } else {
             expect(onlyInstanceIntentHandler.applicationName.startsWith(RUNNER)).to.be.true;
