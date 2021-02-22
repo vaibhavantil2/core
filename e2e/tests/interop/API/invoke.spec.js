@@ -420,7 +420,11 @@ describe('invoke()', () => {
                         done('Should not be called');
                     }, (invokeErrorHandler) => {
                         try {
-                            expect(invokeErrorHandler.executed_by.application).to.equal(RUNNER);
+                            if (RUNNER === 'PLatform') {
+                                expect(invokeErrorHandler.executed_by.application).to.equal(RUNNER);
+                            } else {
+                                expect(invokeErrorHandler.executed_by.application.startsWith(RUNNER)).to.be.true;
+                            }
                             done();
                         } catch (e) {
                             done(e);

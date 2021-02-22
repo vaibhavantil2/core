@@ -34,18 +34,22 @@ describe('close()', () => {
 
     for (const openWindowsCount of [1, 2, 5, 10]) {
         it(`Should close the window (${openWindowsCount}).`, async () => {
+            const platformWindow = glue.windows.list().find((window) => window.name === 'Platform');
             const myWindow = glue.windows.my();
 
             const windowNames = Array.from({ length: openWindowsCount }).map(() => gtf.windows.getWindowName());
 
             const newlyOpenedWindows = await Promise.all(windowNames.map((windowName) => glue.windows.open(windowName, gtf.windows.SUPPORT_DETAILS.url)));
+            console.log('debug ~ file: close.spec.js ~ line 42 ~ newlyOpenedWindows', newlyOpenedWindows);
 
             const listWindowsBefore = glue.windows.list();
 
             expect(listWindowsBefore).to.be.of.length(openWindowsCount + INITIAL_WINDOWS_COUNT);
 
             for (const listWindow of listWindowsBefore) {
-                if (listWindow.id === myWindow.id) {
+                if (listWindow.id === platformWindow.id) {
+                    expect(await gtf.windows.compareWindows(listWindow, platformWindow)).to.be.true;
+                } else if (listWindow.id === myWindow.id) {
                     expect(await gtf.windows.compareWindows(listWindow, myWindow)).to.be.true;
                 } else {
                     const expectedWindow = newlyOpenedWindows.find((newlyOpenedWindow) => newlyOpenedWindow.id === listWindow.id);
@@ -59,7 +63,8 @@ describe('close()', () => {
             const listWindowsAfter = glue.windows.list();
 
             expect(listWindowsAfter).to.be.of.length(INITIAL_WINDOWS_COUNT);
-            expect(await gtf.windows.compareWindows(listWindowsAfter[0], myWindow)).to.be.true;
+            const mySupposedWindow = listWindowsAfter.find((window) => window.id === myWindow.id);
+            expect(await gtf.windows.compareWindows(mySupposedWindow, myWindow)).to.be.true;
         });
     }
 

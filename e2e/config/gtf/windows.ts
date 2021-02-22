@@ -12,7 +12,7 @@ export class GtfWindows implements Gtf.Windows {
     public readonly PLATFORM_DETAILS = Object.freeze({
         name: "Platform",
         title: "Platform",
-        url: "http://localhost:9999/context.html",
+        url: process.env.RUNNER === "Platform" ? "http://localhost:9999/context.html" : "http://localhost:9999/webPlatform/index.html",
         ...this.PLATFORM_DIMENSIONS
     });
     public readonly SUPPORT_DIMENSIONS = {
@@ -25,6 +25,10 @@ export class GtfWindows implements Gtf.Windows {
         title: "Core Support",
         url: "http://localhost:4242/coreSupport/index.html",
         ...this.SUPPORT_DIMENSIONS
+    });
+    public readonly RUNNER_DETAILS = Object.freeze({
+        title: "Client",
+        url: "http://localhost:9999/"
     });
 
     constructor(private readonly glue: Glue42Web.API) {
@@ -43,6 +47,14 @@ export class GtfWindows implements Gtf.Windows {
             actualWindow.getURL(), actualWindow.getTitle(), actualWindow.getBounds(), actualWindow.getContext(),
             expectedWindow.getURL(), expectedWindow.getTitle(), expectedWindow.getBounds(), expectedWindow.getContext()
         ]);
+        console.log('debug ~ file: windows.ts ~ line 58 ~ actualUrl', actualUrl);
+        console.log('debug ~ file: windows.ts ~ line 58 ~ actualTitle', actualTitle);
+        console.log('debug ~ file: windows.ts ~ line 58 ~ actualBounds', actualBounds);
+        console.log('debug ~ file: windows.ts ~ line 58 ~ actualContext', actualContext);
+        console.log('debug ~ file: windows.ts ~ line 58 ~ expectedUrl', expectedUrl);
+        console.log('debug ~ file: windows.ts ~ line 58 ~ expectedTitle', expectedTitle);
+        console.log('debug ~ file: windows.ts ~ line 58 ~ expectedBounds', expectedBounds);
+        console.log('debug ~ file: windows.ts ~ line 58 ~ expectedContext', expectedContext);
 
         return actualWindow.id === expectedWindow.id &&
             actualWindow.name === expectedWindow.name &&

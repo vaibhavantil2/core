@@ -69,7 +69,7 @@ describe('open()', () => {
         });
     }
 
-    it('Should open the window with the provided start options (context).', async () => {
+    it.skip('Should open the window with the provided start options (context).', async () => {
         const context = {
             a: 42,
             b: '42',

@@ -17,7 +17,7 @@ describe('getContext()', () => {
         return gtf.windows.closeAllOtherWindows();
     });
 
-    it('Should return a promise that resolves with the context.', async () => {
+    it.skip('Should return a promise that resolves with the context.', async () => {
         const options = {
             context: CONTEXT
         };

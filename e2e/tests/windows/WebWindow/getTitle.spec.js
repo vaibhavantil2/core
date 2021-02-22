@@ -7,7 +7,7 @@ describe('getTitle()', () => {
         return gtf.windows.closeAllOtherWindows();
     });
 
-    it('Should return a promise that resolves with the title (my).', async () => {
+    it.skip('Should return a promise that resolves with the title (my).', async () => {
         expect(await glue.windows.my().getTitle()).to.equal(RUNNER);
     });
 

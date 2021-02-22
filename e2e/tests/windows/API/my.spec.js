@@ -3,7 +3,7 @@ describe('my()', () => {
         return coreReady;
     });
 
-    it('Should return the current window.', async () => {
+    it.skip('Should return the current window.', async () => {
         const myWindow = glue.windows.my();
 
         const myURL = await myWindow.getURL();

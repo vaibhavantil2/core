@@ -1,4 +1,4 @@
-export const channelsConfig = {
+const channelsConfig = {
     definitions: [
         {
             name: "Red",
@@ -38,12 +38,26 @@ export const channelsConfig = {
     ]
 };
 
-export const localApplicationsConfig = [
+const localApplicationsConfig = [
+    {
+        name: "Karma",
+        type: "window",
+        details: {
+            url: "http://localhost:9999"
+        }
+    },
     {
         name: "dummyApp",
         type: "window",
         details: {
             url: "http://localhost:4242/dummyApp/index.html"
+        }
+    },
+    {
+        name: "noGlueApp",
+        type: "window",
+        details: {
+            url: "http://localhost:4242/noGlueApp/index.html"
         }
     },
     {
@@ -122,8 +136,27 @@ export const localApplicationsConfig = [
     }
 ];
 
-// TODO: Test supplier and remote applications modes.
-export const remoteStoreConfig = {
-    url: "http://localhost:9998/v1/apps/search",
-    pollingInterval: 3000
+const workspacesConfig = {
+    // TODO: Add building and serving the Workspaces application to the e2e script.
+    src: "http://localhost:7654"
 };
+
+const gatewayConfig = {
+    logging: {
+        level: "error"
+    }
+};
+
+if (typeof global === "undefined") {
+    window.channelsConfig = channelsConfig;
+    window.localApplicationsConfig = localApplicationsConfig;
+    window.workspacesConfig = workspacesConfig;
+    window.gatewayConfig = gatewayConfig;
+} else {
+    module.exports = {
+        channelsConfig,
+        localApplicationsConfig,
+        workspacesConfig,
+        gatewayConfig
+    };
+}
