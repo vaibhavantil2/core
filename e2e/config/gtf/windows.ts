@@ -27,6 +27,7 @@ export class GtfWindows implements Gtf.Windows {
         ...this.SUPPORT_DIMENSIONS
     });
     public readonly RUNNER_DETAILS = Object.freeze({
+        name: "Karma",
         title: "Client",
         url: "http://localhost:9999/"
     });

@@ -7,8 +7,12 @@ describe('getTitle()', () => {
         return gtf.windows.closeAllOtherWindows();
     });
 
-    it.skip('Should return a promise that resolves with the title (my).', async () => {
-        expect(await glue.windows.my().getTitle()).to.equal(RUNNER);
+    it('Should return a promise that resolves with the title (my).', async () => {
+        if (RUNNER === gtf.windows.PLATFORM_DETAILS.name) {
+            expect(await glue.windows.my().getTitle()).to.equal(RUNNER);
+        } else {
+            expect(await glue.windows.my().getTitle()).to.equal(gtf.windows.RUNNER_DETAILS.name);
+        }
     });
 
     it('Should return a promise that resolves with the title (other).', async () => {

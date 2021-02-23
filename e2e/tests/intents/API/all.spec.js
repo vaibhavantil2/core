@@ -68,7 +68,7 @@ describe('all()', () => {
         expect(intentInstanceIntentHandler.instanceId).to.equal(glueApplication.myInstance.id);
     });
 
-    it.skip('Should return all instance intents registered by us.', async () => {
+    it('Should return all instance intents registered by us.', async () => {
         const intentName = 'our-intent';
         const intent = {
             intent: intentName,
@@ -87,17 +87,19 @@ describe('all()', () => {
         expect(instanceIntentHandlers).to.be.of.length(1);
         const onlyInstanceIntentHandler = instanceIntentHandlers[0];
         expect(onlyInstanceIntentHandler.intentName).to.equal(intentName);
-        if (RUNNER === gtf.windows.PLATFORM_DETAILS.name) {
-            expect(onlyInstanceIntentHandler.applicationName).to.equal(RUNNER);
-        } else {
-            expect(onlyInstanceIntentHandler.applicationName.startsWith(RUNNER)).to.be.true;
-        }
         expect(onlyInstanceIntentHandler.displayName).to.equal(intent.displayName);
         expect(onlyInstanceIntentHandler.contextTypes).to.be.of.length(1);
         expect(onlyInstanceIntentHandler.contextTypes[0]).to.equal(intent.contextTypes[0]);
         expect(onlyInstanceIntentHandler.applicationIcon).to.equal(intent.icon);
         expect(onlyInstanceIntentHandler.applicationDescription).to.equal(intent.description);
-        expect(onlyInstanceIntentHandler.instanceId).to.equal(glue.interop.instance.windowId);
+
+        if (RUNNER === gtf.windows.PLATFORM_DETAILS.name) {
+            expect(onlyInstanceIntentHandler.applicationName).to.equal(RUNNER);
+            expect(onlyInstanceIntentHandler.instanceId).to.equal(glue.interop.instance.windowId);
+        } else {
+            expect(onlyInstanceIntentHandler.applicationName.startsWith(RUNNER)).to.be.true;
+            expect(onlyInstanceIntentHandler.instanceId).to.equal(glue.interop.instance.instance);
+        }
     });
 
     it('Should be populated before `addIntentListener()` resolves.', async () => {

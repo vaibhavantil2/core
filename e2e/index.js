@@ -150,8 +150,12 @@ const spawnKarmaServer = () => {
 
     validateChildProcessStarted(karma);
 
-    karma.on('exit', async () => {
-        await cleanUp();
+    karma.on('exit', async (code) => {
+        if (code === 0) {
+            await cleanUp();
+        } else {
+            await exitWithError();
+        }
     });
     karma.on('error', async () => {
         console.log('karma process error!');
@@ -178,7 +182,9 @@ const startProcessController = async () => {
                 ]
             });
             const page = await browser.newPage();
-            await page.goto('http://localhost:9999/webPlatform/index.html');
+            await page.goto('http://localhost:9999/webPlatform/index.html', {
+                waitUntil: 'networkidle0',
+            });
         }
     } catch (error) {
         console.log(`Failed to start process controller: ${error.message || error}`);
