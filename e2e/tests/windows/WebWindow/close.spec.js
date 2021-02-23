@@ -34,7 +34,7 @@ describe('close()', () => {
 
     for (const openWindowsCount of [1, 2, 5, 10]) {
         it(`Should close the window (${openWindowsCount}).`, async () => {
-            const platformWindow = glue.windows.list().find((window) => window.name === 'Platform');
+            const platformWindow = glue.windows.list().find((window) => window.name === gtf.windows.PLATFORM_DETAILS.name);
             const myWindow = glue.windows.my();
 
             const windowNames = Array.from({ length: openWindowsCount }).map(() => gtf.windows.getWindowName());

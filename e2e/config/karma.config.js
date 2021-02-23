@@ -21,13 +21,13 @@ const karmaConfig = {
     },
     files: [
         {
-            pattern: './packages/web/dist/web.umd.js',
+            pattern: 'packages/web/dist/web.umd.js',
         },
         {
-            pattern: './packages/web-platform/dist/platform.web.umd.js',
+            pattern: 'packages/web-platform/dist/platform.web.umd.js',
         },
         {
-            pattern: './packages/workspaces-api/dist/workspaces.umd.js',
+            pattern: 'packages/workspaces-api/dist/workspaces.umd.js',
         },
         {
             pattern: 'e2e/config/gtf.js'
