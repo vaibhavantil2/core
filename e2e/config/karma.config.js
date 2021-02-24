@@ -1,6 +1,6 @@
 const { platformMode } = require('../utils');
 
-const isHeadless = true;
+const isHeadless = false;
 
 const karmaConfig = {
     browsers: platformMode ? [isHeadless ? 'ChromeHeadless' : 'Chrome'] : [],
