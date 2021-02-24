@@ -179,7 +179,8 @@ const startProcessController = async () => {
                 path: '/logger.js',
                 method: 'GET',
                 pollingInterval: 100,
-                pollingTimeout: 30 * 1000
+                pollingTimeout: 30 * 1000,
+                timeout: 2000
             })();
 
             const puppeteer = require('puppeteer');
