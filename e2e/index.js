@@ -173,6 +173,8 @@ const startProcessController = async () => {
         spawnKarmaServer();
 
         if (!platformMode) {
+            await new Promise((resolve) => setTimeout(() => resolve(), 3000));
+
             const puppeteer = require('puppeteer');
 
             browser = await puppeteer.launch({
@@ -183,10 +185,7 @@ const startProcessController = async () => {
             });
             const page = await browser.newPage();
 
-            await page.goto(`http://${os.hostname()}:9999/webPlatform/index.html`, {
-                waitUntil: 'load',
-                timeout: 0
-            });
+            await page.goto('http://localhost:9999/webPlatform/index.html');
         }
     } catch (error) {
         console.log(`Failed to start process controller: ${error.message || error}`);
