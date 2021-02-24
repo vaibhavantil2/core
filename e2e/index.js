@@ -171,9 +171,7 @@ const spawnKarmaServer = async () => {
         method: 'GET',
         pollingInterval: 100,
         pollingTimeout: 30 * 1000
-    });
-
-    return karma;
+    })();
 };
 
 const startProcessController = async () => {
