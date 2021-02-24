@@ -11,11 +11,12 @@ const {
     PATH_TO_APPS_DIR,
     HTTP_SERVER_PORT
 } = require('./constants');
-const startWorkspacesServer = require("./workspacesServer");
+const startWorkspacesServer = require('./workspacesServer');
 const {
     platformMode,
     deleteTestCollectionDir
 } = require('./utils');
+const basePolling = require('./ready-conditions/base-polling');
 
 const karmaConfigPath = path.resolve(process.cwd());
 const npxCommand = os.type() === 'Windows_NT' ? 'npx.cmd' : 'npx';
@@ -39,7 +40,7 @@ const cleanUp = async () => {
     deleteTestCollectionDir();
 
     // Only applicable when platformMode is false.
-    if (typeof browser !== "undefined") {
+    if (typeof browser !== 'undefined') {
         await browser.close();
     }
 };
@@ -142,7 +143,7 @@ const runConfigProcesses = async () => {
     }));
 };
 
-const spawnKarmaServer = () => {
+const spawnKarmaServer = async () => {
     const karma = spawn(npxCommand, ['karma', 'start', PATH_TO_KARMA_CONFIG], {
         cwd: karmaConfigPath,
         stdio: 'inherit'
@@ -163,6 +164,14 @@ const spawnKarmaServer = () => {
         await exitWithError();
     });
 
+    await basePolling({
+        hostname: 'localhost',
+        port: 9999,
+        method: 'GET',
+        pollingInterval: 100,
+        pollingTimeout: 30 * 1000
+    });
+
     return karma;
 };
 
@@ -170,11 +179,9 @@ const startProcessController = async () => {
     try {
         [httpServer, wspServer] = await Promise.all([runHttpServer(), startWorkspacesServer(), runConfigProcesses()]);
 
-        spawnKarmaServer();
+        await spawnKarmaServer();
 
         if (!platformMode) {
-            await new Promise((resolve) => setTimeout(() => resolve(), 3000));
-
             const puppeteer = require('puppeteer');
 
             browser = await puppeteer.launch({
