@@ -16,7 +16,6 @@ const {
     platformMode,
     deleteTestCollectionDir
 } = require('./utils');
-const ChromeLauncher = require('chrome-launcher');
 
 const karmaConfigPath = path.resolve(process.cwd());
 const npxCommand = os.type() === 'Windows_NT' ? 'npx.cmd' : 'npx';
@@ -39,11 +38,10 @@ const cleanUp = async () => {
     // Delete the test collection directory.
     deleteTestCollectionDir();
 
-    // // Only applicable when platformMode is false.
-    // if (typeof browser !== "undefined") {
-    //     await browser.close();
-    // }
-    await ChromeLauncher.killAll();
+    // Only applicable when platformMode is false.
+    if (typeof browser !== "undefined") {
+        await browser.close();
+    }
 };
 
 const exitWithError = async () => {
@@ -175,25 +173,19 @@ const startProcessController = async () => {
         spawnKarmaServer();
 
         if (!platformMode) {
-            // const puppeteer = require('puppeteer');
+            const puppeteer = require('puppeteer');
 
-            // browser = await puppeteer.launch({
-            //     headless: isHeadless,
-            //     args: [
-            //         '--enable-automation'
-            //     ]
-            // });
-            // const page = await browser.newPage();
-            // await page.goto('http://localhost:9999/webPlatform/index.html', {
-            //     waitUntil: 'load',
-            //     timeout: 0
-            // });
+            browser = await puppeteer.launch({
+                headless: isHeadless,
+                args: [
+                    '--enable-automation'
+                ]
+            });
+            const page = await browser.newPage();
 
-            ChromeLauncher.launch({
-                startingUrl: 'http://localhost:9999/webPlatform/index.html',
-                chromeFlags: ['--enable-automation', '--disable-popup-blocking', ...(isHeadless ? ['--headless', '--disable-gpu'] : [])]
-            }).then(chrome => {
-                console.log(`Chrome debugging port running on ${chrome.port}`);
+            await page.goto(`http://${os.hostname()}:9999/webPlatform/index.html`, {
+                waitUntil: 'load',
+                timeout: 0
             });
         }
     } catch (error) {
