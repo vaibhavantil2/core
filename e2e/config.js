@@ -30,27 +30,27 @@ module.exports = {
         'packages/workspaces-api/dist/workspaces.umd.js'
     ],
     run: [
-        // {
-        //     groupName: 'appManager'
-        // },
-        // {
-        //     groupName: 'channels'
-        // },
-        // {
-        //     groupName: 'contexts'
-        // },
+        {
+            groupName: 'appManager'
+        },
+        {
+            groupName: 'channels'
+        },
+        {
+            groupName: 'contexts'
+        },
         {
             groupName: 'intents'
         },
-        // {
-        //     groupName: 'interop'
-        // },
-        // {
-        //     groupName: 'windows'
-        // },
-        // {
-        //     groupName: 'workspaces'
-        // }
+        {
+            groupName: 'interop'
+        },
+        {
+            groupName: 'windows'
+        },
+        {
+            groupName: 'workspaces'
+        }
     ],
     processes: []
 };

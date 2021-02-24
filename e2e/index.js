@@ -167,6 +167,7 @@ const spawnKarmaServer = async () => {
     await basePolling({
         hostname: 'localhost',
         port: 9999,
+        path: '/webPlatform/index.html',
         method: 'GET',
         pollingInterval: 100,
         pollingTimeout: 30 * 1000
