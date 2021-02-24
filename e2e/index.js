@@ -182,7 +182,7 @@ const startProcessController = async () => {
                 ]
             });
             const page = await browser.newPage();
-            await page.goto('http://0.0.0.0:9999/webPlatform/index.html', {
+            await page.goto('http://localhost:9999/webPlatform/index.html', {
                 waitUntil: 'load',
                 timeout: 0
             });
