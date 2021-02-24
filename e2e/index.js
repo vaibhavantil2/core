@@ -143,7 +143,7 @@ const runConfigProcesses = async () => {
     }));
 };
 
-const spawnKarmaServer = async () => {
+const spawnKarmaServer = () => {
     const karma = spawn(npxCommand, ['karma', 'start', PATH_TO_KARMA_CONFIG], {
         cwd: karmaConfigPath,
         stdio: 'inherit'
@@ -163,24 +163,25 @@ const spawnKarmaServer = async () => {
 
         await exitWithError();
     });
-
-    await basePolling({
-        hostname: 'localhost',
-        port: 9999,
-        path: '/webPlatform/index.html',
-        method: 'GET',
-        pollingInterval: 100,
-        pollingTimeout: 30 * 1000
-    })();
 };
 
 const startProcessController = async () => {
     try {
         [httpServer, wspServer] = await Promise.all([runHttpServer(), startWorkspacesServer(), runConfigProcesses()]);
 
-        await spawnKarmaServer();
+        spawnKarmaServer();
 
         if (!platformMode) {
+            // Use logger.js instead of the webPlatform/index.html as a resolve condition for when Karma's proxy server is ready as it won't start an additional test run.
+            await basePolling({
+                hostname: 'localhost',
+                port: 9999,
+                path: '/logger.js',
+                method: 'GET',
+                pollingInterval: 100,
+                pollingTimeout: 30 * 1000
+            })();
+
             const puppeteer = require('puppeteer');
 
             browser = await puppeteer.launch({
