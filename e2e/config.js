@@ -50,7 +50,7 @@ module.exports = {
         // },
         {
             groupName: 'workspaces',
-            timesToRun: 10
+            timesToRun: 2
         }
     ],
     processes: []
