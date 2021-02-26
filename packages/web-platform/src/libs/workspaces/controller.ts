@@ -122,7 +122,7 @@ export class WorkspacesController implements LibController {
     public handleClientUnloaded(windowId: string, win: Window): void {
         this.logger?.trace(`handling unloading of ${windowId}`);
 
-        if (win.closed) {
+        if (!win || win.closed) {
             this.logger?.trace(`${windowId} detected as closed, checking if frame and processing close`);
             this.framesController.handleFrameDisappeared(windowId);
         }

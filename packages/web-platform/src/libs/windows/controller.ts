@@ -136,7 +136,7 @@ export class WindowsController implements LibController {
             return;
         }
 
-        if (win.closed) {
+        if (!win || win.closed) {
             this.logger?.trace(`${windowId} detected as closed, processing window cleanup`);
             return this.cleanUpWindow(windowId);
         }

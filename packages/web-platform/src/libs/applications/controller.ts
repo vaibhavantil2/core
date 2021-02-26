@@ -118,12 +118,12 @@ export class ApplicationsController implements LibController {
             return;
         }
 
-        if (win.closed) {
+        if (!win || win.closed) {
             this.logger?.trace(`${windowId} detected as closed, processing instance closed`);
             return this.processInstanceClosed(windowId);
         }
 
-        this.logger?.trace(`${windowId} detected as closed, skipping instance closed procedure`);
+        this.logger?.trace(`${windowId} detected as not closed, skipping instance closed procedure`);
     }
 
     public unregisterWorkspaceApp(config: SimpleWindowCommand): void {
