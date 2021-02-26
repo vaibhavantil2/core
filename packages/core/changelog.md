@@ -1,3 +1,5 @@
+5.4.2
+fix: interop - replace promise.finally to support old Angular apps
 5.4.1
 fix: metrics - default service to application name
 fix: metrics - use toJSON method of performance entries
