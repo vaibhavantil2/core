@@ -418,22 +418,23 @@ export default class WebPlatformTransport implements Transport {
 
     private handleClientUnload(event: MessageEvent): void {
         const data = event.data.glue42core;
+        const clientId = data?.data.clientId;
 
-        if (!data.clientId) {
+        if (!clientId) {
             this.logger.warn("cannot process grand child unload, because the provided id was not valid");
             return;
         }
 
-        const foundChild = this.children.find((child) => child.grandChildId === data.clientId);
+        const foundChild = this.children.find((child) => child.grandChildId === clientId);
 
         if (!foundChild) {
             this.logger.warn("cannot process grand child unload, because this client is unaware of this grandchild");
             return;
         }
 
-        this.logger.debug(`handling grandchild unload for id: ${data.clientId}`);
+        this.logger.debug(`handling grandchild unload for id: ${clientId}`);
 
-        this.children = this.children.filter((child) => child.grandChildId !== data.clientId);
+        this.children = this.children.filter((child) => child.grandChildId !== clientId);
     }
 
     private handlePlatformPing(): void {
