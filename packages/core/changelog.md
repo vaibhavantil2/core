@@ -1,3 +1,5 @@
+5.4.3
+fix: web platform transport - now correctly handles the client id of and unloaded client
 5.4.2
 fix: interop - replace promise.finally to support old Angular apps
 5.4.1
