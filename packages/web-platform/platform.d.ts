@@ -20,6 +20,13 @@ export namespace Glue42WebPlatform {
         * @default 3000
          */
         requestTimeout?: number;
+
+        /**
+        * Name-value pairs of headers, which will be appended to every request to the provided url.
+        */
+        customHeaders?: {
+            [key: string]: string;
+        };
     }
 
     export interface Supplier<T> {
@@ -158,6 +165,7 @@ export namespace Glue42WebPlatform {
 
         export interface Config {
             local?: Array<Glue42Web.AppManager.Definition | FDC3Definition>;
+            remote?: RemoteStore;
         }
     }
 
@@ -189,8 +197,8 @@ export namespace Glue42WebPlatform {
 
         export interface PluginDefinition {
             name: string;
-            config: unknown;
-            start: (glue: Glue42Web.API, config: unknown) => void;
+            config?: unknown;
+            start: (glue: Glue42Web.API, config: unknown, control: (args: any) => void) => void;
         }
 
         export interface Config {
@@ -246,6 +254,7 @@ export namespace Glue42WebPlatform {
         gateway?: Gateway.Config;
         glue?: Glue42Web.Config;
         workspaces?: Workspaces.Config;
+        environment?: any;
         glueFactory?: (config?: Glue42Web.Config) => Promise<Glue42Web.API>;
     }
 

@@ -14,6 +14,9 @@ import { WorkspacesController } from "../libs/workspaces/controller";
 import { IntentsController } from "../libs/intents/controller";
 import { ChannelsController } from "../libs/channels/controller";
 import { FramesController } from "../libs/workspaces/frames";
+import { SystemController } from "../controllers/system";
+import { AppDirectory } from "../libs/applications/appStore/directory";
+import { RemoteWatcher } from "../libs/applications/appStore/remoteWatcher";
 
 export class IoC {
     private _gatewayInstance!: Gateway;
@@ -23,6 +26,8 @@ export class IoC {
     private _portsBridge!: PortsBridge;
     private _windowsController!: WindowsController;
     private _applicationsController!: ApplicationsController;
+    private _appDirectory!: AppDirectory;
+    private _remoteWatcher!: RemoteWatcher;
     private _layoutsController!: LayoutsController;
     private _workspacesController!: WorkspacesController;
     private _intentsController!: IntentsController;
@@ -30,6 +35,7 @@ export class IoC {
     private _sessionController!: SessionStorageController;
     private _stateChecker!: StateController;
     private _framesController!: FramesController;
+    private _systemController!: SystemController;
     private _idbStore!: IdbStore;
 
     constructor(private readonly config?: Glue42WebPlatform.Config) { }
@@ -53,6 +59,7 @@ export class IoC {
     public get controller(): PlatformController {
         if (!this._mainController) {
             this._mainController = new PlatformController(
+                this.systemController,
                 this.glueController,
                 this.windowsController,
                 this.applicationsController,
@@ -74,6 +81,14 @@ export class IoC {
         }
 
         return this._glueController;
+    }
+
+    public get systemController(): SystemController {
+        if (!this._systemController) {
+            this._systemController = new SystemController();
+        }
+
+        return this._systemController;
     }
 
     public get sessionController(): SessionStorageController {
@@ -106,12 +121,33 @@ export class IoC {
                 this.glueController,
                 this.sessionController,
                 this.stateController,
+                this.appDirectory,
                 this
             );
         }
 
         return this._applicationsController;
     }
+
+    public get appDirectory(): AppDirectory {
+        if (!this._appDirectory) {
+            this._appDirectory = new AppDirectory(
+                this.sessionController,
+                this.remoteWatcher
+            );
+        }
+
+        return this._appDirectory;
+    }
+
+    public get remoteWatcher(): RemoteWatcher {
+        if (!this._remoteWatcher) {
+            this._remoteWatcher = new RemoteWatcher();
+        }
+
+        return this._remoteWatcher;
+    }
+
 
     public get layoutsController(): LayoutsController {
         if (!this._layoutsController) {
@@ -142,7 +178,7 @@ export class IoC {
         if (!this._intentsController) {
             this._intentsController = new IntentsController(
                 this.glueController,
-                this.sessionController,
+                this.appDirectory,
                 this
             );
         }
