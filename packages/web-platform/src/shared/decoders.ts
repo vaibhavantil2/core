@@ -197,7 +197,8 @@ export const fdc3AppDefinitionDecoder: Decoder<Glue42WebPlatform.Applications.FD
 export const remoteStoreDecoder: Decoder<Glue42WebPlatform.RemoteStore> = object({
     url: nonEmptyStringDecoder,
     pollingInterval: optional(nonNegativeNumberDecoder),
-    requestTimeout: optional(nonNegativeNumberDecoder)
+    requestTimeout: optional(nonNegativeNumberDecoder),
+    customHeaders: optional(anyJson())
 });
 
 export const supplierDecoder: Decoder<Glue42WebPlatform.Supplier<any>> = object({
@@ -217,7 +218,7 @@ export const channelDefinitionDecoder: Decoder<Glue42WebPlatform.Channels.Channe
 export const pluginDefinitionDecoder: Decoder<Glue42WebPlatform.Plugins.PluginDefinition> = object({
     name: nonEmptyStringDecoder,
     start: anyJson(),
-    config: anyJson()
+    config: optional(anyJson())
 });
 
 export const allApplicationDefinitionsDecoder: Decoder<Glue42Web.AppManager.Definition | Glue42WebPlatform.Applications.FDC3Definition> = oneOf<Glue42Web.AppManager.Definition | Glue42WebPlatform.Applications.FDC3Definition>(
@@ -228,7 +229,8 @@ export const allApplicationDefinitionsDecoder: Decoder<Glue42Web.AppManager.Defi
 export const appsCollectionDecoder: Decoder<Array<Glue42Web.AppManager.Definition | Glue42WebPlatform.Applications.FDC3Definition>> = array(allApplicationDefinitionsDecoder);
 
 export const applicationsConfigDecoder: Decoder<Glue42WebPlatform.Applications.Config> = object({
-    local: optional(array(allApplicationDefinitionsDecoder))
+    local: optional(array(allApplicationDefinitionsDecoder)),
+    remote: optional(remoteStoreDecoder)
 });
 
 export const layoutsConfigDecoder: Decoder<Glue42WebPlatform.Layouts.Config> = object({

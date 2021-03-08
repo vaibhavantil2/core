@@ -15,6 +15,7 @@ export interface InternalWindowsConfig {
 
 export interface InternalApplicationsConfig {
     local: Array<Glue42Web.AppManager.Definition | Glue42WebPlatform.Applications.FDC3Definition>;
+    remote?: Glue42WebPlatform.RemoteStore;
 }
 
 export interface InternalLayoutsConfig {
@@ -46,7 +47,7 @@ export interface CoreClientData {
 
 export interface LibController {
     start(config: InternalPlatformConfig): Promise<void>;
-    handleControl(args: any): Promise<void>;
+    handleControl(args: any): Promise<any>;
     handleClientUnloaded?(windowId: string, win: Window): void;
 }
 
