@@ -64,7 +64,7 @@ export class PlatformController {
 
         await this.glueController.initClientGlue(config?.glue, config?.glueFactory, config?.workspaces?.isFrame);
 
-        if (Array.isArray(config.plugins)) {
+        if (config.plugins) {
             await Promise.all(config.plugins.definitions.filter((def) => def.critical).map(this.startPlugin.bind(this)));
 
             config.plugins.definitions.filter((def) => !def.critical).map(this.startPlugin.bind(this));

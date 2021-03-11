@@ -176,11 +176,12 @@ export const glueCoreAppDefinitionDecoder: Decoder<Glue42Web.AppManager.Definiti
     intents: optional(array(intentDefinitionDecoder))
 });
 
+// todo: remove this dirty fix once the remote app services are updated
 export const fdc3AppDefinitionDecoder: Decoder<Glue42WebPlatform.Applications.FDC3Definition> = object({
     name: nonEmptyStringDecoder,
     title: optional(nonEmptyStringDecoder),
     version: optional(nonEmptyStringDecoder),
-    appId: nonEmptyStringDecoder,
+    appId: optional(nonEmptyStringDecoder),
     manifest: nonEmptyStringDecoder,
     manifestType: nonEmptyStringDecoder,
     tooltip: optional(nonEmptyStringDecoder),
@@ -192,7 +193,7 @@ export const fdc3AppDefinitionDecoder: Decoder<Glue42WebPlatform.Applications.FD
     icons: optional(array(object({ icon: optional(nonEmptyStringDecoder) }))),
     customConfig: anyJson(),
     intents: optional(array(intentDefinitionDecoder))
-});
+}) as Decoder<Glue42WebPlatform.Applications.FDC3Definition>;
 
 export const remoteStoreDecoder: Decoder<Glue42WebPlatform.RemoteStore> = object({
     url: nonEmptyStringDecoder,
