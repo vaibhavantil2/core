@@ -1,3 +1,5 @@
+5.4.4
+fix: metrics - use applicationName for service
 5.4.3
 fix: web platform transport - now correctly handles the client id of and unloaded client
 5.4.2
