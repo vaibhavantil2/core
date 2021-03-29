@@ -27,7 +27,7 @@ export class Gateway {
             });
         }
 
-        this._gatewayWebInstance = this.create({});
+        this._gatewayWebInstance = this.create({ clients: { inactive_seconds: 0 } });
 
         await this._gatewayWebInstance.start();
     }
