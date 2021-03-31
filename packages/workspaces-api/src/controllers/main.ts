@@ -281,8 +281,29 @@ export class MainController implements WorkspacesController {
         return await this.base.setItemTitle(itemId, title);
     }
 
+    public flatChildren(children: Child[]): Child[] {
+        return children.reduce<Child[]>((soFar, child) => {
+
+            soFar.push(child);
+
+            if (child.type !== "window") {
+                soFar.push(...this.flatChildren(child.children));
+            }
+
+            return soFar;
+        }, []);
+    }
+
     public refreshChildren(config: RefreshChildrenConfig): Child[] {
-        return this.base.refreshChildren(config);
+        
+        const refreshConfig: RefreshChildrenConfig = {
+            workspace: config.workspace,
+            parent: config.parent,
+            children: config.children,
+            existingChildren: this.flatChildren(config.existingChildren)
+        };
+
+        return this.base.refreshChildren(refreshConfig);
     }
 
     public iterateFindChild(children: Child[], predicate: (child: Child) => boolean): Child {
@@ -291,6 +312,14 @@ export class MainController implements WorkspacesController {
 
     public iterateFilterChildren(children: Child[], predicate: (child: Child) => boolean): Child[] {
         return this.base.iterateFilterChildren(children, predicate);
+    }
+
+    public hibernateWorkspace(workspaceId: string): Promise<void> {
+        return this.base.hibernateWorkspace(workspaceId);
+    }
+
+    public resumeWorkspace(workspaceId: string): Promise<void> {
+        return this.base.resumeWorkspace(workspaceId);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
