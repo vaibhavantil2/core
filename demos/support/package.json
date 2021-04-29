@@ -1,0 +1,17 @@
+{
+  "name": "support",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start:client": "http-server ./client -p 9100",
+    "start": "concurrently \"npm run start:client\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^6.0.2",
+    "http-server": "^0.12.3"
+  }
+}

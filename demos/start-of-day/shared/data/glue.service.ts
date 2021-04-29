@@ -7,7 +7,9 @@ import { Client } from 'shared/interfaces/ng-interfaces';
 @Injectable()
 export class GlueService {
 
-    constructor(private readonly glueStore: Glue42Store) { }
+    constructor(private readonly glueStore: Glue42Store) {
+        (window as any).glue = this.glue;
+    }
 
     public async setUpContextRetrieval(handleContext: (context: any) => any): Promise<{ contextId: string, globalUnsubscribe: () => void }> {
         const startUpCtx = await this.getMyWindowContext();

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client A</title>
+    <script src="./data.js"></script>
+    <script src="./index.js"></script>
+    <script src="./web.umd.js"></script>
+    <script src="./workspaces.umd.js"></script>
+    <style>
+        body {
+            background-color: palegoldenrod;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Notifications Trigger</h1>
+    <div style="float: left;">
+        <button onclick="clientCalling('kristina')">Kristina Calling</button>
+        <button onclick="clientCalling('vivian')">Vivian Calling</button>
+        <button onclick="clientCalling('chang')">Chang Calling</button>
+        <button onclick="clientCalling('pratt')">Pratt Calling</button>
+        <button onclick="clientCalling('margery')">Margery Calling</button>
+        <button onclick="clientCalling('dixon')">Dixon Calling</button>
+        <button onclick="clientCalling('maritza')">Maritza Calling</button>
+    </div>
+
+    <div style="float: left; margin-top: 50px;">
+        <button onclick="clientTransaction('kristina')">New Kristina Transaction</button>
+        <button onclick="clientTransaction('vivian')">New Vivian Transaction</button>
+        <button onclick="clientTransaction('chang')">New Chang Transaction</button>
+        <button onclick="clientTransaction('pratt')">New Pratt Transaction</button>
+        <button onclick="clientTransaction('margery')">New Margery Transaction</button>
+        <button onclick="clientTransaction('dixon')">New Dixon Transaction</button>
+        <button onclick="clientTransaction('maritza')">New Maritza Transaction</button>
+    </div>
+</body>
+<script>
+    const config = {
+        libraries: [GlueWorkspaces]
+    };
+
+    GlueWeb(config)
+        .then((glue) => {
+            window.glue = glue;
+            console.log("done");
+        })
+        .catch(console.warn);
+</script>
+
+</html>

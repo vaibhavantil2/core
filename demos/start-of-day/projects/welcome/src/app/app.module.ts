@@ -12,6 +12,8 @@ import { Glue42Ng } from "@glue42/ng";
 import GlueWebPlatform, { Glue42WebPlatform } from "@glue42/web-platform";
 import GlueWorkspaces from "@glue42/workspaces-api";
 
+import { start } from "./demo-plugin";
+
 const config: Glue42WebPlatform.Config = {
   glue: {
     libraries: [GlueWorkspaces],
@@ -23,7 +25,12 @@ const config: Glue42WebPlatform.Config = {
     logging: { level: "warn" }
   },
   workspaces: {
-    src: "/workspaces"
+    src: "/workspaces",
+    hibernation: {
+      maximumActiveWorkspaces: {
+        threshold: 3
+      }
+    }
   },
   applications: {
     local: [
@@ -54,6 +61,21 @@ const config: Glue42WebPlatform.Config = {
         details: {
           url: "/transactions"
         }
+      },
+      {
+        name: "trigger",
+        type: "window",
+        details: {
+          url: "http://localhost:9100/"
+        }
+      }
+    ]
+  },
+  plugins: {
+    definitions: [
+      {
+        name: "demo",
+        start: start
       }
     ]
   }
