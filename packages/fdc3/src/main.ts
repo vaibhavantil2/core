@@ -117,8 +117,24 @@ const fdc3Factory = (): Glue42FDC3DesktopAgent => {
 
     const agentApi = createDesktopAgent();
 
+    const dispatchFdc3Ready = async () => {
+        await (window as WindowType).fdc3GluePromise;
+        const event = new Event("fdc3Ready");
+        window.dispatchEvent(event);
+    };
+
+    dispatchFdc3Ready();
+
     return {
         ...agentApi,
+        fdc3Ready: async (waitForMs = 6000): Promise<void> => {
+            const timeout = setTimeout(() => {
+                throw new Error("Timed out waiting for `fdc3Ready` event.");
+            }, waitForMs);
+            await (window as WindowType).fdc3GluePromise;
+
+            clearTimeout(timeout);
+        },
         version
     };
 };
