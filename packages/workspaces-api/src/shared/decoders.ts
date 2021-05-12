@@ -280,7 +280,7 @@ export const workspaceConfigResultDecoder: Decoder<WorkspaceConfigResult> = obje
     name: nonEmptyStringDecoder,
     layoutName: optional(nonEmptyStringDecoder),
     isHibernated: optional(boolean()), // to support backwards comptability with older versions of GD
-    isSelected: boolean(),
+    isSelected: optional(boolean()), // to support backwards comptability with older versions of GD
     allowDrop: optional(boolean()),
     allowExtract: optional(boolean()),
     allowSplitters: optional(boolean()),
