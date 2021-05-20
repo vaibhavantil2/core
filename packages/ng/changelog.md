@@ -1,3 +1,5 @@
+2.1.12
+chore: bump due to dependencies update
 2.1.11
 fix: reverted the dev dep angular/cli and other 11.X deps from v11 to v9 to be inline with the rest of the angular deps
 2.1.10
