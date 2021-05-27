@@ -147,7 +147,7 @@ export class WorkspaceContainerWrapper {
         }
 
         const workspaceId = this.workspaceId ?? store.getByContainerId(idAsString(this.containerContentItem.config.id))?.id;
-        if (this.stateResolver.isWorkspaceSelected(workspaceId)) {
+        if (workspaceId && this.stateResolver.isWorkspaceSelected(workspaceId)) {
             const bounds = getElementBounds(this.containerContentItem.element);
             (this.containerContentItem.config.workspacesConfig as any).cachedBounds = bounds;
             return bounds;
@@ -221,7 +221,7 @@ export class WorkspaceContainerWrapper {
                     return;
                 }
 
-                const wrapper = new WorkspaceContainerWrapper(this.stateResolver,c, this.frameId);
+                const wrapper = new WorkspaceContainerWrapper(this.stateResolver, c, this.frameId);
 
                 wrapper.allowDrop = value;
 
@@ -243,7 +243,7 @@ export class WorkspaceContainerWrapper {
                 }
 
                 if (c.type === "stack") {
-                    const containerWrapper = new WorkspaceContainerWrapper(this.stateResolver,c, this.frameId);
+                    const containerWrapper = new WorkspaceContainerWrapper(this.stateResolver, c, this.frameId);
                     containerWrapper.allowExtract = value;
                 }
 
