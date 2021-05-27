@@ -742,7 +742,7 @@ export class LayoutController {
             throw new Error(`Expected item with type column but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.allowDrop = allowDrop;
     }
 
@@ -753,7 +753,7 @@ export class LayoutController {
             throw new Error(`Expected item with type column but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.allowDrop = false;
     }
 
@@ -764,7 +764,7 @@ export class LayoutController {
             throw new Error(`Expected item with type row but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.allowDrop = allowDrop;
     }
 
@@ -775,7 +775,7 @@ export class LayoutController {
             throw new Error(`Expected item with type row but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.allowDrop = false;
     }
 
@@ -786,7 +786,7 @@ export class LayoutController {
             throw new Error(`Expected item with type stack but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.allowDrop = allowDrop;
     }
 
@@ -797,7 +797,7 @@ export class LayoutController {
             throw new Error(`Expected item with type stack but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.allowDrop = false;
     }
 
@@ -808,7 +808,7 @@ export class LayoutController {
             throw new Error(`Expected item with type stack but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.showMaximizeButton = showMaximizeButton;
         uiExecutor.showMaximizeButton(itemId);
     }
@@ -819,7 +819,7 @@ export class LayoutController {
             throw new Error(`Expected item with type stack but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.showMaximizeButton = false;
         uiExecutor.hideMaximizeButton(itemId);
     }
@@ -830,7 +830,7 @@ export class LayoutController {
             throw new Error(`Expected item with type stack but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.showEjectButton = showEjectButton;
         uiExecutor.showEjectButton(itemId);
     }
@@ -841,7 +841,7 @@ export class LayoutController {
             throw new Error(`Expected item with type stack but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.showEjectButton = false;
         uiExecutor.hideEjectButton(itemId);
     }
@@ -853,7 +853,7 @@ export class LayoutController {
             throw new Error(`Expected item with type stack but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.showAddWindowButton = showAddWindowButton;
         uiExecutor.showAddWindowButton(itemId);
     }
@@ -865,7 +865,7 @@ export class LayoutController {
             throw new Error(`Expected item with type stack but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.showAddWindowButton = false;
         uiExecutor.hideAddWindowButton(itemId);
     }
@@ -876,7 +876,7 @@ export class LayoutController {
             throw new Error(`Expected item with type stack but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.allowExtract = allowExtract;
     }
     public disableGroupExtract(itemId: string): void {
@@ -886,7 +886,7 @@ export class LayoutController {
             throw new Error(`Expected item with type stack but received ${containerContenteItem.type} ${itemId}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(containerContenteItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver,containerContenteItem, this._frameId);
         wrapper.allowExtract = false;
     }
 
@@ -1234,7 +1234,7 @@ export class LayoutController {
         });
 
         layout.on("stackCreated", (stack: GoldenLayout.Stack) => {
-            const wrapper = new WorkspaceContainerWrapper(stack, this._frameId);
+            const wrapper = new WorkspaceContainerWrapper(this._stateResolver,stack, this._frameId);
             const button = document.createElement("li");
             button.classList.add("lm_add_button");
 

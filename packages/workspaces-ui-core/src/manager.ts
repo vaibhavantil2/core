@@ -28,8 +28,6 @@ import { ApplicationFactory } from "./app/factory";
 import { DelayedExecutor } from "./utils/delayedExecutor";
 import systemSettings from "./config/system";
 import { ConstraintsValidator } from "./config/constraintsValidator";
-import { WorkspaceWrapper } from "./state/workspaceWrapper";
-import { DefaultMaxSize, DefaultMinSize } from "./utils/constants";
 
 export class WorkspacesManager {
     private _controller: LayoutController;

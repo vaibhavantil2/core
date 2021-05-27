@@ -106,7 +106,7 @@ export class LayoutStateResolver {
     public getContainerSummary(containerId: string | string[]): ContainerSummary {
         containerId = idAsString(containerId);
         const contentItem = store.getContainer(containerId);
-        const wrapper = new WorkspaceContainerWrapper(contentItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this,contentItem, this._frameId);
 
         return wrapper.summary;
     }
@@ -116,14 +116,14 @@ export class LayoutStateResolver {
             throw new Error(`Tried to get container summary from item ${item.type} ${item.config.id}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(item, this._frameId, workspaceId);
+        const wrapper = new WorkspaceContainerWrapper(this,item, this._frameId, workspaceId);
 
         return wrapper.summary;
     }
 
     public getContainerConfig(containerId: string | string[]): GoldenLayout.ItemConfig {
         const contentItem = store.getContainer(containerId);
-        const wrapper = new WorkspaceContainerWrapper(contentItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this,contentItem, this._frameId);
 
         return wrapper.config;
     }
