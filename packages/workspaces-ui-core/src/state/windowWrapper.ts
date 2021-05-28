@@ -2,10 +2,12 @@
 import GoldenLayout from "@glue42/golden-layout";
 import { Bounds, WindowSummary } from "../types/internal";
 import { getElementBounds, idAsString } from "../utils";
+import { LayoutStateResolver } from "./resolver";
 import store from "./store";
 
 export class WorkspaceWindowWrapper {
     constructor(
+        private readonly stateResolver: LayoutStateResolver,
         private readonly windowContentItem: GoldenLayout.Component,
         private readonly frameId: string) {
     }
@@ -89,7 +91,27 @@ export class WorkspaceWindowWrapper {
         if (!this.windowContentItem) {
             return {} as Bounds;
         }
-        return getElementBounds(this.windowContentItem.element);
+
+        if (!this.windowContentItem.config.workspacesConfig) {
+            this.windowContentItem.config.workspacesConfig = {};
+        }
+
+        const workspaceId = store.getByWindowId(idAsString(this.windowContentItem.config.id))?.id;
+        if (workspaceId && this.stateResolver.isWorkspaceSelected(workspaceId)) {
+            const bounds = getElementBounds(this.windowContentItem.element);
+
+            (this.windowContentItem.config.workspacesConfig as any).cachedBounds = bounds;
+
+            return bounds;
+        }
+
+        const elementBounds = getElementBounds(this.windowContentItem.element);
+
+        if (elementBounds.width === 0 && elementBounds.height === 0 && (this.windowContentItem.config.workspacesConfig as any)?.cachedBounds) {
+            return (this.windowContentItem.config.workspacesConfig as any)?.cachedBounds;
+        }
+
+        return elementBounds;
     }
 
     private getSummaryCore(windowContentItem: GoldenLayout.Component, winId: string): WindowSummary {

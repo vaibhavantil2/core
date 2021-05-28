@@ -23,7 +23,7 @@ export class LayoutStateResolver {
             await this.waitForWindowContentItem(windowId);
             windowContentItem = store.getWindowContentItem(windowId);
         }
-        const wrapper = new WorkspaceWindowWrapper(windowContentItem, this._frameId);
+        const wrapper = new WorkspaceWindowWrapper(this,windowContentItem, this._frameId);
         return wrapper.summary;
     }
 
@@ -31,7 +31,7 @@ export class LayoutStateResolver {
         windowId = Array.isArray(windowId) ? windowId[0] : windowId;
         const windowContentItem = contentItem || store.getWindowContentItem(windowId);
 
-        const wrapper = new WorkspaceWindowWrapper(windowContentItem, this._frameId);
+        const wrapper = new WorkspaceWindowWrapper(this,windowContentItem, this._frameId);
         return wrapper.summary;
     }
 
@@ -71,7 +71,7 @@ export class LayoutStateResolver {
     public isWindowMaximized(id: string | string[]): boolean {
         const placementId = idAsString(id);
         const windowContentItem = store.getWindowContentItem(placementId);
-        const wrapper = new WorkspaceWindowWrapper(windowContentItem, this._frameId);
+        const wrapper = new WorkspaceWindowWrapper(this,windowContentItem, this._frameId);
 
         return wrapper.isMaximized;
     }
@@ -79,7 +79,7 @@ export class LayoutStateResolver {
     public isWindowSelected(id: string | string[]): boolean {
         const placementId = idAsString(id);
         const windowContentItem = store.getWindowContentItem(placementId);
-        const wrapper = new WorkspaceWindowWrapper(windowContentItem, this._frameId);
+        const wrapper = new WorkspaceWindowWrapper(this,windowContentItem, this._frameId);
         return wrapper.isSelected;
     }
 

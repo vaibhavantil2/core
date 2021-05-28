@@ -236,7 +236,7 @@ export class WorkspaceContainerWrapper {
         const lockChildren = (children: ContentItem[]): void => {
             children.forEach((c) => {
                 if (c.type === "component") {
-                    const windowWrapper = new WorkspaceWindowWrapper(c, this.frameId);
+                    const windowWrapper = new WorkspaceWindowWrapper(this.stateResolver,c, this.frameId);
 
                     windowWrapper.allowExtract = value;
                     return;

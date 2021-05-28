@@ -487,7 +487,7 @@ export class WorkspaceWrapper {
 
         const populateRecursive = (item: GoldenLayout.ContentItem): void => {
             if (item.type === "component") {
-                const windowWrapper = new WorkspaceWindowWrapper(item, this.frameId);
+                const windowWrapper = new WorkspaceWindowWrapper(this.stateResolver,item, this.frameId);
 
                 windowWrapper.allowExtract = value;
                 return;
@@ -571,7 +571,7 @@ export class WorkspaceWrapper {
 
         const populateRecursive = (item: GoldenLayout.ContentItem): void => {
             if (item.type === "component") {
-                const windowWrapper = new WorkspaceWindowWrapper(item, this.frameId);
+                const windowWrapper = new WorkspaceWindowWrapper(this.stateResolver,item, this.frameId);
 
                 windowWrapper.showCloseButton = value;
                 return;
