@@ -5,7 +5,7 @@ import { Glue42Web } from "../../web";
 import { GlueBridge } from "../communication/bridge";
 import { allApplicationDefinitionsDecoder, appManagerOperationTypesDecoder, importModeDecoder, nonEmptyStringDecoder } from "../shared/decoders";
 import { IoC } from "../shared/ioc";
-import { LibController } from "../shared/types";
+import { LibController, ParsedConfig } from "../shared/types";
 import { WindowHello } from "../windows/protocol";
 import { AppsImportOperation, AppHelloSuccess, ApplicationStartConfig, AppRemoveConfig, InstanceData, operations, BaseApplicationData, AppsExportOperation, DefinitionParseResult } from "./protocol";
 import {

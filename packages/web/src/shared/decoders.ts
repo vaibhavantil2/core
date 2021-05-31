@@ -6,6 +6,7 @@ import { AllLayoutsFullConfig, AllLayoutsSummariesResult, GetAllLayoutsConfig, L
 import { HelloSuccess, OpenWindowConfig, CoreWindowData, WindowHello, WindowOperationTypes, SimpleWindowCommand, WindowTitleConfig, WindowBoundsResult, WindowMoveResizeConfig, WindowUrlResult, FrameWindowBoundsResult } from "../windows/protocol";
 import { IntentsOperationTypes, WrappedIntentFilter, WrappedIntents } from "../intents/protocol";
 import { LibDomains } from "./types";
+import { NotificationEventPayload, NotificationsOperationTypes, PermissionRequestResult, RaiseNotification } from "../notifications/protocol";
 
 export const nonEmptyStringDecoder: Decoder<string> = string().where((s) => s.length > 0, "Expected a non-empty string");
 export const nonNegativeNumberDecoder: Decoder<number> = number().where((num) => num >= 0, "Expected a non-negative number");
@@ -56,6 +57,13 @@ export const layoutsOperationTypesDecoder: Decoder<LayoutsOperationTypes> = oneO
     constant("export"),
     constant("import"),
     constant("remove")
+);
+
+export const notificationsOperationTypesDecoder: Decoder<NotificationsOperationTypes> = oneOf<"raiseNotification" | "requestPermission" | "notificationShow" | "notificationClick">(
+    constant("raiseNotification"),
+    constant("requestPermission"),
+    constant("notificationShow"),
+    constant("notificationClick")
 );
 
 export const windowRelativeDirectionDecoder: Decoder<Glue42Web.Windows.RelativeDirection> = oneOf<"top" | "left" | "right" | "bottom">(
@@ -507,3 +515,77 @@ export const addIntentListenerIntentDecoder: Decoder<string | Glue42Web.Intents.
 export const channelNameDecoder = (channelNames: string[]): Decoder<string> => {
     return nonEmptyStringDecoder.where(s => channelNames.includes(s), "Expected a valid channel name");
 };
+
+export const interopActionSettingsDecoder: Decoder<Glue42Web.Notifications.InteropActionSettings> = object({
+    method: nonEmptyStringDecoder,
+    arguments: optional(anyJson()),
+    target: optional(oneOf<"all" | "best">(
+        constant("all"),
+        constant("best")
+    ))
+});
+
+export const glue42NotificationActionDecoder: Decoder<Glue42Web.Notifications.NotificationAction> = object({
+    action: string(),
+    title: nonEmptyStringDecoder,
+    icon: optional(string()),
+    interop: optional(interopActionSettingsDecoder)
+});
+
+export const notificationDefinitionDecoder: Decoder<Glue42Web.Notifications.NotificationDefinition> = object({
+    badge: optional(string()),
+    body: optional(string()),
+    data: optional(anyJson()),
+    dir: optional(oneOf<"auto" | "ltr" | "rtl">(
+        constant("auto"),
+        constant("ltr"),
+        constant("rtl")
+    )),
+    icon: optional(string()),
+    image: optional(string()),
+    lang: optional(string()),
+    renotify: optional(boolean()),
+    requireInteraction: optional(boolean()),
+    silent: optional(boolean()),
+    tag: optional(string()),
+    timestamp: optional(nonNegativeNumberDecoder),
+    vibrate: optional(array(number()))
+});
+
+export const glue42NotificationOptionsDecoder: Decoder<Glue42Web.Notifications.RaiseOptions> = object({
+    title: nonEmptyStringDecoder,
+    clickInterop: optional(interopActionSettingsDecoder),
+    actions: optional(array(glue42NotificationActionDecoder)),
+    badge: optional(string()),
+    body: optional(string()),
+    data: optional(anyJson()),
+    dir: optional(oneOf<"auto" | "ltr" | "rtl">(
+        constant("auto"),
+        constant("ltr"),
+        constant("rtl")
+    )),
+    icon: optional(string()),
+    image: optional(string()),
+    lang: optional(string()),
+    renotify: optional(boolean()),
+    requireInteraction: optional(boolean()),
+    silent: optional(boolean()),
+    tag: optional(string()),
+    timestamp: optional(nonNegativeNumberDecoder),
+    vibrate: optional(array(number()))
+});
+
+export const raiseNotificationDecoder: Decoder<RaiseNotification> = object({
+    settings: glue42NotificationOptionsDecoder,
+    id: nonEmptyStringDecoder
+});
+
+export const permissionRequestResultDecoder: Decoder<PermissionRequestResult> = object({
+    permissionGranted: boolean()
+});
+
+export const notificationEventPayloadDecoder: Decoder<NotificationEventPayload> = object({
+    definition: notificationDefinitionDecoder,
+    action: optional(string()),
+    id: optional(nonEmptyStringDecoder)
+});

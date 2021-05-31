@@ -2,16 +2,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Glue42Web } from "@glue42/web";
 import { generate } from "shortid";
-import { BridgeOperation, CoreClientData, InternalPlatformConfig, LibController, SessionWindowData } from "../../common/types";
+import { BridgeOperation, InternalPlatformConfig, LibController, SessionWindowData } from "../../common/types";
 import { GlueController } from "../../controllers/glue";
 import { SessionStorageController } from "../../controllers/session";
 import { PromiseWrap } from "../../shared/promisePlus";
 import { frameWindowBoundsResultDecoder, openWindowConfigDecoder, simpleWindowDecoder, windowBoundsResultDecoder, windowMoveResizeConfigDecoder, windowOperationDecoder, windowTitleConfigDecoder, windowUrlResultDecoder } from "./decoders";
-import { StateController } from "../../controllers/state";
+import { WindowsStateController } from "../../controllers/state";
 import { HelloSuccess, OpenWindowConfig, OpenWindowSuccess, SimpleWindowCommand, WindowBoundsResult, WindowMoveResizeConfig, WindowOperationsTypes, WindowTitleConfig, WindowUrlResult } from "./types";
 import { getRelativeBounds } from "../../shared/utils";
 import logger from "../../shared/logger";
-import { SimpleItemConfig, WorkspaceWindowData } from "../workspaces/types";
+import { WorkspaceWindowData } from "../workspaces/types";
 import { workspaceWindowDataDecoder } from "../workspaces/decoders";
 import { IoC } from "../../shared/ioc";
 
@@ -38,7 +38,7 @@ export class WindowsController implements LibController {
     constructor(
         private readonly glueController: GlueController,
         private readonly sessionController: SessionStorageController,
-        private readonly stateController: StateController,
+        private readonly stateController: WindowsStateController,
         private readonly ioc: IoC
     ) { }
 

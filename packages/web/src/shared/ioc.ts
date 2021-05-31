@@ -1,5 +1,5 @@
 import { WebWindowModel } from "../windows/webWindow";
-import { LibController, LibDomains } from "./types";
+import { LibController, LibDomains, ParsedConfig } from "./types";
 import { WindowsController } from "../windows/controller";
 import { Glue42Core } from "@glue42/core";
 import { GlueBridge } from "../communication/bridge";
@@ -14,8 +14,10 @@ import { NotificationsController } from "../notifications/controller";
 import { IntentsController } from "../intents/controller";
 import { ChannelsController } from "../channels/controller";
 import { SystemController } from "../system/controller";
+import { Notification } from "../notifications/notification";
 
 export class IoC {
+    private _webConfig!: ParsedConfig;
     private _windowsControllerInstance!: WindowsController;
     private _appManagerControllerInstance!: AppManagerController;
     private _layoutsControllerInstance!: LayoutsController;
@@ -100,6 +102,14 @@ export class IoC {
 
         return this._bridgeInstance;
     }
+    
+    public get config(): ParsedConfig {
+        return this._webConfig;
+    }
+
+    public defineConfig(config: ParsedConfig): void {
+        this._webConfig = config;
+    }
 
     public async buildWebWindow(id: string, name: string): Promise<WindowProjection> {
 
@@ -108,6 +118,10 @@ export class IoC {
         const api = await model.toApi();
 
         return { id, model, api };
+    }
+
+    public buildNotification(config: Glue42Web.Notifications.RaiseOptions): Glue42Web.Notifications.Notification {
+        return new Notification(config);
     }
 
     public async buildApplication(app: BaseApplicationData, applicationInstances: InstanceData[]): Promise<Glue42Web.AppManager.Application> {
