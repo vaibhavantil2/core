@@ -5,7 +5,7 @@ import { generate } from "shortid";
 import { ApplicationStartConfig, BridgeOperation, InternalApplicationsConfig, InternalPlatformConfig, LibController, SessionWindowData } from "../../common/types";
 import { GlueController } from "../../controllers/glue";
 import { SessionStorageController } from "../../controllers/session";
-import { StateController } from "../../controllers/state";
+import { WindowsStateController } from "../../controllers/state";
 import { IoC } from "../../shared/ioc";
 import { PromiseWrap } from "../../shared/promisePlus";
 import { getRelativeBounds } from "../../shared/utils";
@@ -42,7 +42,7 @@ export class ApplicationsController implements LibController {
     constructor(
         private readonly glueController: GlueController,
         private readonly sessionStorage: SessionStorageController,
-        private readonly stateController: StateController,
+        private readonly stateController: WindowsStateController,
         private readonly appDirectory: AppDirectory,
         private readonly ioc: IoC
     ) { }

@@ -12,6 +12,7 @@ import { Glue42WebPlatform, Glue42WebPlatformFactoryFunction } from "../../../pa
 import { WorkspacesFactoryFunction } from "../../../packages/workspaces-api/workspaces";
 // TODO: Add building and serving the Workspaces application to the e2e script.
 import { channelsConfig, localApplicationsConfig } from "./config";
+import sinon, { fake } from "sinon";
 
 // Make the RUNNER environment variable available inside of the tests (resolved during the gtf build process) and set it as window title.
 const RUNNER = process.env.RUNNER;
@@ -22,7 +23,42 @@ declare const window: any;
 declare const GlueWorkspaces: WorkspacesFactoryFunction;
 declare const GlueWebPlatform: Glue42WebPlatformFactoryFunction;
 
+const setupNotifications = () => {
+    window.sinonSandbox = sinon.createSandbox();
+
+    window.showNotificationFake = window.sinonSandbox.fake.resolves({});
+    window.notificationConstructorFake = window.sinonSandbox.fake();
+    window.notificationsFakeTriggerClick = false;
+
+    window.Notification = class FakeNotification {
+        constructor(title: string, options: any) {
+            window.notificationConstructorFake(title, options);
+
+            setTimeout(() => {
+                if (window.notificationsFakeTriggerClick) {
+                    const fakeEvent = {
+                        target: options
+                    };
+
+                    this.onclick(fakeEvent);
+                }
+            }, 200);
+        }
+
+        static requestPermission() {
+            return "granted";
+        }
+
+        onclick: any;
+    };
+
+    const fakeSwRegistration = new Promise<ServiceWorkerRegistration>((resolve) => resolve({ showNotification: window.showNotificationFake } as ServiceWorkerRegistration));
+
+    return fakeSwRegistration;
+};
+
 const startGtf = async () => {
+
     const glueWebConfig: Glue42Web.Config = {
         libraries: [GlueWorkspaces],
         systemLogger: { level: "error" }
@@ -41,6 +77,9 @@ const startGtf = async () => {
         workspaces: {
             // TODO: Add building and serving the Workspaces application to the e2e script.
             src: "http://localhost:7654"
+        },
+        serviceWorker: {
+            registrationPromise: setupNotifications()
         },
         gateway: {
             logging: {

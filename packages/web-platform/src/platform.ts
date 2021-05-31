@@ -53,6 +53,9 @@ export class Platform {
 
         this.platformConfig = deepMerge<InternalPlatformConfig>(defaultPlatformConfig, verifiedConfig as any);
 
+        // deep merge deletes the promise object when merging, probably due to some cyclical references 
+        this.transferPromiseObjects(verifiedConfig);
+
         const glue42core = {
             platformStarted: true,
             isPlatformFrame: !!config?.workspaces?.isFrame,
@@ -61,6 +64,24 @@ export class Platform {
         };
 
         (window as any).glue42core = glue42core;
+    }
+
+    private transferPromiseObjects(verifiedConfig: Glue42WebPlatform.Config): void {
+        if (verifiedConfig.serviceWorker?.registrationPromise) {
+            (this.platformConfig.serviceWorker as Glue42WebPlatform.ServiceWorker.Config).registrationPromise = verifiedConfig.serviceWorker.registrationPromise;
+        }
+
+        if (verifiedConfig.plugins && verifiedConfig.plugins.definitions.length) {
+            const definitions = verifiedConfig.plugins.definitions;
+
+            definitions.forEach((def) => {
+                const found = this.platformConfig.plugins?.definitions.find((savedDef) => savedDef.name === def.name);
+
+                if (found) {
+                    found.config = def.config;
+                }
+            });
+        }
     }
 
     private validatePlugins(verifiedConfig: Glue42WebPlatform.Config): void {
