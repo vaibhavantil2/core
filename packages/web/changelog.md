@@ -1,3 +1,5 @@
+2.2.0
+feat: added support for advanced notifications
 2.1.8
 feat: windows lib can now handle bounds request when the window is a frame
 2.1.7
