@@ -7,4 +7,6 @@ if (typeof self !== "undefined") {
     (self as any).raiseGlueNotification = raiseGlueNotification;
 }
 
+export { openCorePlatform, raiseGlueNotification } from "./worker";
+
 export default setupCore;
