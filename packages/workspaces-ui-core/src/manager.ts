@@ -28,8 +28,6 @@ import { ApplicationFactory } from "./app/factory";
 import { DelayedExecutor } from "./utils/delayedExecutor";
 import systemSettings from "./config/system";
 import { ConstraintsValidator } from "./config/constraintsValidator";
-import { WorkspaceWrapper } from "./state/workspaceWrapper";
-import { DefaultMaxSize, DefaultMinSize } from "./utils/constants";
 
 export class WorkspacesManager {
     private _controller: LayoutController;
@@ -495,7 +493,7 @@ export class WorkspacesManager {
             }
         });
 
-        if (typeof lockConfig.config.allowDrop !== "undefined") {
+        if (typeof lockConfig.config.allowDrop === "boolean") {
             lockConfig.config.allowDropLeft = lockConfig.config.allowDropLeft ?? lockConfig.config.allowDrop;
             lockConfig.config.allowDropTop = lockConfig.config.allowDropTop ?? lockConfig.config.allowDrop;
             lockConfig.config.allowDropRight = lockConfig.config.allowDropRight ?? lockConfig.config.allowDrop;

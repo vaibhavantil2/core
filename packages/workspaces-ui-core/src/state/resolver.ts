@@ -23,7 +23,7 @@ export class LayoutStateResolver {
             await this.waitForWindowContentItem(windowId);
             windowContentItem = store.getWindowContentItem(windowId);
         }
-        const wrapper = new WorkspaceWindowWrapper(windowContentItem, this._frameId);
+        const wrapper = new WorkspaceWindowWrapper(this,windowContentItem, this._frameId);
         return wrapper.summary;
     }
 
@@ -31,7 +31,7 @@ export class LayoutStateResolver {
         windowId = Array.isArray(windowId) ? windowId[0] : windowId;
         const windowContentItem = contentItem || store.getWindowContentItem(windowId);
 
-        const wrapper = new WorkspaceWindowWrapper(windowContentItem, this._frameId);
+        const wrapper = new WorkspaceWindowWrapper(this,windowContentItem, this._frameId);
         return wrapper.summary;
     }
 
@@ -71,7 +71,7 @@ export class LayoutStateResolver {
     public isWindowMaximized(id: string | string[]): boolean {
         const placementId = idAsString(id);
         const windowContentItem = store.getWindowContentItem(placementId);
-        const wrapper = new WorkspaceWindowWrapper(windowContentItem, this._frameId);
+        const wrapper = new WorkspaceWindowWrapper(this,windowContentItem, this._frameId);
 
         return wrapper.isMaximized;
     }
@@ -79,7 +79,7 @@ export class LayoutStateResolver {
     public isWindowSelected(id: string | string[]): boolean {
         const placementId = idAsString(id);
         const windowContentItem = store.getWindowContentItem(placementId);
-        const wrapper = new WorkspaceWindowWrapper(windowContentItem, this._frameId);
+        const wrapper = new WorkspaceWindowWrapper(this,windowContentItem, this._frameId);
         return wrapper.isSelected;
     }
 
@@ -106,7 +106,7 @@ export class LayoutStateResolver {
     public getContainerSummary(containerId: string | string[]): ContainerSummary {
         containerId = idAsString(containerId);
         const contentItem = store.getContainer(containerId);
-        const wrapper = new WorkspaceContainerWrapper(contentItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this,contentItem, this._frameId);
 
         return wrapper.summary;
     }
@@ -116,14 +116,14 @@ export class LayoutStateResolver {
             throw new Error(`Tried to get container summary from item ${item.type} ${item.config.id}`);
         }
 
-        const wrapper = new WorkspaceContainerWrapper(item, this._frameId, workspaceId);
+        const wrapper = new WorkspaceContainerWrapper(this,item, this._frameId, workspaceId);
 
         return wrapper.summary;
     }
 
     public getContainerConfig(containerId: string | string[]): GoldenLayout.ItemConfig {
         const contentItem = store.getContainer(containerId);
-        const wrapper = new WorkspaceContainerWrapper(contentItem, this._frameId);
+        const wrapper = new WorkspaceContainerWrapper(this,contentItem, this._frameId);
 
         return wrapper.config;
     }

@@ -239,7 +239,7 @@ describe("properties: ", () => {
     });
 
     describe("frame: Should", () => {
-        const newFrameConfig = Object.assign(threeContainersConfig, { frame: { newFrame: true } });
+        const newFrameConfig = Object.assign({}, threeContainersConfig, { frame: { newFrame: true } });
         it("be correct for all windows", async () => {
             workspace = await glue.workspaces.createWorkspace(threeContainersConfig);
 
@@ -287,6 +287,81 @@ describe("properties: ", () => {
             expect(window.maxWidth).to.eql(32767);
             expect(window.minHeight).to.eql(10);
             expect(window.maxHeight).to.eql(32767);
+        });
+    });
+
+    describe("width: Should", () => {
+
+        it(`be a number`, () => {
+            const currentWindow = workspace.getAllWindows()[0];
+
+            expect(currentWindow.width).to.be.a("number");
+        });
+
+        it(`be larger than 0`, () => {
+            const currentWindow = workspace.getAllWindows()[0];
+
+            expect(currentWindow.width > 0).to.be.true;
+        });
+
+        describe("", () => {
+            let secondWorkspace;
+            let thirdWorkspace;
+
+            before(async () => {
+                secondWorkspace = await glue.workspaces.createWorkspace(threeContainersConfig);
+                thirdWorkspace = await glue.workspaces.createWorkspace(threeContainersConfig);
+
+                await secondWorkspace.refreshReference();
+            });
+
+            after(async () => {
+                await secondWorkspace.close();
+                await thirdWorkspace.close();
+            });
+
+            it(`be larger than 0 when the workspace is not focused`, () => {
+                const currWindow = secondWorkspace.getAllWindows()[0];
+
+                expect(currWindow.width > 0).to.be.true;
+            });
+        });
+    });
+
+    describe("height: Should", () => {
+        it(`be a number`, () => {
+            const currentWindow = workspace.getAllWindows()[0];
+
+            expect(currentWindow.height).to.be.a("number");
+        });
+
+        it(`be larger than 0`, () => {
+            const currentWindow = workspace.getAllWindows()[0];
+
+            expect(currentWindow.height > 0).to.be.true;
+        });
+
+        describe("", () => {
+            let secondWorkspace;
+            let thirdWorkspace;
+
+            before(async () => {
+                secondWorkspace = await glue.workspaces.createWorkspace(threeContainersConfig);
+                thirdWorkspace = await glue.workspaces.createWorkspace(threeContainersConfig);
+
+                await secondWorkspace.refreshReference();
+            });
+
+            after(async () => {
+                await secondWorkspace.close();
+                await thirdWorkspace.close();
+            });
+
+            it(`be larger than 0 when the workspace is not focused`, async () => {
+                const currentWindow = workspace.getAllWindows()[0];
+
+                expect(currentWindow.height > 0).to.be.true;
+            });
         });
     });
 });

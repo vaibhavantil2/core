@@ -3,11 +3,13 @@ import GoldenLayout, { ContentItem } from "@glue42/golden-layout";
 import { Bounds, ContainerSummary } from "../types/internal";
 import { getElementBounds, idAsString } from "../utils";
 import { DefaultMaxSize, DefaultMinSize } from "../utils/constants";
+import { LayoutStateResolver } from "./resolver";
 import store from "./store";
 import { WorkspaceWindowWrapper } from "./windowWrapper";
 
 export class WorkspaceContainerWrapper {
     constructor(
+        private readonly stateResolver: LayoutStateResolver,
         private readonly containerContentItem: GoldenLayout.Row | GoldenLayout.Stack | GoldenLayout.Column,
         private readonly frameId: string,
         private readonly workspaceId?: string) {
@@ -139,7 +141,26 @@ export class WorkspaceContainerWrapper {
         if (!this.containerContentItem) {
             return {} as Bounds;
         }
-        return getElementBounds(this.containerContentItem.element);
+
+        if (!this.containerContentItem.config.workspacesConfig) {
+            this.containerContentItem.config.workspacesConfig = {};
+        }
+
+        const workspaceId = this.workspaceId ?? store.getByContainerId(idAsString(this.containerContentItem.config.id))?.id;
+        if (workspaceId && this.stateResolver.isWorkspaceSelected(workspaceId)) {
+            const bounds = getElementBounds(this.containerContentItem.element);
+            (this.containerContentItem.config.workspacesConfig as any).cachedBounds = bounds;
+            return bounds;
+        }
+
+        const elementBounds = getElementBounds(this.containerContentItem.element);
+
+        if (elementBounds.width === 0 && elementBounds.height === 0 && (this.containerContentItem.config.workspacesConfig as any)?.cachedBounds) {
+            return (this.containerContentItem.config.workspacesConfig as any)?.cachedBounds;
+        }
+
+        return elementBounds;
+
     }
 
     public get isPinned(): boolean {
@@ -200,7 +221,7 @@ export class WorkspaceContainerWrapper {
                     return;
                 }
 
-                const wrapper = new WorkspaceContainerWrapper(c, this.frameId);
+                const wrapper = new WorkspaceContainerWrapper(this.stateResolver, c, this.frameId);
 
                 wrapper.allowDrop = value;
 
@@ -215,14 +236,14 @@ export class WorkspaceContainerWrapper {
         const lockChildren = (children: ContentItem[]): void => {
             children.forEach((c) => {
                 if (c.type === "component") {
-                    const windowWrapper = new WorkspaceWindowWrapper(c, this.frameId);
+                    const windowWrapper = new WorkspaceWindowWrapper(this.stateResolver,c, this.frameId);
 
                     windowWrapper.allowExtract = value;
                     return;
                 }
 
                 if (c.type === "stack") {
-                    const containerWrapper = new WorkspaceContainerWrapper(c, this.frameId);
+                    const containerWrapper = new WorkspaceContainerWrapper(this.stateResolver, c, this.frameId);
                     containerWrapper.allowExtract = value;
                 }
 

@@ -591,16 +591,78 @@ describe("properties: ", () => {
 
                 expect(currParent.width).to.be.a("number");
             });
+
+            it(`be larger than 0 when the parent is a ${parent}`, () => {
+                const currParent = workspace.getBox(p => p.type === parent);
+
+                expect(currParent.width > 0).to.be.true;
+            });
+        });
+
+        describe("", () => {
+            let secondWorkspace;
+            let thirdWorkspace;
+
+            before(async () => {
+                secondWorkspace = await glue.workspaces.createWorkspace(threeContainersConfig);
+                thirdWorkspace = await glue.workspaces.createWorkspace(threeContainersConfig);
+
+                await secondWorkspace.refreshReference();
+            });
+
+            after(async () => {
+                await secondWorkspace.close();
+                await thirdWorkspace.close();
+            });
+
+            Array.from(["group", "column", "row"]).forEach((parent) => {
+                it(`be larger than 0 when the parent is a ${parent} and the workspace is not focused`, () => {
+                    const currParent = secondWorkspace.getBox(p => p.type === parent);
+
+                    expect(currParent.width > 0).to.be.true;
+                });
+            });
         });
     });
 
     describe("height: Should", () => {
-        Array.from(["group", "column", "row"]).forEach((parent) => {
 
+        Array.from(["group", "column", "row"]).forEach((parent) => {
             it(`be a number when the parent is a ${parent}`, () => {
                 const currParent = workspace.getBox(p => p.type === parent);
 
                 expect(currParent.height).to.be.a("number");
+            });
+
+            it(`be larger than 0 when the parent is a ${parent}`, () => {
+                const currParent = workspace.getBox(p => p.type === parent);
+
+                expect(currParent.height > 0).to.be.true;
+            });
+        });
+
+        describe("", () => {
+            let secondWorkspace;
+            let thirdWorkspace;
+
+            before(async () => {
+                secondWorkspace = await glue.workspaces.createWorkspace(threeContainersConfig);
+                thirdWorkspace = await glue.workspaces.createWorkspace(threeContainersConfig);
+
+                await secondWorkspace.refreshReference();
+            });
+
+            after(async () => {
+                await secondWorkspace.close();
+                await thirdWorkspace.close();
+            });
+
+            Array.from(["group", "column", "row"]).forEach((parent) => {
+                it(`be larger than 0 when the parent is a ${parent} and the workspace is not focused`, () => {
+                    const currParent = secondWorkspace.getBox(p => p.type === parent);
+
+                    expect(currParent.height > 0).to.be.true;
+                });
             });
         });
     });

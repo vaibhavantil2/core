@@ -184,6 +184,10 @@ lm.utils.copy(lm.items.RowOrColumn.prototype, {
 	 */
 	getMaxWidth() {
 		const elementMaxWidth = this.config.workspacesConfig.maxWidth || this.layoutManager.config.dimensions.maxItemWidth;
+		if (!this.contentItems.length) {
+			// When there are no content items the item constraint should be returned directly
+			return elementMaxWidth;
+		}
 		const contentsMaxWidth = this.contentItems.reduce((maxWidth, ci) => {
 			if (this.config.type === "row") {
 				maxWidth += ci.getMaxWidth() || this.layoutManager.config.dimensions.maxItemWidth;
@@ -218,6 +222,10 @@ lm.utils.copy(lm.items.RowOrColumn.prototype, {
 	 */
 	getMaxHeight() {
 		const elementMaxHeight = this.config.workspacesConfig.maxHeight || this.layoutManager.config.dimensions.maxItemHeight;
+		if (!this.contentItems.length) {
+			// When there are no content items the item constraint should be returned directly
+			return elementMaxHeight;
+		}
 		const contentsMaxHeight = this.contentItems.reduce((maxHeight, ci) => {
 			if (this.config.type === "row") {
 				maxHeight = Math.min(ci.getMaxHeight() || this.layoutManager.config.dimensions.maxItemHeight, maxHeight || elementMaxHeight);

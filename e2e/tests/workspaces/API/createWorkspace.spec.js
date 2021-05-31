@@ -850,6 +850,61 @@ describe('createWorkspace() ', function () {
             expect(workspace.showAddWindowButtons).to.be.false;
         });
 
+        it("create a workspace with the correct drop constraints when allowDrop is false and all others are true ", async () => {
+            const workspace = await glue.workspaces.createWorkspace({
+                children: [{
+                    type: "group",
+                    children: [{
+                        type: "window",
+                        appName: "noGlueApp"
+                    }]
+                }],
+                config: {
+                    allowDrop: false,
+                    allowDropLeft: true,
+                    allowDropTop: true,
+                    allowDropRight: true,
+                    allowDropBottom: true,
+                }
+            });
+
+            await workspace.refreshReference();
+
+            expect(workspace.allowDrop).to.be.true;
+            expect(workspace.allowDropLeft).to.be.true;
+            expect(workspace.allowDropTop).to.be.true;
+            expect(workspace.allowDropRight).to.be.true;
+            expect(workspace.allowDropBottom).to.be.true;
+        });
+
+        it("create a workspace with the correct drop constraints when allowDrop is true and all others are false ", async () => {
+            const workspace = await glue.workspaces.createWorkspace({
+                children: [{
+                    type: "group",
+                    children: [{
+                        type: "window",
+                        appName: "noGlueApp"
+                    }]
+                }],
+                config: {
+                    allowDrop: true,
+                    allowDropLeft: false,
+                    allowDropTop: false,
+                    allowDropRight: false,
+                    allowDropBottom: false,
+                }
+            });
+
+            await workspace.refreshReference();
+
+            expect(workspace.allowDrop).to.be.true;
+            expect(workspace.allowDropLeft).to.be.false;
+            expect(workspace.allowDropTop).to.be.false;
+            expect(workspace.allowDropRight).to.be.false;
+            expect(workspace.allowDropBottom).to.be.false;
+
+        });
+
         it("lock all the rows when constraints are passed in the config object of the workspace", async () => {
             const workspace = await glue.workspaces.createWorkspace({
                 children: [
