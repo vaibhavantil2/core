@@ -16,9 +16,12 @@ export interface WebWorkerConfig {
 }
 
 export type Glue42WebWorkerFactoryFunction = (config?: WebWorkerConfig) => void;
-export type openCorePlatform = (url: string) => Promise<void>;
-export type raiseGlueNotification = (settings: any) => Promise<void>;
+export type OpenCorePlatform = (url: string) => Promise<void>;
+export type RaiseGlueNotification = (settings: any) => Promise<void>;
 
 declare const WebWorkerFactory: Glue42WebWorkerFactoryFunction;
+
+export const openCorePlatform: OpenCorePlatform;
+export const raiseGlueNotification: RaiseGlueNotification;
 
 export default WebWorkerFactory;

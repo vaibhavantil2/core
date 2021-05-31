@@ -8,6 +8,7 @@
     "@glue42/react-hooks": "1.2.7",
     "@glue42/web": "^2.1.8",
     "@glue42/web-platform": "^1.5.0",
+    "@glue42/web-worker": "^0.0.0",
     "@glue42/workspaces-api": "^1.7.0",
     "@glue42/workspaces-ui-react": "^1.4.0",
     "react": "^17.0.1",
