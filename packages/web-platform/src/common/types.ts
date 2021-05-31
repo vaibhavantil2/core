@@ -6,7 +6,7 @@ import { Glue42WebPlatform } from "../../platform";
 
 export type Glue42API = Glue42.Glue;
 export type Glue42Config = Glue42.Config;
-export type LibDomains = "system" | "windows" | "appManager" | "layouts" | "workspaces" | "intents" | "channels";
+export type LibDomains = "system" | "windows" | "appManager" | "layouts" | "workspaces" | "intents" | "channels" | "notifications";
 
 export interface InternalWindowsConfig {
     windowResponseTimeoutMs: number;
@@ -36,6 +36,7 @@ export interface InternalPlatformConfig {
     plugins?: {
         definitions: Glue42WebPlatform.Plugins.PluginDefinition[];
     };
+    serviceWorker?: Glue42WebPlatform.ServiceWorker.Config;
     workspaces?: Glue42WebPlatform.Workspaces.Config;
     environment: any;
 }

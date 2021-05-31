@@ -78,6 +78,11 @@ export namespace Glue42Web {
         inproc?: Glue42Core.InprocGWSettings;
 
         /**
+         * Configure the system logger. Used mostly for during development.
+         */
+        notifications?: Notifications.Settings;
+
+        /**
          * A list of glue libraries which will be initiated internally and provide access to specific functionalities
          */
         libraries?: Array<(glue: Glue42Web.API, config?: Glue42Web.Config | Glue42.Config) => Promise<void>>;
@@ -501,25 +506,63 @@ export namespace Glue42Web {
              * Raises a new notification
              * @param notification notification options
              */
-            raise(notification: Glue42NotificationOptions): Promise<Notification>;
+            raise(notification: RaiseOptions): Promise<Notification>;
+            requestPermission(): Promise<boolean>;
         }
 
-        export interface Glue42NotificationOptions extends NotificationOptions {
+        export interface NotificationDefinition {
+            badge?: string;
+            body?: string;
+            data?: any;
+            dir?: "auto" | "ltr" | "rtl";
+            icon?: string;
+            image?: string;
+            lang?: string;
+            renotify?: boolean;
+            requireInteraction?: boolean;
+            silent?: boolean;
+            tag?: string;
+            timestamp?: number;
+            vibrate?: number[];
+        }
+
+        export interface Notification extends NotificationDefinition {
+            onclick: () => any;
+            onshow: () => any;
+        }
+
+        export interface RaiseOptions extends NotificationDefinition {
             /** the title of the notification */
             title: string;
             /** set to make the notification click invoke an interop method with specific arguments */
             clickInterop?: InteropActionSettings;
+            actions?: NotificationAction[];
         }
 
-        export interface Glue42NotificationAction extends NotificationAction {
+        export interface NotificationAction {
+            action: string;
+            title: string;
+            icon?: string;
             /** set to make the action invoke an interop method with specific arguments */
-            interop: InteropActionSettings;
+            interop?: InteropActionSettings;
         }
 
         export interface InteropActionSettings {
             method: string;
             arguments?: any;
             target?: "all" | "best";
+        }
+
+        export type NotificationClickHandler = (glue: Glue42Web.API, notificationDefinition: NotificationDefinition) => void;
+
+        export interface ActionClickHandler {
+            action: string;
+            handler: NotificationClickHandler;
+        }
+
+        export interface Settings {
+            defaultClick: NotificationClickHandler;
+            actionClicks: ActionClickHandler[];
         }
     }
 

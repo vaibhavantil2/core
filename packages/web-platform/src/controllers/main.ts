@@ -6,7 +6,7 @@ import { GlueController } from "./glue";
 import { WindowsController } from "../libs/windows/controller";
 import { PortsBridge } from "../connection/portsBridge";
 import { ApplicationsController } from "../libs/applications/controller";
-import { StateController } from "./state";
+import { WindowsStateController } from "./state";
 import logger from "../shared/logger";
 import { generate } from "shortid";
 import { LayoutsController } from "../libs/layouts/controller";
@@ -15,6 +15,8 @@ import { IntentsController } from "../libs/intents/controller";
 import { ChannelsController } from "../libs/channels/controller";
 import { Glue42WebPlatform } from "../../platform";
 import { SystemController } from "./system";
+import { ServiceWorkerController } from "./serviceWorker";
+import { NotificationsController } from "../libs/notifications/controller";
 
 export class PlatformController {
 
@@ -25,7 +27,8 @@ export class PlatformController {
         layouts: this.layoutsController,
         workspaces: this.workspacesController,
         intents: this.intentsController,
-        channels: this.channelsController
+        channels: this.channelsController,
+        notifications: this.notificationsController
     }
 
     constructor(
@@ -37,8 +40,10 @@ export class PlatformController {
         private readonly workspacesController: WorkspacesController,
         private readonly intentsController: IntentsController,
         private readonly channelsController: ChannelsController,
+        private readonly notificationsController: NotificationsController,
         private readonly portsBridge: PortsBridge,
-        private readonly stateController: StateController
+        private readonly stateController: WindowsStateController,
+        private readonly serviceWorkerController: ServiceWorkerController
     ) { }
 
     private get logger(): Glue42Web.Logger.API | undefined {
@@ -64,11 +69,15 @@ export class PlatformController {
 
         await this.glueController.initClientGlue(config?.glue, config?.glueFactory, config?.workspaces?.isFrame);
 
+        await this.serviceWorkerController.connect(config);
+
         if (config.plugins) {
             await Promise.all(config.plugins.definitions.filter((def) => def.critical).map(this.startPlugin.bind(this)));
 
             config.plugins.definitions.filter((def) => !def.critical).map(this.startPlugin.bind(this));
         }
+
+        this.serviceWorkerController.notifyReady();
     }
 
     public getClientGlue(): Glue42Web.API {

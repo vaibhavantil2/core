@@ -16,6 +16,9 @@ module.exports = {
     ],
     run: [
         {
+            groupName: 'notifications'
+        },
+        {
             groupName: 'system'
         },
         {

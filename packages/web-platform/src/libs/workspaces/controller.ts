@@ -11,7 +11,7 @@ import { Glue42WebPlatform } from "../../../platform";
 import { GlueController } from "../../controllers/glue";
 import { IoC } from "../../shared/ioc";
 import { FrameWindowBoundsResult, SimpleWindowCommand, WindowMoveResizeConfig } from "../windows/types";
-import { StateController } from "../../controllers/state";
+import { WindowsStateController } from "../../controllers/state";
 import { WorkspaceHibernationWatcher } from "./hibernationWatcher";
 import { workspacesConfigDecoder } from "../../shared/decoders";
 import deepMerge from "deepmerge";
@@ -63,7 +63,7 @@ export class WorkspacesController implements LibController {
     constructor(
         private readonly framesController: FramesController,
         private readonly glueController: GlueController,
-        private readonly stateController: StateController,
+        private readonly stateController: WindowsStateController,
         private readonly hibernationWatcher: WorkspaceHibernationWatcher,
         private readonly ioc: IoC
     ) { }
