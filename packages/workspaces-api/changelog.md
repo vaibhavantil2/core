@@ -1,3 +1,5 @@
+1.7.1
+fix: fixed allowDropLeft, allowDropTop, allowDropRight, allowDropBottom in the workspaces config object by adding them to the decoders
 1.7.0
 feat: added getBounds for workspaces frames
 feat: added support for workspaces constraints

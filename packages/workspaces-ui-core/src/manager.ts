@@ -493,7 +493,7 @@ export class WorkspacesManager {
             }
         });
 
-        if (typeof lockConfig.config.allowDrop !== "undefined") {
+        if (typeof lockConfig.config.allowDrop === "boolean") {
             lockConfig.config.allowDropLeft = lockConfig.config.allowDropLeft ?? lockConfig.config.allowDrop;
             lockConfig.config.allowDropTop = lockConfig.config.allowDropTop ?? lockConfig.config.allowDrop;
             lockConfig.config.allowDropRight = lockConfig.config.allowDropRight ?? lockConfig.config.allowDrop;
