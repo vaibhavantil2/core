@@ -1,3 +1,6 @@
+1.6.1
+fix: fixed broken backward compatibility due to expected constraints properties
+fix: added missing optional properties in the workspaces config result
 1.6.0
 feat: added support for a Service Worker
 feat: added support for advanced notifications

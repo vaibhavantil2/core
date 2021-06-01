@@ -99,6 +99,24 @@ export interface WorkspaceConfigResult {
     isSelected: boolean;
     isHibernated: boolean;
     lastActive: number;
+    allowDrop?: boolean;
+    allowExtract?: boolean;
+    allowSplitters?: boolean;
+    showCloseButton?: boolean;
+    showSaveButton?: boolean;
+    allowDropLeft?: boolean;
+    allowDropTop?: boolean;
+    allowDropRight?: boolean;
+    allowDropBottom?: boolean;
+    showAddWindowButtons?: boolean;
+    showEjectButtons?: boolean;
+    showWindowCloseButtons?: boolean;
+    minWidth?: number;
+    maxWidth?: number;
+    minHeight?: number;
+    maxHeight?: number;
+    widthInPx?: number;
+    heightInPx?: number;
 }
 
 export interface BaseChildSnapshotConfig {

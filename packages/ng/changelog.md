@@ -1,3 +1,7 @@
+2.2.1
+fix: increased the ng-specific timeout to 60000ms to allow for the underlying libs to reject on their own any problems
+2.2.0
+chore: bump due to dependencies update
 2.1.12
 chore: bump due to dependencies update
 2.1.11
