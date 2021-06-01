@@ -7,7 +7,7 @@ import { GlueConfigService } from "./glue-config.service";
 
 @Injectable()
 export class Glue42Initializer {
-    private readonly defaultInitTimeoutMilliseconds = 3000;
+    private readonly defaultInitTimeoutMilliseconds = 60000;
     private initializationSource = new Subject<{ glueInstance?: Glue42Web.API | Glue42.Glue; error?: any }>();
 
     constructor(private readonly configService: GlueConfigService) { }
