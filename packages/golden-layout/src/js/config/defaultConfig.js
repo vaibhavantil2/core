@@ -21,9 +21,9 @@ lm.config.defaultConfig = {
 	dimensions: {
 		borderWidth: 5,
 		borderGrabWidth: 15,
-		minItemHeight: 10,
+		minItemHeight: 20,
 		maxItemHeight: 32767,
-		minItemWidth: 10,
+		minItemWidth: 20,
 		maxItemWidth: 32767,
 		headerHeight: 20,
 		dragProxyWidth: 500,

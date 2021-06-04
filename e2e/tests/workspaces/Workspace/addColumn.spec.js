@@ -103,7 +103,7 @@ describe('addColumn() Should ', function () {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(510);
+        expect(workspace.minWidth).to.eql(520);
         expect(workspace.maxWidth).to.eql(32767);
     });
 

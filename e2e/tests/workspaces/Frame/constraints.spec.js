@@ -84,9 +84,9 @@ describe("constraints() Should", () => {
         const frame = workspace.frame;
         const constraints = await frame.constraints();
 
-        expect(constraints.minWidth).to.eql(30);
+        expect(constraints.minWidth).to.eql(60);
         expect(constraints.maxWidth).to.eql(32767);
-        expect(constraints.minHeight).to.eql(10 + verticalDecorations * 2); // Workspace tab size and window tab size
+        expect(constraints.minHeight).to.eql(20 + verticalDecorations * 2); // Workspace tab size and window tab size
         expect(constraints.maxHeight).to.eql(32767);
     });
 
@@ -180,9 +180,9 @@ describe("constraints() Should", () => {
         const workspace = await glue.workspaces.createWorkspace(singleWindowConfig);
         const constraints = await workspace.frame.constraints();
 
-        expect(constraints.minWidth).to.eql(10);
+        expect(constraints.minWidth).to.eql(20);
         expect(constraints.maxWidth).to.eql(32767);
-        expect(constraints.minHeight).to.eql(10 + verticalDecorations * 2);// workspace size + workspace tab decorations + group header decorations
+        expect(constraints.minHeight).to.eql(20 + verticalDecorations * 2);// workspace size + workspace tab decorations + group header decorations
         expect(constraints.maxHeight).to.eql(32767);
     });
 
@@ -197,9 +197,9 @@ describe("constraints() Should", () => {
         const workspace = await glue.workspaces.createWorkspace(singleWindowConfig);
         const constraints = await workspace.frame.constraints();
 
-        expect(constraints.minWidth).to.eql(10);
+        expect(constraints.minWidth).to.eql(20);
         expect(constraints.maxWidth).to.eql(32767);
-        expect(constraints.minHeight).to.eql(10 + verticalDecorations * 2);// workspace size + workspace tab decorations + group header decorations
+        expect(constraints.minHeight).to.eql(20 + verticalDecorations * 2);// workspace size + workspace tab decorations + group header decorations
         expect(constraints.maxHeight).to.eql(32767);
     });
 });

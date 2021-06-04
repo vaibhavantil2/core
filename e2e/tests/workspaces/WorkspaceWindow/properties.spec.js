@@ -283,9 +283,9 @@ describe("properties: ", () => {
         it(`Should be default`, () => {
             const window = workspace.getAllWindows()[0];
 
-            expect(window.minWidth).to.eql(10);
+            expect(window.minWidth).to.eql(20);
             expect(window.maxWidth).to.eql(32767);
-            expect(window.minHeight).to.eql(10);
+            expect(window.minHeight).to.eql(20);
             expect(window.maxHeight).to.eql(32767);
         });
     });

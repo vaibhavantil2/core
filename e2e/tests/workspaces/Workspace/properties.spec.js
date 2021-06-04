@@ -436,9 +436,9 @@ describe("properties: ", () => {
 
             const workspace = await glue.workspaces.createWorkspace(singleWindowConfig);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10);
+            expect(workspace.minHeight).to.eql(20);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -1510,9 +1510,9 @@ describe("properties: ", () => {
 
             const workspace = await glue.workspaces.createWorkspace(config);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -1554,9 +1554,9 @@ describe("properties: ", () => {
 
             const workspace = await glue.workspaces.createWorkspace(config);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -1598,9 +1598,9 @@ describe("properties: ", () => {
 
             const workspace = await glue.workspaces.createWorkspace(config);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -1642,9 +1642,9 @@ describe("properties: ", () => {
 
             const workspace = await glue.workspaces.createWorkspace(config);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -1686,9 +1686,9 @@ describe("properties: ", () => {
 
             const workspace = await glue.workspaces.createWorkspace(config);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -1730,9 +1730,9 @@ describe("properties: ", () => {
 
             const workspace = await glue.workspaces.createWorkspace(config);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -1774,9 +1774,9 @@ describe("properties: ", () => {
 
             const workspace = await glue.workspaces.createWorkspace(config);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -1818,9 +1818,9 @@ describe("properties: ", () => {
 
             const workspace = await glue.workspaces.createWorkspace(config);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -1863,9 +1863,9 @@ describe("properties: ", () => {
 
             const workspace = await glue.workspaces.createWorkspace(config);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -1908,9 +1908,9 @@ describe("properties: ", () => {
 
             const workspace = await glue.workspaces.createWorkspace(config);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 

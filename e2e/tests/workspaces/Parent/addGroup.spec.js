@@ -295,7 +295,7 @@ describe("addGroup() Should", () => {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(520);
+        expect(workspace.minWidth).to.eql(540);
         expect(workspace.minHeight).to.eql(600);
         expect(workspace.maxWidth).to.eql(32767);
         expect(workspace.maxHeight).to.eql(900);
@@ -325,8 +325,8 @@ describe("addGroup() Should", () => {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(30);
-        expect(workspace.minHeight).to.eql(10 + verticalDecorations);
+        expect(workspace.minWidth).to.eql(60);
+        expect(workspace.minHeight).to.eql(20 + verticalDecorations);
         expect(workspace.maxWidth).to.eql(32767);
         expect(workspace.maxHeight).to.eql(32767);
     });
@@ -355,8 +355,8 @@ describe("addGroup() Should", () => {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(30);
-        expect(workspace.minHeight).to.eql(10 + verticalDecorations);
+        expect(workspace.minWidth).to.eql(60);
+        expect(workspace.minHeight).to.eql(20 + verticalDecorations);
         expect(workspace.maxWidth).to.eql(32767);
         expect(workspace.maxHeight).to.eql(32767);
     });
@@ -395,7 +395,7 @@ describe("addGroup() Should", () => {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(10);
+        expect(workspace.minWidth).to.eql(20);
         expect(workspace.minHeight).to.eql(1000);
         expect(workspace.maxWidth).to.eql(32767);
         expect(workspace.maxHeight).to.eql(1900);
@@ -436,7 +436,7 @@ describe("addGroup() Should", () => {
         await workspace.refreshReference();
 
         expect(workspace.minWidth).to.eql(1000);
-        expect(workspace.minHeight).to.eql(10 + verticalDecorations);
+        expect(workspace.minHeight).to.eql(20 + verticalDecorations);
         expect(workspace.maxWidth).to.eql(1800);
         expect(workspace.maxHeight).to.eql(32767);
     });
@@ -475,8 +475,8 @@ describe("addGroup() Should", () => {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(10);
-        expect(workspace.minHeight).to.eql(10 + verticalDecorations);
+        expect(workspace.minWidth).to.eql(20);
+        expect(workspace.minHeight).to.eql(20 + verticalDecorations);
         expect(workspace.maxWidth).to.eql(32767);
         expect(workspace.maxHeight).to.eql(32767);
     });
@@ -515,8 +515,8 @@ describe("addGroup() Should", () => {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(10);
-        expect(workspace.minHeight).to.eql(10 + verticalDecorations);
+        expect(workspace.minWidth).to.eql(20);
+        expect(workspace.minHeight).to.eql(20 + verticalDecorations);
         expect(workspace.maxWidth).to.eql(32767);
         expect(workspace.maxHeight).to.eql(32767);
     });
@@ -555,8 +555,8 @@ describe("addGroup() Should", () => {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(10);
-        expect(workspace.minHeight).to.eql(10 + verticalDecorations);
+        expect(workspace.minWidth).to.eql(20);
+        expect(workspace.minHeight).to.eql(20 + verticalDecorations);
         expect(workspace.maxWidth).to.eql(32767);
         expect(workspace.maxHeight).to.eql(32767);
     });
@@ -595,8 +595,8 @@ describe("addGroup() Should", () => {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(10);
-        expect(workspace.minHeight).to.eql(10 + verticalDecorations);
+        expect(workspace.minWidth).to.eql(20);
+        expect(workspace.minHeight).to.eql(20 + verticalDecorations);
         expect(workspace.maxWidth).to.eql(32767);
         expect(workspace.maxHeight).to.eql(32767);
     });

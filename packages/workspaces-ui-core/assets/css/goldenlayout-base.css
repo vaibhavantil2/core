@@ -570,6 +570,9 @@ ul {
 .move_area {
   flex-grow: 1;
 }
+.header_double .move_area{
+  min-width: 20px;
+}
 .empty-container-background {
   width: 100%;
   height: 100%;
