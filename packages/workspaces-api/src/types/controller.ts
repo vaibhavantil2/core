@@ -3,9 +3,10 @@ import { Glue42Workspaces } from "../../workspaces";
 import { AddItemResult, WorkspaceSnapshotResult, FrameSnapshotResult } from "./protocol";
 import { SubscriptionConfig, WorkspaceEventType, WorkspaceEventAction } from "./subscription";
 import { RefreshChildrenConfig } from "./privateData";
-import { Child } from "./builders";
+import { Child, ContainerLockConfig, SubParentTypes } from "./builders";
 import { GDWindow } from "./glue";
 import { UnsubscribeFunction } from "callback-registry";
+import { Constraints, WorkspaceLockConfig, WorkspaceWindowLockConfig } from "./temp";
 
 export interface WorkspacesController {
     checkIsInSwimlane(windowId: string): Promise<boolean>;
@@ -37,6 +38,7 @@ export interface WorkspacesController {
     restoreItem(itemId: string): Promise<void>;
     maximizeItem(itemId: string): Promise<void>;
     changeFrameState(frameId: string, state: Glue42Workspaces.FrameState): Promise<void>;
+    getFrameBounds(frameId: string): Promise<Glue42Workspaces.FrameBounds>;
     getFrameState(frameId: string): Promise<Glue42Workspaces.FrameState>;
     focusItem(itemId: string): Promise<void>;
     closeItem(itemId: string, frame?: Glue42Workspaces.Frame): Promise<void>;
@@ -54,4 +56,8 @@ export interface WorkspacesController {
     iterateFilterChildren(children: Child[], predicate: (child: Child) => boolean): Child[];
     hibernateWorkspace(workspaceId: string): Promise<void>;
     resumeWorkspace(workspaceId: string): Promise<void>;
+    lockWorkspace(workspaceId: string, config?: WorkspaceLockConfig): Promise<void>;
+    lockWindow(windowPlacementId: string, config?: WorkspaceWindowLockConfig): Promise<void>;
+    lockContainer(itemId: string, type: SubParentTypes["type"], config?: ContainerLockConfig): Promise<void>;
+    getFrameConstraints(frameId: string): Promise<Constraints>;
 }

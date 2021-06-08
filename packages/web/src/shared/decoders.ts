@@ -3,9 +3,10 @@ import { Decoder, string, number, object, constant, oneOf, optional, array, bool
 import { Glue42Web } from "../../web";
 import { AppsImportOperation, AppHelloSuccess, ApplicationData, ApplicationStartConfig, AppManagerOperationTypes, AppRemoveConfig, BaseApplicationData, BasicInstanceData, InstanceData, AppsExportOperation, FDC3Definition } from "../appManager/protocol";
 import { AllLayoutsFullConfig, AllLayoutsSummariesResult, GetAllLayoutsConfig, LayoutsImportConfig, LayoutsOperationTypes, OptionalSimpleLayoutResult, SimpleLayoutConfig, SimpleLayoutResult } from "../layouts/protocol";
-import { HelloSuccess, OpenWindowConfig, CoreWindowData, WindowHello, WindowOperationTypes, SimpleWindowCommand, WindowTitleConfig, WindowBoundsResult, WindowMoveResizeConfig, WindowUrlResult } from "../windows/protocol";
+import { HelloSuccess, OpenWindowConfig, CoreWindowData, WindowHello, WindowOperationTypes, SimpleWindowCommand, WindowTitleConfig, WindowBoundsResult, WindowMoveResizeConfig, WindowUrlResult, FrameWindowBoundsResult } from "../windows/protocol";
 import { IntentsOperationTypes, WrappedIntentFilter, WrappedIntents } from "../intents/protocol";
 import { LibDomains } from "./types";
+import { NotificationEventPayload, NotificationsOperationTypes, PermissionRequestResult, RaiseNotification } from "../notifications/protocol";
 
 export const nonEmptyStringDecoder: Decoder<string> = string().where((s) => s.length > 0, "Expected a non-empty string");
 export const nonNegativeNumberDecoder: Decoder<number> = number().where((num) => num >= 0, "Expected a non-negative number");
@@ -20,12 +21,13 @@ export const libDomainDecoder: Decoder<LibDomains> = oneOf<"system" | "windows" 
     constant("channels")
 );
 
-export const windowOperationTypesDecoder: Decoder<WindowOperationTypes> = oneOf<"openWindow" | "getBounds" | "windowHello" | "windowAdded" | "windowRemoved" | "getUrl" | "moveResize" | "focus" | "close" | "getTitle" | "setTitle">(
+export const windowOperationTypesDecoder: Decoder<WindowOperationTypes> = oneOf<"openWindow" | "getBounds" | "getFrameBounds" | "windowHello" | "windowAdded" | "windowRemoved" | "getUrl" | "moveResize" | "focus" | "close" | "getTitle" | "setTitle">(
     constant("openWindow"),
     constant("windowHello"),
     constant("windowAdded"),
     constant("windowRemoved"),
     constant("getBounds"),
+    constant("getFrameBounds"),
     constant("getUrl"),
     constant("moveResize"),
     constant("focus"),
@@ -55,6 +57,13 @@ export const layoutsOperationTypesDecoder: Decoder<LayoutsOperationTypes> = oneO
     constant("export"),
     constant("import"),
     constant("remove")
+);
+
+export const notificationsOperationTypesDecoder: Decoder<NotificationsOperationTypes> = oneOf<"raiseNotification" | "requestPermission" | "notificationShow" | "notificationClick">(
+    constant("raiseNotification"),
+    constant("requestPermission"),
+    constant("notificationShow"),
+    constant("notificationClick")
 );
 
 export const windowRelativeDirectionDecoder: Decoder<Glue42Web.Windows.RelativeDirection> = oneOf<"top" | "left" | "right" | "bottom">(
@@ -117,6 +126,15 @@ export const windowMoveResizeConfigDecoder: Decoder<WindowMoveResizeConfig> = ob
 
 export const windowBoundsResultDecoder: Decoder<WindowBoundsResult> = object({
     windowId: nonEmptyStringDecoder,
+    bounds: object({
+        top: number(),
+        left: number(),
+        width: nonNegativeNumberDecoder,
+        height: nonNegativeNumberDecoder
+    })
+});
+
+export const frameWindowBoundsResultDecoder: Decoder<FrameWindowBoundsResult> = object({
     bounds: object({
         top: number(),
         left: number(),
@@ -289,7 +307,9 @@ export const windowLayoutItemDecoder: Decoder<Glue42Workspaces.WindowLayoutItem>
     config: object({
         appName: nonEmptyStringDecoder,
         url: optional(nonEmptyStringDecoder),
-        title: optional(string())
+        title: optional(string()),
+        allowExtract: optional(boolean()),
+        showCloseButton: optional(boolean())
     })
 });
 
@@ -495,3 +515,77 @@ export const addIntentListenerIntentDecoder: Decoder<string | Glue42Web.Intents.
 export const channelNameDecoder = (channelNames: string[]): Decoder<string> => {
     return nonEmptyStringDecoder.where(s => channelNames.includes(s), "Expected a valid channel name");
 };
+
+export const interopActionSettingsDecoder: Decoder<Glue42Web.Notifications.InteropActionSettings> = object({
+    method: nonEmptyStringDecoder,
+    arguments: optional(anyJson()),
+    target: optional(oneOf<"all" | "best">(
+        constant("all"),
+        constant("best")
+    ))
+});
+
+export const glue42NotificationActionDecoder: Decoder<Glue42Web.Notifications.NotificationAction> = object({
+    action: string(),
+    title: nonEmptyStringDecoder,
+    icon: optional(string()),
+    interop: optional(interopActionSettingsDecoder)
+});
+
+export const notificationDefinitionDecoder: Decoder<Glue42Web.Notifications.NotificationDefinition> = object({
+    badge: optional(string()),
+    body: optional(string()),
+    data: optional(anyJson()),
+    dir: optional(oneOf<"auto" | "ltr" | "rtl">(
+        constant("auto"),
+        constant("ltr"),
+        constant("rtl")
+    )),
+    icon: optional(string()),
+    image: optional(string()),
+    lang: optional(string()),
+    renotify: optional(boolean()),
+    requireInteraction: optional(boolean()),
+    silent: optional(boolean()),
+    tag: optional(string()),
+    timestamp: optional(nonNegativeNumberDecoder),
+    vibrate: optional(array(number()))
+});
+
+export const glue42NotificationOptionsDecoder: Decoder<Glue42Web.Notifications.RaiseOptions> = object({
+    title: nonEmptyStringDecoder,
+    clickInterop: optional(interopActionSettingsDecoder),
+    actions: optional(array(glue42NotificationActionDecoder)),
+    badge: optional(string()),
+    body: optional(string()),
+    data: optional(anyJson()),
+    dir: optional(oneOf<"auto" | "ltr" | "rtl">(
+        constant("auto"),
+        constant("ltr"),
+        constant("rtl")
+    )),
+    icon: optional(string()),
+    image: optional(string()),
+    lang: optional(string()),
+    renotify: optional(boolean()),
+    requireInteraction: optional(boolean()),
+    silent: optional(boolean()),
+    tag: optional(string()),
+    timestamp: optional(nonNegativeNumberDecoder),
+    vibrate: optional(array(number()))
+});
+
+export const raiseNotificationDecoder: Decoder<RaiseNotification> = object({
+    settings: glue42NotificationOptionsDecoder,
+    id: nonEmptyStringDecoder
+});
+
+export const permissionRequestResultDecoder: Decoder<PermissionRequestResult> = object({
+    permissionGranted: boolean()
+});
+
+export const notificationEventPayloadDecoder: Decoder<NotificationEventPayload> = object({
+    definition: notificationDefinitionDecoder,
+    action: optional(string()),
+    id: optional(nonEmptyStringDecoder)
+});

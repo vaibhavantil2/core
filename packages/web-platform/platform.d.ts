@@ -193,6 +193,13 @@ export namespace Glue42WebPlatform {
         }
     }
 
+    export namespace ServiceWorker {
+        export interface Config {
+            url?: string;
+            registrationPromise?: Promise<ServiceWorkerRegistration>;
+        }
+    }
+
     export namespace Plugins {
 
         export interface ControlMessage {
@@ -201,7 +208,7 @@ export namespace Glue42WebPlatform {
             data: any;
             commandId?: string;
         }
-        
+
         export interface PlatformControls {
             control: (args: ControlMessage) => Promise<any>;
             logger?: Glue42Web.Logger.API;
@@ -275,7 +282,7 @@ export namespace Glue42WebPlatform {
                  * Valid only in `delayed` mode. Number of applications in a batch to be loaded at each interval. Defaults to 1.
                  */
                 batch?: number;
-            }
+            };
             /**
              * Visual indicator `Zzz` on tabs of apps which are not loaded yet. Useful for developing and testing purposes.
              */
@@ -305,6 +312,7 @@ export namespace Glue42WebPlatform {
         layouts?: Layouts.Config;
         channels?: Channels.Config;
         plugins?: Plugins.Config;
+        serviceWorker?: ServiceWorker.Config;
         gateway?: Gateway.Config;
         glue?: Glue42Web.Config;
         workspaces?: Workspaces.Config;

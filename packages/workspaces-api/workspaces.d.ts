@@ -121,10 +121,18 @@ export namespace Glue42Workspaces {
         reuseWorkspaceId?: string;
     }
 
+    /** An object containing the bounds of a frame */
+    export interface FrameBounds {
+        top?: number;
+        left?: number;
+        width?: number;
+        height?: number;
+    }
+
     /** An object describing the possible settings when defining a new frame. */
     export interface NewFrameConfig {
         /** An object describing the possible settings when defining a new frame. */
-        bounds?: { top?: number; left?: number; width?: number; height?: number };
+        bounds?: FrameBounds;
     }
 
     /** An object defining the resize parameters of a frame. */
@@ -226,6 +234,8 @@ export namespace Glue42Workspaces {
 
         /** An array of all the box's children which will also be opened. */
         children?: Array<WorkspaceWindowDefinition | BoxDefinition>;
+
+        config?: any;
     }
 
     /** An object describing the possible options when opening a window inside a workspace. */
@@ -311,6 +321,11 @@ export namespace Glue42Workspaces {
 
     /** An object describing a frame */
     export interface Frame extends FrameSummary {
+        /**
+         * Retrieves the current bounds of the frame.
+         */
+        getBounds(): Promise<FrameBounds>;
+
         /**
          * Changes the size of this frame.
          * @param config An object defining the resize parameters.

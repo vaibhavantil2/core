@@ -1,6 +1,6 @@
 {
     "name": "@glue42/core",
-    "version": "5.4.5",
+    "version": "5.4.7",
     "description": "Glue42 core library",
     "main": "dist/core.umd.js",
     "module": "dist/core.es.js",
@@ -35,7 +35,7 @@
     "dependencies": {
         "callback-registry": "^2.7.1",
         "shortid": "^2.2.6",
-        "ws": "7.1.2"
+        "ws": "7.4.6"
     },
     "devDependencies": {
         "@glue42/gateway-ws": "^3.0.10",

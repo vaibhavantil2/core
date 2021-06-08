@@ -1,4 +1,43 @@
-import { isWindowInSwimlaneResultDecoder, frameSummaryDecoder, workspaceSnapshotResultDecoder, frameSummariesResultDecoder, workspaceCreateConfigDecoder, getFrameSummaryConfigDecoder, layoutSummariesDecoder, openWorkspaceConfigDecoder, workspaceSummariesResultDecoder, voidResultDecoder, exportedLayoutsResultDecoder, workspaceLayoutDecoder, deleteLayoutConfigDecoder, simpleItemConfigDecoder, resizeItemConfigDecoder, moveFrameConfigDecoder, frameSnapshotResultDecoder, simpleWindowOperationSuccessResultDecoder, setItemTitleConfigDecoder, moveWindowConfigDecoder, addWindowConfigDecoder, addContainerConfigDecoder, addItemResultDecoder, bundleConfigDecoder, workspaceStreamDataDecoder, frameStreamDataDecoder, containerStreamDataDecoder, windowStreamDataDecoder, workspaceLayoutSaveConfigDecoder, pingResultDecoder, frameStateConfigDecoder, frameStateResultDecoder, workspacesImportLayoutDecoder, workspaceSelectorDecoder } from "../shared/decoders";
+import {
+    isWindowInSwimlaneResultDecoder,
+    frameSummaryDecoder,
+    workspaceSnapshotResultDecoder,
+    frameSummariesResultDecoder,
+    workspaceCreateConfigDecoder,
+    getFrameSummaryConfigDecoder,
+    layoutSummariesDecoder,
+    openWorkspaceConfigDecoder,
+    workspaceSummariesResultDecoder,
+    voidResultDecoder,
+    exportedLayoutsResultDecoder,
+    workspaceLayoutDecoder,
+    deleteLayoutConfigDecoder,
+    simpleItemConfigDecoder,
+    resizeItemConfigDecoder,
+    moveFrameConfigDecoder,
+    frameSnapshotResultDecoder,
+    simpleWindowOperationSuccessResultDecoder,
+    setItemTitleConfigDecoder,
+    moveWindowConfigDecoder,
+    addWindowConfigDecoder,
+    addContainerConfigDecoder,
+    addItemResultDecoder,
+    bundleConfigDecoder,
+    workspaceStreamDataDecoder,
+    frameStreamDataDecoder,
+    containerStreamDataDecoder,
+    windowStreamDataDecoder,
+    workspaceLayoutSaveConfigDecoder,
+    pingResultDecoder,
+    frameStateConfigDecoder,
+    frameStateResultDecoder,
+    workspacesImportLayoutDecoder,
+    workspaceSelectorDecoder,
+    lockWorkspaceDecoder,
+    lockWindowDecoder,
+    lockContainerDecoder,
+    frameBoundsResultDecoder
+} from "../shared/decoders";
 import { ControlOperation, StreamOperation } from "../types/protocol";
 import { WorkspaceEventType } from "../types/subscription";
 
@@ -31,8 +70,12 @@ type OperationsTypes = "isWindowInWorkspace" |
     "ping" |
     "changeFrameState" |
     "getFrameState" |
+    "getFrameBounds" |
     "hibernateWorkspace" |
-    "resumeWorkspace";
+    "resumeWorkspace" |
+    "lockWorkspace" |
+    "lockWindow" |
+    "lockContainer";
 type MethodsTypes = "control" | "frameStream" | "workspaceStream" | "containerStream" | "windowStream";
 
 export const webPlatformMethodName = "T42.Web.Platform.Control";
@@ -74,6 +117,7 @@ export const OPERATIONS: { [key in OperationsTypes]: ControlOperation } = {
     resizeItem: { name: "resizeItem", argsDecoder: resizeItemConfigDecoder, resultDecoder: voidResultDecoder },
     changeFrameState: { name: "changeFrameState", argsDecoder: frameStateConfigDecoder, resultDecoder: voidResultDecoder },
     getFrameState: { name: "getFrameState", argsDecoder: simpleItemConfigDecoder, resultDecoder: frameStateResultDecoder },
+    getFrameBounds: { name: "getFrameBounds", argsDecoder: simpleItemConfigDecoder, resultDecoder: frameBoundsResultDecoder },
     moveFrame: { name: "moveFrame", argsDecoder: moveFrameConfigDecoder, resultDecoder: voidResultDecoder },
     getFrameSnapshot: { name: "getFrameSnapshot", argsDecoder: simpleItemConfigDecoder, resultDecoder: frameSnapshotResultDecoder },
     forceLoadWindow: { name: "forceLoadWindow", argsDecoder: simpleItemConfigDecoder, resultDecoder: simpleWindowOperationSuccessResultDecoder },
@@ -85,4 +129,7 @@ export const OPERATIONS: { [key in OperationsTypes]: ControlOperation } = {
     bundleWorkspace: { name: "bundleWorkspace", argsDecoder: bundleConfigDecoder, resultDecoder: voidResultDecoder },
     hibernateWorkspace: { name: "hibernateWorkspace", argsDecoder: workspaceSelectorDecoder, resultDecoder: voidResultDecoder },
     resumeWorkspace: { name: "resumeWorkspace", argsDecoder: workspaceSelectorDecoder, resultDecoder: voidResultDecoder },
+    lockWorkspace: { name: "lockWorkspace", argsDecoder: lockWorkspaceDecoder, resultDecoder: voidResultDecoder },
+    lockWindow: { name: "lockWindow", argsDecoder: lockWindowDecoder, resultDecoder: voidResultDecoder },
+    lockContainer: { name: "lockContainer", argsDecoder: lockContainerDecoder, resultDecoder: voidResultDecoder }
 };

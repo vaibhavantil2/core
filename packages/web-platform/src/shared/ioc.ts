@@ -6,7 +6,7 @@ import { GlueController } from "../controllers/glue";
 import { PortsBridge } from "../connection/portsBridge";
 import { WindowsController } from "../libs/windows/controller";
 import { SessionStorageController } from "../controllers/session";
-import { StateController } from "../controllers/state";
+import { WindowsStateController } from "../controllers/state";
 import { ApplicationsController } from "../libs/applications/controller";
 import { LayoutsController } from "../libs/layouts/controller";
 import { IdbStore } from "../libs/layouts/idbStore";
@@ -18,6 +18,8 @@ import { WorkspaceHibernationWatcher } from "../libs/workspaces/hibernationWatch
 import { SystemController } from "../controllers/system";
 import { AppDirectory } from "../libs/applications/appStore/directory";
 import { RemoteWatcher } from "../libs/applications/appStore/remoteWatcher";
+import { ServiceWorkerController } from "../controllers/serviceWorker";
+import { NotificationsController } from "../libs/notifications/controller";
 
 export class IoC {
     private _gatewayInstance!: Gateway;
@@ -34,11 +36,13 @@ export class IoC {
     private _hibernationWatcher!: WorkspaceHibernationWatcher;
     private _intentsController!: IntentsController;
     private _channelsController!: ChannelsController;
+    private _notificationsController!: NotificationsController;
     private _sessionController!: SessionStorageController;
-    private _stateChecker!: StateController;
+    private _stateChecker!: WindowsStateController;
     private _framesController!: FramesController;
     private _systemController!: SystemController;
     private _idbStore!: IdbStore;
+    private _serviceWorkerController!: ServiceWorkerController;
 
     constructor(private readonly config?: Glue42WebPlatform.Config) { }
 
@@ -69,8 +73,10 @@ export class IoC {
                 this.workspacesController,
                 this.intentsController,
                 this.channelsController,
+                this.notificationsController,
                 this.portsBridge,
-                this.stateController
+                this.stateController,
+                this.serviceWorkerController
             );
         }
 
@@ -101,9 +107,9 @@ export class IoC {
         return this._sessionController;
     }
 
-    public get stateController(): StateController {
+    public get stateController(): WindowsStateController {
         if (!this._stateChecker) {
-            this._stateChecker = new StateController(this.sessionController);
+            this._stateChecker = new WindowsStateController(this.sessionController);
         }
 
         return this._stateChecker;
@@ -207,6 +213,17 @@ export class IoC {
         return this._channelsController;
     }
 
+    public get notificationsController(): NotificationsController {
+        if (!this._notificationsController) {
+            this._notificationsController = new NotificationsController(
+                this.glueController,
+                this.serviceWorkerController
+            );
+        }
+
+        return this._notificationsController;
+    }
+
     public get framesController(): FramesController {
         if (!this._framesController) {
             this._framesController = new FramesController(
@@ -233,6 +250,14 @@ export class IoC {
         }
 
         return this._portsBridge;
+    }
+
+    public get serviceWorkerController(): ServiceWorkerController {
+        if (!this._serviceWorkerController) {
+            this._serviceWorkerController = new ServiceWorkerController();
+        }
+
+        return this._serviceWorkerController;
     }
 
     public createMessageChannel(): MessageChannel {

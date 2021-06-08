@@ -71,13 +71,14 @@ export const windowLayoutComponentDecoder: Decoder<Glue42Web.Layouts.WindowCompo
     })
 });
 
-export const libDomainDecoder: Decoder<LibDomains> = oneOf<"system" | "windows" | "appManager" | "layouts" | "workspaces" | "intents">(
+export const libDomainDecoder: Decoder<LibDomains> = oneOf<"system" | "windows" | "appManager" | "layouts" | "workspaces" | "intents" | "notifications">(
     constant("system"),
     constant("windows"),
     constant("appManager"),
     constant("layouts"),
     constant("workspaces"),
-    constant("intents")
+    constant("intents"),
+    constant("notifications")
 );
 
 export const systemOperationTypesDecoder: Decoder<SystemOperationTypes> = oneOf<"getEnvironment" | "getBase">(
@@ -90,7 +91,9 @@ export const windowLayoutItemDecoder: Decoder<Glue42Workspaces.WindowLayoutItem>
     config: object({
         appName: nonEmptyStringDecoder,
         url: optional(nonEmptyStringDecoder),
-        title: optional(string())
+        title: optional(string()),
+        showCloseButton: optional(boolean()),
+        allowExtract: optional(boolean())
     })
 });
 
@@ -283,7 +286,7 @@ export const loadingConfigDecoder: Decoder<Glue42WebPlatform.Workspaces.LoadingC
     })),
     defaultStrategy: optional(oneOf(constant("direct"), constant("delayed"), constant("lazy"))),
     showDelayedIndicator: optional(boolean())
-})
+});
 
 export const workspacesConfigDecoder: Decoder<Glue42WebPlatform.Workspaces.Config> = object({
     src: nonEmptyStringDecoder,
@@ -303,12 +306,18 @@ export const windowsConfigDecoder: Decoder<Glue42WebPlatform.Windows.Config> = o
     }))
 });
 
+export const serviceWorkerConfigDecoder: Decoder<Glue42WebPlatform.ServiceWorker.Config> = object({
+    url: optional(nonEmptyStringDecoder),
+    registrationPromise: optional(anyJson())
+});
+
 export const platformConfigDecoder: Decoder<Glue42WebPlatform.Config> = object({
     windows: optional(windowsConfigDecoder),
     applications: optional(applicationsConfigDecoder),
     layouts: optional(layoutsConfigDecoder),
     channels: optional(channelsConfigDecoder),
     plugins: optional(pluginsConfigDecoder),
+    serviceWorker: optional(serviceWorkerConfigDecoder),
     gateway: optional(gatewayConfigDecoder),
     glue: optional(glueConfigDecoder),
     workspaces: optional(workspacesConfigDecoder),

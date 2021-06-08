@@ -47,10 +47,14 @@ export type WorkspacesOperationsTypes = "isWindowInWorkspace" |
     "bundleWorkspace" |
     "changeFrameState" |
     "getFrameState" |
+    "getFrameBounds" |
     "frameHello" |
     "hibernateWorkspace" |
     "resumeWorkspace" |
-    "getWorkspacesConfig";
+    "getWorkspacesConfig" |
+    "lockWorkspace" |
+    "lockContainer" |
+    "lockWindow";
 
 export interface FrameQueryConfig {
     frameId?: string;
@@ -95,6 +99,24 @@ export interface WorkspaceConfigResult {
     isSelected: boolean;
     isHibernated: boolean;
     lastActive: number;
+    allowDrop?: boolean;
+    allowExtract?: boolean;
+    allowSplitters?: boolean;
+    showCloseButton?: boolean;
+    showSaveButton?: boolean;
+    allowDropLeft?: boolean;
+    allowDropTop?: boolean;
+    allowDropRight?: boolean;
+    allowDropBottom?: boolean;
+    showAddWindowButtons?: boolean;
+    showEjectButtons?: boolean;
+    showWindowCloseButtons?: boolean;
+    minWidth?: number;
+    maxWidth?: number;
+    minHeight?: number;
+    maxHeight?: number;
+    widthInPx?: number;
+    heightInPx?: number;
 }
 
 export interface BaseChildSnapshotConfig {
@@ -184,6 +206,15 @@ export interface PingResult {
 
 export interface FrameStateResult {
     state: Glue42Workspaces.FrameState;
+}
+
+export interface FrameBoundsResult {
+    bounds: {
+        top: number;
+        left: number;
+        width: number;
+        height: number;
+    };
 }
 
 // #endregion
@@ -285,3 +316,85 @@ export interface WindowStreamData {
 }
 
 export type WorkspaceConfigWithReuseWorkspaceId = Glue42Workspaces.WorkspaceConfig & { reuseWorkspaceId: string };
+
+export interface LockWindowConfig {
+    windowPlacementId: string;
+    config?: {
+        allowExtract?: boolean;
+        showCloseButton?: boolean;
+    };
+}
+
+export interface LockRowConfig {
+    itemId: string;
+    type: "row";
+    config?: {
+        allowDrop?: boolean;
+    };
+}
+
+export interface LockColumnConfig {
+    itemId: string;
+    type: "column";
+    config?: {
+        allowDrop?: boolean;
+    };
+}
+
+export interface LockGroupConfig {
+    itemId: string;
+    type: "group";
+    config?: {
+        allowExtract?: boolean;
+        allowDrop?: boolean;
+        showMaximizeButton?: boolean;
+        showEjectButton?: boolean;
+        showAddWindowButton?: boolean;
+    };
+}
+
+export type LockContainerConfig = LockColumnConfig | LockRowConfig | LockGroupConfig;
+
+export interface LockWorkspaceConfig {
+    workspaceId: string;
+    config?: {
+        allowDrop?: boolean;
+        allowDropLeft?: boolean;
+        allowDropTop?: boolean;
+        allowDropRight?: boolean;
+        allowDropBottom?: boolean;
+        allowExtract?: boolean;
+        allowSplitters?: boolean;
+        showCloseButton?: boolean;
+        showSaveButton?: boolean;
+        showAddWindowButtons?: boolean;
+        showWindowCloseButtons?: boolean;
+        showEjectButtons?: boolean;
+    };
+}
+
+export interface GroupDefinitionConfig {
+    minWidth?: number;
+    maxWidth?: number;
+    minHeight?: number;
+    maxHeight?: number;
+    allowExtract?: boolean;
+    showMaximizeButton?: boolean;
+    showEjectButton?: boolean;
+    allowDrop?: boolean;
+    showAddWindowButton?: boolean;
+}
+
+export interface RowDefinitionConfig {
+    minHeight?: number;
+    maxHeight?: number;
+    allowDrop?: boolean;
+    isPinned?: boolean;
+}
+
+export interface ColumnDefinitionConfig {
+    minWidth?: number;
+    maxWidth?: number;
+    allowDrop?: boolean;
+    isPinned?: boolean;
+}

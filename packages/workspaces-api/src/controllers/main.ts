@@ -1,17 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Bridge } from "../communication/bridge";
-import { IsWindowInSwimlaneResult, WorkspaceCreateConfigProtocol, WorkspaceSnapshotResult, FrameSummariesResult, WorkspaceSummariesResult, LayoutSummariesResult, ExportedLayoutsResult, FrameSnapshotResult, AddItemResult, WindowStreamData, FrameStateResult } from "../types/protocol";
+import { IsWindowInSwimlaneResult, WorkspaceCreateConfigProtocol, WorkspaceSnapshotResult, FrameSummariesResult, WorkspaceSummariesResult, LayoutSummariesResult, ExportedLayoutsResult, FrameSnapshotResult, AddItemResult, WindowStreamData, FrameStateResult, FrameBoundsResult } from "../types/protocol";
 import { OPERATIONS } from "../communication/constants";
 import { SubscriptionConfig, WorkspaceEventType, WorkspaceEventAction } from "../types/subscription";
 import { Workspace } from "../models/workspace";
 import { Frame } from "../models/frame";
-import { Child } from "../types/builders";
+import { Child, ContainerLockConfig, SubParentTypes } from "../types/builders";
 import { RefreshChildrenConfig } from "../types/privateData";
 import { Glue42Workspaces } from "../../workspaces";
 import { WorkspacesController } from "../types/controller";
 import { GDWindow } from "../types/glue";
 import { BaseController } from "./base";
 import { UnsubscribeFunction } from "callback-registry";
+import { Constraints, WorkspaceLockConfig, WorkspaceWindowLockConfig } from "../types/temp";
 
 export class MainController implements WorkspacesController {
 
@@ -232,6 +233,11 @@ export class MainController implements WorkspacesController {
         await this.bridge.send<void>(OPERATIONS.changeFrameState.name, { frameId, requestedState: state });
     }
 
+    public async getFrameBounds(frameId: string): Promise<Glue42Workspaces.FrameBounds> {
+        const frameResult = await this.bridge.send<FrameBoundsResult>(OPERATIONS.getFrameBounds.name, { itemId: frameId });
+        return frameResult.bounds;
+    }
+
     public async getFrameState(frameId: string): Promise<Glue42Workspaces.FrameState> {
         const frameResult = await this.bridge.send<FrameStateResult>(OPERATIONS.getFrameState.name, { itemId: frameId });
         return frameResult.state;
@@ -273,6 +279,8 @@ export class MainController implements WorkspacesController {
         return await this.base.moveWindowTo(itemId, newParentId);
     }
 
+    public async getSnapshot(itemId: string, type: "workspace"): Promise<WorkspaceSnapshotResult>
+    public async getSnapshot(itemId: string, type: "frame"): Promise<FrameSnapshotResult>
     public async getSnapshot(itemId: string, type: "workspace" | "frame"): Promise<WorkspaceSnapshotResult | FrameSnapshotResult> {
         return await this.base.getSnapshot(itemId, type);
     }
@@ -312,6 +320,29 @@ export class MainController implements WorkspacesController {
 
     public resumeWorkspace(workspaceId: string): Promise<void> {
         return this.base.resumeWorkspace(workspaceId);
+    }
+
+    public lockWorkspace(workspaceId: string, config?: WorkspaceLockConfig): Promise<void> {
+        return this.base.lockWorkspace(workspaceId, config);
+    }
+
+    public lockWindow(windowPlacementId: string, config?: WorkspaceWindowLockConfig): Promise<void> {
+        return this.base.lockWindow(windowPlacementId, config);
+    }
+
+    public lockContainer(itemId: string, type: SubParentTypes["type"], config?: ContainerLockConfig): Promise<void> {
+        return this.base.lockContainer(itemId, type, config);
+    }
+
+    public async getFrameConstraints(frameId: string): Promise<Constraints> {
+        const frameSnapshot = await this.getSnapshot(frameId, "frame");
+
+        return {
+            minWidth: frameSnapshot.config.minWidth,
+            maxWidth: frameSnapshot.config.maxWidth,
+            minHeight: frameSnapshot.config.minHeight,
+            maxHeight: frameSnapshot.config.maxHeight,
+        };
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -2,11 +2,12 @@ import GoldenLayout from "@glue42/golden-layout";
 import { Workspace, FrameLayoutConfig, WorkspaceItem, WorkspaceLayout, AnyItem, SavedConfigWithData, WorkspaceOptionsWithLayoutName, SaveWorkspaceConfig } from "./types/internal";
 import storage from "./storage";
 import scReader from "./config/startupReader";
-import { LayoutStateResolver } from "./layout/stateResolver";
+import { LayoutStateResolver } from "./state/resolver";
 import { Glue42Web } from "@glue42/web";
 import { getWorkspaceContextName } from "./utils";
 import { WorkspacesConfigurationFactory } from "./config/factory";
 import { ConfigConverter } from "./config/converter";
+import { ConstraintsValidator } from "./config/constraintsValidator";
 
 declare const window: Window & { glue42core: { workspacesFrameCache?: boolean } };
 
@@ -19,7 +20,8 @@ export class LayoutsManager {
         private readonly resolver: LayoutStateResolver,
         private readonly _glue: Glue42Web.API,
         private readonly _configFactory: WorkspacesConfigurationFactory,
-        private readonly _configConverter: ConfigConverter) { }
+        private readonly _configConverter: ConfigConverter,
+        private readonly _constraintsValidator: ConstraintsValidator) { }
 
     public async getInitialConfig(): Promise<FrameLayoutConfig> {
         // Preset initial config
@@ -101,22 +103,22 @@ export class LayoutsManager {
     public async getWorkspaceByName(name: string): Promise<SavedConfigWithData> {
         const savedWorkspaceLayout = await this._glue.layouts.get(name, this._layoutsType);
         const savedWorkspace: WorkspaceItem = savedWorkspaceLayout.components[0].state as WorkspaceItem;
+        this._constraintsValidator.fixWorkspace(savedWorkspace);
         const rendererFriendlyConfig = this._configConverter.convertToRendererConfig(savedWorkspace);
 
         this.addWorkspaceIds(rendererFriendlyConfig);
-        // this.addWindowIds(rendererFriendlyConfig);
 
         return {
             config: rendererFriendlyConfig as GoldenLayout.Config,
             layoutData: {
                 metadata: savedWorkspaceLayout.metadata,
                 name,
-                context: (savedWorkspace as WorkspaceItem & { context: any }).context
+                context: (savedWorkspace as WorkspaceItem & { context: object }).context ?? {}
             }
         };
     }
 
-    public async delete(name: string) {
+    public async delete(name: string): Promise<void> {
         await this._glue.layouts.remove(this._layoutsType, name);
     }
 
@@ -154,7 +156,7 @@ export class LayoutsManager {
                 state: {
                     children: workspaceConfig.children,
                     config: workspaceConfig.config,
-                    context: workspaceContext
+                    context: workspaceContext ?? {}
                 }
             }]
         };

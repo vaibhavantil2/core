@@ -19,6 +19,25 @@ export const getAllWindowsFromConfig = (contents: GoldenLayout.ItemConfig[] = []
     }, []);
 };
 
+export const getAllItemsFromConfig = (contents: GoldenLayout.ItemConfig[]): GoldenLayout.ItemConfig[] => {
+    const recursiveElementTraversal = (currItem: GoldenLayout.ItemConfig) => {
+        if (currItem.type === "component") {
+            return currItem.id ? [currItem] : [];
+        }
+
+        const resultArray = currItem.content.reduce((acc: any, currContent: any) => {
+            acc = [...acc, ...recursiveElementTraversal(currContent)];
+            return acc;
+        }, []);
+
+        return [...resultArray, currItem];
+    };
+
+    return contents.reduce((acc, ci) => {
+        return [...acc, ...recursiveElementTraversal(ci)];
+    }, []);
+};
+
 export const getElementBounds = (element: Element | Container | JQuery<Element>) => {
     const rawBounds = ($(element) as JQuery)[0].getBoundingClientRect();
     return {
@@ -63,4 +82,16 @@ export const createWaitFor = (signalsToWait: number, timeout?: number) => {
     };
 };
 
-export const getWorkspaceContextName = (id: string) => `___workspace___${id}`;
+export const getWorkspaceContextName = (id: string): string => `___workspace___${id}`;
+
+export const getRealHeight = (obj: JQuery<HTMLElement>): number => {
+    if (!obj || !obj[0]) {
+        return 0;
+    }
+    const clone = obj.clone();
+    clone.css("visibility", "hidden");
+    $("body").append(clone);
+    const height = clone.height();
+    clone.remove();
+    return height;
+};

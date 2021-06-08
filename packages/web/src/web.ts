@@ -32,6 +32,8 @@ export const createFactoryFunction = (coreFactoryFunction: GlueCoreFactoryFuncti
 
         await ioc.bridge.start(ioc.controllers);
 
+        ioc.defineConfig(config);
+
         logger.trace("the bridge has been started, initializing all controllers");
 
         await Promise.all(Object.values(ioc.controllers).map((controller) => controller.start(glue, ioc)));

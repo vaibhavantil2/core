@@ -23,7 +23,15 @@ describe("convertToAPIConfig() Should", () => {
             frameId: undefined,
             positionIndex: undefined,
             title: undefined,
-            workspaceId: undefined
+            workspaceId: undefined,
+            allowExtract: undefined,
+            showCloseButton: undefined,
+            minWidth: undefined,
+            maxWidth: undefined,
+            minHeight: undefined,
+            maxHeight: undefined,
+            widthInPx: undefined,
+            heightInPx: undefined
         }
     };
 
@@ -42,10 +50,10 @@ describe("convertToAPIConfig() Should", () => {
             appManager: {
                 instances: () => []
             }
-        }
+        };
 
         configConverter = new ConfigConverter(new WorkspacesConfigurationFactory(glueStub));
-    })
+    });
 
     Array.from(["row", "column"]).forEach((type: "row" | "column") => {
         it(`return the ${type} API config without placeholder elements when the config is a ${type} with placeholder`, () => {
@@ -58,7 +66,15 @@ describe("convertToAPIConfig() Should", () => {
                     height: undefined,
                     workspaceId: undefined,
                     width: undefined,
-                    positionIndex: undefined
+                    positionIndex: undefined,
+                    allowDrop: undefined,
+                    isPinned: undefined,
+                    widthInPx: undefined,
+                    heightInPx: undefined,
+                    minWidth: undefined,
+                    maxWidth: undefined,
+                    minHeight: undefined,
+                    maxHeight: undefined
                 },
                 id: undefined
             };
@@ -103,11 +119,19 @@ describe("convertToAPIConfig() Should", () => {
                 type,
                 config: {
                     activeTabIndex: undefined,
+                    allowDrop: undefined,
+                    isPinned: undefined,
+                    widthInPx: undefined,
+                    heightInPx: undefined,
                     frameId: undefined,
                     height: undefined,
                     workspaceId: undefined,
                     width: undefined,
-                    positionIndex: undefined
+                    positionIndex: undefined,
+                    minWidth: undefined,
+                    maxWidth: undefined,
+                    minHeight: undefined,
+                    maxHeight: undefined
                 },
                 id: undefined
             };
@@ -199,7 +223,15 @@ describe("convertToAPIConfig() Should", () => {
                                 height: undefined,
                                 workspaceId: undefined,
                                 width: undefined,
-                                positionIndex: undefined
+                                positionIndex: undefined,
+                                allowDrop: undefined,
+                                isPinned: undefined,
+                                widthInPx: undefined,
+                                heightInPx: undefined,
+                                minWidth: undefined,
+                                maxWidth: undefined,
+                                minHeight: undefined,
+                                maxHeight: undefined
                             },
                             id: undefined,
                             children: []
@@ -212,7 +244,15 @@ describe("convertToAPIConfig() Should", () => {
                                 height: undefined,
                                 workspaceId: undefined,
                                 width: undefined,
-                                positionIndex: undefined
+                                positionIndex: undefined,
+                                allowDrop: undefined,
+                                isPinned: undefined,
+                                widthInPx: undefined,
+                                heightInPx: undefined,
+                                minWidth: undefined,
+                                maxWidth: undefined,
+                                minHeight: undefined,
+                                maxHeight: undefined
                             },
                             id: undefined,
                             children: []
@@ -225,7 +265,15 @@ describe("convertToAPIConfig() Should", () => {
                                 height: undefined,
                                 workspaceId: undefined,
                                 width: undefined,
-                                positionIndex: undefined
+                                positionIndex: undefined,
+                                allowDrop: undefined,
+                                isPinned: undefined,
+                                widthInPx: undefined,
+                                heightInPx: undefined,
+                                minWidth: undefined,
+                                maxWidth: undefined,
+                                minHeight: undefined,
+                                maxHeight: undefined
                             },
                             id: undefined,
                             children: []
@@ -238,7 +286,15 @@ describe("convertToAPIConfig() Should", () => {
                     height: undefined,
                     workspaceId: undefined,
                     width: undefined,
-                    positionIndex: undefined
+                    positionIndex: undefined,
+                    allowDrop: undefined,
+                    isPinned: undefined,
+                    widthInPx: undefined,
+                    heightInPx: undefined,
+                    minWidth: undefined,
+                    maxWidth: undefined,
+                    minHeight: undefined,
+                    maxHeight: undefined
                 },
                 id: undefined
             };
@@ -305,7 +361,19 @@ describe("convertToAPIConfig() Should", () => {
                                 height: undefined,
                                 workspaceId: undefined,
                                 width: undefined,
-                                positionIndex: undefined
+                                positionIndex: undefined,
+                                allowDrop: undefined,
+                                isPinned: undefined,
+                                widthInPx: undefined,
+                                heightInPx: undefined,
+                                allowExtract: undefined,
+                                showEjectButton: undefined,
+                                showAddWindowButton: undefined,
+                                showMaximizeButton: undefined,
+                                minWidth: undefined,
+                                maxWidth: undefined,
+                                minHeight: undefined,
+                                maxHeight: undefined
                             },
                             id: undefined,
                             children: []
@@ -318,7 +386,19 @@ describe("convertToAPIConfig() Should", () => {
                                 height: undefined,
                                 workspaceId: undefined,
                                 width: undefined,
-                                positionIndex: undefined
+                                positionIndex: undefined,
+                                allowDrop: undefined,
+                                isPinned: undefined,
+                                widthInPx: undefined,
+                                heightInPx: undefined,
+                                allowExtract: undefined,
+                                showEjectButton: undefined,
+                                showAddWindowButton: undefined,
+                                showMaximizeButton: undefined,
+                                minWidth: undefined,
+                                maxWidth: undefined,
+                                minHeight: undefined,
+                                maxHeight: undefined
                             },
                             id: undefined,
                             children: []
@@ -331,7 +411,19 @@ describe("convertToAPIConfig() Should", () => {
                                 height: undefined,
                                 workspaceId: undefined,
                                 width: undefined,
-                                positionIndex: undefined
+                                positionIndex: undefined,
+                                allowDrop: undefined,
+                                isPinned: undefined,
+                                widthInPx: undefined,
+                                heightInPx: undefined,
+                                allowExtract: undefined,
+                                showEjectButton: undefined,
+                                showAddWindowButton: undefined,
+                                showMaximizeButton: undefined,
+                                minWidth: undefined,
+                                maxWidth: undefined,
+                                minHeight: undefined,
+                                maxHeight: undefined
                             },
                             id: undefined,
                             children: []
@@ -344,7 +436,15 @@ describe("convertToAPIConfig() Should", () => {
                     height: undefined,
                     workspaceId: undefined,
                     width: undefined,
-                    positionIndex: undefined
+                    positionIndex: undefined,
+                    allowDrop: undefined,
+                    isPinned: undefined,
+                    widthInPx: undefined,
+                    heightInPx: undefined,
+                    minWidth: undefined,
+                    maxWidth: undefined,
+                    minHeight: undefined,
+                    maxHeight: undefined
                 },
                 id: undefined
             };
@@ -390,7 +490,19 @@ describe("convertToAPIConfig() Should", () => {
                 height: undefined,
                 workspaceId: undefined,
                 width: undefined,
-                positionIndex: undefined
+                positionIndex: undefined,
+                allowDrop: undefined,
+                isPinned: undefined,
+                widthInPx: undefined,
+                heightInPx: undefined,
+                allowExtract: undefined,
+                showAddWindowButton: undefined,
+                showEjectButton: undefined,
+                showMaximizeButton: undefined,
+                minWidth: undefined,
+                maxWidth: undefined,
+                minHeight: undefined,
+                maxHeight: undefined
             },
             id: undefined
         };
@@ -429,7 +541,19 @@ describe("convertToAPIConfig() Should", () => {
                 height: undefined,
                 workspaceId: undefined,
                 width: undefined,
-                positionIndex: undefined
+                positionIndex: undefined,
+                allowExtract: undefined,
+                allowDrop: undefined,
+                isPinned: undefined,
+                widthInPx: undefined,
+                heightInPx: undefined,
+                showAddWindowButton: undefined,
+                showEjectButton: undefined,
+                showMaximizeButton: undefined,
+                minWidth: undefined,
+                maxWidth: undefined,
+                minHeight: undefined,
+                maxHeight: undefined
             },
             id: undefined
         };
@@ -488,11 +612,19 @@ describe("convertToAPIConfig() Should", () => {
                 type: "row",
                 config: {
                     activeTabIndex: undefined,
+                    allowDrop: undefined,
+                    isPinned: undefined,
+                    widthInPx: undefined,
+                    heightInPx: undefined,
                     frameId: undefined,
                     height: undefined,
                     workspaceId: undefined,
                     width: undefined,
-                    positionIndex: undefined
+                    positionIndex: undefined,
+                    minWidth: undefined,
+                    maxWidth: undefined,
+                    minHeight: undefined,
+                    maxHeight: undefined
                 },
                 id: undefined
             }],
@@ -543,11 +675,19 @@ describe("convertToAPIConfig() Should", () => {
                 type: "column",
                 config: {
                     activeTabIndex: undefined,
+                    allowDrop: undefined,
+                    isPinned: undefined,
+                    widthInPx: undefined,
+                    heightInPx: undefined,
                     frameId: undefined,
                     height: undefined,
                     workspaceId: undefined,
                     width: undefined,
-                    positionIndex: undefined
+                    positionIndex: undefined,
+                    minWidth: undefined,
+                    maxWidth: undefined,
+                    minHeight: undefined,
+                    maxHeight: undefined
                 },
                 id: undefined,
             }],
@@ -603,7 +743,19 @@ describe("convertToAPIConfig() Should", () => {
                     height: undefined,
                     workspaceId: undefined,
                     width: undefined,
-                    positionIndex: undefined
+                    positionIndex: undefined,
+                    allowDrop: undefined,
+                    isPinned: undefined,
+                    widthInPx: undefined,
+                    heightInPx: undefined,
+                    allowExtract: undefined,
+                    showAddWindowButton: undefined,
+                    showEjectButton: undefined,
+                    showMaximizeButton: undefined,
+                    minWidth: undefined,
+                    maxWidth: undefined,
+                    minHeight: undefined,
+                    maxHeight: undefined
                 },
             }],
             id: undefined,
@@ -649,7 +801,15 @@ describe("convertToAPIConfig() Should", () => {
                     height: undefined,
                     workspaceId: undefined,
                     width: undefined,
-                    positionIndex: undefined
+                    positionIndex: undefined,
+                    allowDrop: undefined,
+                    isPinned: undefined,
+                    widthInPx: undefined,
+                    heightInPx: undefined,
+                    minWidth: undefined,
+                    maxWidth: undefined,
+                    minHeight: undefined,
+                    maxHeight: undefined
                 },
                 children: [
                     {
@@ -661,7 +821,15 @@ describe("convertToAPIConfig() Should", () => {
                             height: undefined,
                             workspaceId: undefined,
                             width: undefined,
-                            positionIndex: undefined
+                            positionIndex: undefined,
+                            allowDrop: undefined,
+                            isPinned: undefined,
+                            widthInPx: undefined,
+                            heightInPx: undefined,
+                            minWidth: undefined,
+                            maxWidth: undefined,
+                            minHeight: undefined,
+                            maxHeight: undefined
                         },
                         children: [{
                             type: "group",
@@ -672,7 +840,19 @@ describe("convertToAPIConfig() Should", () => {
                                 height: undefined,
                                 workspaceId: undefined,
                                 width: undefined,
-                                positionIndex: undefined
+                                positionIndex: undefined,
+                                allowDrop: undefined,
+                                isPinned: undefined,
+                                widthInPx: undefined,
+                                heightInPx: undefined,
+                                allowExtract: undefined,
+                                showAddWindowButton: undefined,
+                                showEjectButton: undefined,
+                                showMaximizeButton: undefined,
+                                minWidth: undefined,
+                                maxWidth: undefined,
+                                minHeight: undefined,
+                                maxHeight: undefined
                             },
                             children: [
                                 mockAppConfig
@@ -688,7 +868,15 @@ describe("convertToAPIConfig() Should", () => {
                             height: undefined,
                             workspaceId: undefined,
                             width: undefined,
-                            positionIndex: undefined
+                            positionIndex: undefined,
+                            allowDrop: undefined,
+                            isPinned: undefined,
+                            widthInPx: undefined,
+                            heightInPx: undefined,
+                            minWidth: undefined,
+                            maxWidth: undefined,
+                            minHeight: undefined,
+                            maxHeight: undefined
                         },
                         children: [{
                             type: "row",
@@ -699,7 +887,15 @@ describe("convertToAPIConfig() Should", () => {
                                 height: undefined,
                                 workspaceId: undefined,
                                 width: undefined,
-                                positionIndex: undefined
+                                positionIndex: undefined,
+                                allowDrop: undefined,
+                                isPinned: undefined,
+                                widthInPx: undefined,
+                                heightInPx: undefined,
+                                minWidth: undefined,
+                                maxWidth: undefined,
+                                minHeight: undefined,
+                                maxHeight: undefined
                             },
                             children: [{
                                 type: "group",
@@ -710,7 +906,19 @@ describe("convertToAPIConfig() Should", () => {
                                     height: undefined,
                                     workspaceId: undefined,
                                     width: undefined,
-                                    positionIndex: undefined
+                                    positionIndex: undefined,
+                                    allowDrop: undefined,
+                                    isPinned: undefined,
+                                    widthInPx: undefined,
+                                    heightInPx: undefined,
+                                    allowExtract: undefined,
+                                    showAddWindowButton: undefined,
+                                    showEjectButton: undefined,
+                                    showMaximizeButton: undefined,
+                                    minWidth: undefined,
+                                    maxWidth: undefined,
+                                    minHeight: undefined,
+                                    maxHeight: undefined
                                 },
                                 children: [
                                     mockAppConfig

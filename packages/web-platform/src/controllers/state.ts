@@ -7,7 +7,7 @@ import {
 import { Glue42Core } from "@glue42/core";
 import logger from "../shared/logger";
 
-export class StateController {
+export class WindowsStateController {
     private readonly registry: CallbackRegistry = CallbackRegistryFactory();
     private readonly checkIntervalMs = 500;
     private childrenToCheck: Array<{ window: Window; windowId: string }> = [];
