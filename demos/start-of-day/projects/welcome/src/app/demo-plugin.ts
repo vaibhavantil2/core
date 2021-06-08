@@ -1,143 +1,88 @@
 import { Glue42Web } from "@glue42/web";
 import { Glue42 } from "@glue42/desktop";
-import shortid from 'shortid';
-import { Glue42Workspaces } from "@glue42/workspaces-api";
+import { handleTransactionOpen, openWorkspace } from "./notification.handlers";
 import { Client } from "shared/interfaces/ng-interfaces";
 
-const getWorkspaceWithClient = async (glue: Glue42Web.API | Glue42.Glue, client: Client): Promise<{ wsp: Glue42Workspaces.Workspace, ctxId: string } | undefined> => {
-    const clientApps = glue.appManager.application("clients").instances;
-
-    if (!clientApps.length) {
-        return;
-    }
-
-    for (const app of clientApps) {
-        const ctx = await app.getContext();
-        const ctxId = (ctx as any).contextId;
-
-        const ctxClientName = (await glue.contexts.get(ctxId)).client.firstName;
-
-        if (ctxClientName.toLowerCase() !== client.firstName.toLowerCase()) {
-            return;
-        }
-
-        const wsp = await glue.workspaces.getWorkspace((wsp) => !!wsp.getWindow((w) => w.id === app.id));
-
-        return { wsp, ctxId };
-    }
-};
-
-const openWorkspace = async (glue: any, client: Client, newFrame: boolean, addTransactions?: boolean): Promise<void> => {
-    let contextId = shortid();
-    await glue.contexts.set(contextId, { client, contextId, selectedStockSymbol: null });
-
-    const frames = await glue.workspaces.getAllFrames();
-    const frame = newFrame ? { newFrame: true } : { reuseFrameId: frames.length ? frames[0].id : undefined }
-
-    const builderConfig: Glue42Workspaces.BuilderConfig = {
-        type: "workspace",
-        definition: { frame }
-    };
-
-    const builder = glue.workspaces.getBuilder(builderConfig) as Glue42Workspaces.WorkspaceBuilder;
-
-    const topRow = builder.addRow();
-    topRow.addGroup().addWindow({ appName: "clients", context: { contextId } });
-
-    const innerColumn = topRow.addColumn();
-
-    innerColumn.addGroup().addWindow({ appName: "portfolio", context: { contextId } });
-    innerColumn.addGroup().addWindow({ appName: "news", context: { contextId } });
-
-    if (addTransactions) {
-        topRow.addGroup().addWindow({ appName: "transactions", context: { contextId } });
-    }
-
-    await builder.create();
-}
-
-export const start = async (glue: Glue42Web.API | Glue42.Glue): Promise<void> => {
-    const sw = await navigator.serviceWorker.register('/service-worker.js');
-
-    const permission = await window.Notification.requestPermission();
-
-    if (permission !== 'granted') {
-        console.error('Permission not granted for Notifications');
-    }
-
-    const channel = new BroadcastChannel('sw-messages');
-    channel.addEventListener('message', async (event) => {
-
-        if (event.data.type === "transactionsOpen") {
-            const client = event.data.client as Client;
-            const match = await getWorkspaceWithClient(glue, client);
-
-            if (!match) {
-                await openWorkspace(glue, client, true, true);
-                return;
-            }
-
-            await match.wsp.frame.focus();
-            await match.wsp.focus();
-
-            const transactionsExist = match.wsp.getWindow((w) => w.appName === "transactions");
-
-            if (transactionsExist) {
-                return;
-            }
-
-            await match.wsp.addGroup({children: [{ type: "window", appName: "transactions", context: { contextId: match.ctxId } }]});
-        }
-
-        if (event.data.type === "newWsp") {
-            const client = event.data.client as Client;
-            await openWorkspace(glue, client, true);
-        }
-
-        if (event.data.type === "existingWsp") {
-            const client = event.data.client as Client;
-            await openWorkspace(glue, client, false);
-        }
-
+export const start = async (glue: Glue42Web.API | Glue42.Glue, config: any): Promise<void> => {
+    const mOnePr = glue.interop.register("handleDefault", (args) => {
+        handleTransactionOpen(glue, args);
     });
 
-    await glue.interop.register("T42.GNS.Publish.RaiseNotification", async (args: any) => {
+    const mTwoPr = glue.interop.register("handleNewWsp", (args) => {
+        openWorkspace(glue, (args.data.client as Client), true);
+    });
 
-        const notificationData = args.notification;
+    const mThreePr = glue.interop.register("handleExistingWsp", (args) => {
+        openWorkspace(glue, (args.data.client as Client), false);
+    });
+
+    const ws = new WebSocket('ws://localhost:4224');
+
+    ws.onmessage = async (data) => {
+        const notificationData = JSON.parse(data.data).notification;
 
         const frames = await glue.workspaces.getAllFrames();
         const actions = frames.length ?
             [
                 {
                     action: 'newWsp',
-                    title: 'New Frame'
+                    title: 'New Frame',
+                    interop: {
+                        method: "handleNewWsp",
+                        arguments: notificationData
+                    }
                 },
                 {
                     action: 'existingWsp',
-                    title: 'Reuse Frame'
+                    title: 'Reuse Frame',
+                    interop: {
+                        method: "handleExistingWsp",
+                        arguments: notificationData
+                    }
                 }
             ] :
-            [
-                {
-                    action: 'newWsp',
-                    title: 'Open Client'
-                }
-            ];
+            [];
 
-        const title = notificationData.title;
-        const options = {
+        const options: Glue42Web.Notifications.RaiseOptions = {
+            title: notificationData.title,
+            clickInterop: {
+                method: "handleDefault",
+                arguments: notificationData
+            },
             body: notificationData.description,
             data: notificationData.data,
             icon: notificationData.image ? `/common/images/${notificationData.image}` : '/common/icons/192x192.png',
             badge: notificationData.image ? `/common/images/${notificationData.image}` : '/common/icons/192x192.png',
             image: '/common/images/glue42-logo-light.png',
-            actions: notificationData.type === "openClient" ? actions : undefined
+            actions: notificationData.data.type === "openClient" ? actions : undefined
         };
 
-        sw.showNotification(title, options);
+        await glue.notifications.raise(options as any);
+    };
 
+    await Promise.all([mOnePr, mTwoPr, mThreePr]);
+
+    if ((window as any).glue42gd) {
+        return;
+    }
+
+    const sw = await config.sw;
+
+    const subOptions = {
+        userVisibleOnly: true,
+        applicationServerKey: 'BBSl8XfJ0039yNWr8VgOBjCgiGlM512hj6-8sTdISKguwoLZf3EKoLojoi8j5NSHtMVdMm0EAXZ_tj_F9qBIpcg'
+    };
+
+    const pushSub = await sw.pushManager.subscribe(subOptions);
+
+    await fetch('http://localhost:4224/api/push-sub', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(pushSub.toJSON())
     });
 
-    glue.appManager.application('trigger').start(undefined, { top: 100, left: 100, width: 700, height: 400 });
-
+    console.log("all configured, with interop");
 }

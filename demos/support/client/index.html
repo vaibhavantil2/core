@@ -7,8 +7,8 @@
     <title>Client A</title>
     <script src="./data.js"></script>
     <script src="./index.js"></script>
-    <script src="./web.umd.js"></script>
-    <script src="./workspaces.umd.js"></script>
+    <!-- <script src="./web.umd.js"></script>
+    <script src="./workspaces.umd.js"></script> -->
     <style>
         body {
             background-color: palegoldenrod;
@@ -37,18 +37,7 @@
         <button onclick="clientTransaction('dixon')">New Dixon Transaction</button>
         <button onclick="clientTransaction('maritza')">New Maritza Transaction</button>
     </div>
+    
 </body>
-<script>
-    const config = {
-        libraries: [GlueWorkspaces]
-    };
-
-    GlueWeb(config)
-        .then((glue) => {
-            window.glue = glue;
-            console.log("done");
-        })
-        .catch(console.warn);
-</script>
 
 </html>

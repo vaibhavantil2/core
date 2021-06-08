@@ -27,6 +27,7 @@
                         "assets": [
                             "projects/welcome/src/favicon.ico",
                             "projects/welcome/src/manifest.webmanifest",
+                            "projects/welcome/src/web.worker.umd.js",
                             "projects/welcome/src/service-worker.js"
                         ],
                         "styles": [

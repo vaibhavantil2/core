@@ -10,9 +10,22 @@ import { ClickOutsideModule } from 'ng-click-outside';
 
 import { Glue42Ng } from "@glue42/ng";
 import GlueWebPlatform, { Glue42WebPlatform } from "@glue42/web-platform";
+import Glue from "@glue42/desktop";
 import GlueWorkspaces from "@glue42/workspaces-api";
 
 import { start } from "./demo-plugin";
+import { handleTransactionOpen, openWorkspace } from './notification.handlers';
+import { Client } from 'shared/interfaces/ng-interfaces';
+
+// notifications: {
+//   defaultClick: handleTransactionOpen,
+//   actionClicks: [
+//     { action: "newWsp", handler: (glue, definition) => openWorkspace(glue, (definition.data.client as Client), true) },
+//     { action: "existingWsp", handler: (glue, definition) => openWorkspace(glue, (definition.data.client as Client), false) },
+//   ]
+// }
+
+const swPromise = navigator.serviceWorker.register('/service-worker.js');
 
 const config: Glue42WebPlatform.Config = {
   glue: {
@@ -75,9 +88,13 @@ const config: Glue42WebPlatform.Config = {
     definitions: [
       {
         name: "demo",
-        start: start
+        start: start,
+        config: { sw: swPromise }
       }
     ]
+  },
+  serviceWorker: {
+    registrationPromise: swPromise
   }
 };
 
@@ -89,7 +106,19 @@ const config: Glue42WebPlatform.Config = {
     BrowserModule,
     NgbModule,
     HttpClientModule,
-    Glue42Ng.forRoot({ webPlatform: { factory: GlueWebPlatform, config: config } }),
+    Glue42Ng.forRoot({
+      webPlatform: { factory: GlueWebPlatform, config: config },
+      desktop: {
+        factory: (config) => {
+          return Glue(config)
+            .then((glue) => {
+              start(glue, undefined);
+              return glue;
+            })
+        },
+        config: { appManager: "full", layouts: "full", libraries: [GlueWorkspaces] }
+      }
+    }),
     DataModule.forRoot(),
     ComponentsModule,
     ClickOutsideModule

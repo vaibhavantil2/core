@@ -1,33 +1,41 @@
+importScripts("/web.worker.umd.js");
+
 /* eslint-disable no-restricted-globals */
 self.addEventListener('activate', async () => {
-  self.clients.claim();
-  console.log('service worker activate');
+    self.clients.claim();
+    console.log('service worker activate');
 });
 
 self.addEventListener("fetch", function (event) {
-  //console.log("??", "fetch", event);
-  // event.respondWith(fetch(event.request));
+    //console.log("??", "fetch", event);
+    // event.respondWith(fetch(event.request));
 });
 
-self.addEventListener('notificationclick', function (event) {
-  const action = event.action;
+self.addEventListener('push', function (event) {
 
-  if (!action) {
-    const client = event.notification.data.client;
-    const channel = new BroadcastChannel('sw-messages');
-    channel.postMessage({ type: "transactionsOpen", client });
-    return;
-  }
+    const notificationData = event.data.json().notification;
 
-  if (action === 'newWsp') {
-    const client = event.notification.data.client;
-    const channel = new BroadcastChannel('sw-messages');
-    channel.postMessage({ type: "newWsp", client });
-  }
+    const options = {
+        title: notificationData.title,
+        clickInterop: {
+            method: "handleDefault",
+            arguments: notificationData
+        },
+        body: notificationData.description,
+        data: notificationData.data,
+        icon: notificationData.image ? `/common/images/${notificationData.image}` : '/common/icons/192x192.png',
+        badge: notificationData.image ? `/common/images/${notificationData.image}` : '/common/icons/192x192.png',
+        image: '/common/images/glue42-logo-light.png',
+    };
 
-  if (action === 'existingWsp') {
-    const client = event.notification.data.client;
-    const channel = new BroadcastChannel('sw-messages');
-    channel.postMessage({ type: "existingWsp", client });
-  }
+    const promiseChain = self.raiseGlueNotification(options);
+
+    event.waitUntil(promiseChain);
+});
+
+self.GlueWebWorker({
+    platform: {
+        url: "http://localhost:8080/",
+        openIfMissing: true
+    }
 });
