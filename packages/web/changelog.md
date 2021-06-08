@@ -1,3 +1,5 @@
+2.2.1
+fix: changed requestPermission to optional due to compatibility issues with enterprise
 2.2.0
 feat: added support for advanced notifications
 2.1.8

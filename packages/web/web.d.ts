@@ -507,7 +507,7 @@ export namespace Glue42Web {
              * @param notification notification options
              */
             raise(notification: RaiseOptions): Promise<Notification>;
-            requestPermission(): Promise<boolean>;
+            requestPermission?(): Promise<boolean>;
         }
 
         export interface NotificationDefinition {
