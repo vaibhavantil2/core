@@ -168,7 +168,7 @@ describe('addGroup() Should ', function () {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(610);
+        expect(workspace.minWidth).to.eql(620);
         expect(workspace.maxWidth).to.eql(32767);
         expect(workspace.minHeight).to.eql(500);
         expect(workspace.maxHeight).to.eql(1000);

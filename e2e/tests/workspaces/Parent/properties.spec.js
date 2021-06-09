@@ -568,15 +568,15 @@ describe("properties: ", () => {
                 const currParent = workspace.getBox(p => p.type === parent);
 
                 if (parent === "row") {
-                    expect(currParent.minWidth).to.eql(30);
+                    expect(currParent.minWidth).to.eql(60);
                 } else {
-                    expect(currParent.minWidth).to.eql(10);
+                    expect(currParent.minWidth).to.eql(20);
                 }
                 expect(currParent.maxWidth).to.eql(32767);
                 if (parent === "row" || parent === "group") {
-                    expect(currParent.minHeight).to.eql(10 + decorationsHeight); // contains a window
+                    expect(currParent.minHeight).to.eql(20 + decorationsHeight); // contains a window
                 } else {
-                    expect(currParent.minHeight).to.eql(10); // does not contain a window
+                    expect(currParent.minHeight).to.eql(20); // does not contain a window
                 }
                 expect(currParent.maxHeight).to.eql(32767);
             });

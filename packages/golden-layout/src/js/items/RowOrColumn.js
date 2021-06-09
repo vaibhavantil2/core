@@ -281,6 +281,7 @@ lm.utils.copy(lm.items.RowOrColumn.prototype, {
 			return Math.floor(currentSize) > Math.floor(sizeData.itemSizes[indexInCollection]);
 		});
 
+
 		pinnedItemsWhichWillReceivePixel.forEach((pi) => {
 			const currentSize = this.isColumn ? pi.element.height() : pi.element.width();
 			const indexInCollection = this.contentItems.indexOf(pi);
@@ -306,6 +307,12 @@ lm.utils.copy(lm.items.RowOrColumn.prototype, {
 			} else {
 				this.contentItems[i].element.width(sizeData.itemSizes[i]);
 				this.contentItems[i].element.height(sizeData.totalHeight);
+			}
+
+			if (this._isColumn && this.contentItems[i].config.workspacesConfig.isPinned && this._layoutManager._ignorePinned) {
+				this.contentItems[i].config.workspacesConfig.pinnedSize = this.contentItems[i].element.height();
+			} else if (this.contentItems[i].config.workspacesConfig.isPinned && this._layoutManager._ignorePinned) {
+				this.contentItems[i].config.workspacesConfig.pinnedSize = this.contentItems[i].element.width();
 			}
 		}
 	},
@@ -471,9 +478,9 @@ lm.utils.copy(lm.items.RowOrColumn.prototype, {
 		for (var i = 0; i < this.contentItems.length; i++) {
 			contentItem = this.contentItems[i];
 			itemSize = sizeData.itemSizes[i];
-
-			const contentItemMaxWidth = contentItem.config.workspacesConfig.isPinned && !this._layoutManager._ignorePinned ? contentItem.element.width() : contentItem.getMaxWidth();
-			const contentItemMinWidth = contentItem.config.workspacesConfig.isPinned && !this._layoutManager._ignorePinned ? contentItem.element.width() : contentItem.getMinWidth();
+			const pinnedSize = contentItem.config.workspacesConfig.pinnedSize || contentItem.element.width();
+			const contentItemMaxWidth = contentItem.config.workspacesConfig.isPinned && !this._layoutManager._ignorePinned ? pinnedSize : contentItem.getMaxWidth();
+			const contentItemMinWidth = contentItem.config.workspacesConfig.isPinned && !this._layoutManager._ignorePinned ? pinnedSize : contentItem.getMinWidth();
 			const validContentItemMaxWidth = Math.min((contentItemMaxWidth === undefined) ? maxItemWidth : contentItemMaxWidth, sizeData.totalWidth)
 			const validContentItemMinWidth = (contentItemMinWidth === undefined) ? minItemWidth : contentItemMinWidth;
 
@@ -611,8 +618,9 @@ lm.utils.copy(lm.items.RowOrColumn.prototype, {
 			contentItem = this.contentItems[i];
 			itemSize = sizeData.itemSizes[i];
 
-			const contentItemMaxHeight = contentItem.config.workspacesConfig.isPinned && !this._layoutManager._ignorePinned ? contentItem.element.height() : contentItem.getMaxHeight();
-			const contentItemMinHeight = contentItem.config.workspacesConfig.isPinned && !this._layoutManager._ignorePinned ? contentItem.element.height() : contentItem.getMinHeight();
+			const pinnedSize = contentItem.config.workspacesConfig.pinnedSize || contentItem.element.height();
+			const contentItemMaxHeight = contentItem.config.workspacesConfig.isPinned && !this._layoutManager._ignorePinned ? pinnedSize : contentItem.getMaxHeight();
+			const contentItemMinHeight = contentItem.config.workspacesConfig.isPinned && !this._layoutManager._ignorePinned ? pinnedSize : contentItem.getMinHeight();
 			const validContentItemMaxHeight = Math.min((contentItemMaxHeight === undefined) ? maxItemHeight : contentItemMaxHeight, sizeData.totalHeight);
 			const validContentItemMinHeight = (contentItemMinHeight === undefined) ? minItemHeight : contentItemMinHeight;
 

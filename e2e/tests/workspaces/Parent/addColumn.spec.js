@@ -193,9 +193,9 @@ describe("addColumn() Should", () => {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(530);
+        expect(workspace.minWidth).to.eql(560);
         expect(workspace.maxWidth).to.eql(32767);
-        expect(workspace.minHeight).to.eql(10 + verticalDecorations);
+        expect(workspace.minHeight).to.eql(20 + verticalDecorations);
         expect(workspace.maxWidth).to.eql(32767);
     });
 
@@ -221,9 +221,9 @@ describe("addColumn() Should", () => {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(40);
+        expect(workspace.minWidth).to.eql(80);
         expect(workspace.maxWidth).to.eql(32767);
-        expect(workspace.minHeight).to.eql(10 + verticalDecorations);
+        expect(workspace.minHeight).to.eql(20 + verticalDecorations);
         expect(workspace.maxWidth).to.eql(32767);
     });
 
@@ -253,9 +253,9 @@ describe("addColumn() Should", () => {
 
         await workspace.refreshReference();
 
-        expect(workspace.minWidth).to.eql(40);
+        expect(workspace.minWidth).to.eql(80);
         expect(workspace.maxWidth).to.eql(32767);
-        expect(workspace.minHeight).to.eql(10 + verticalDecorations);
+        expect(workspace.minHeight).to.eql(20 + verticalDecorations);
         expect(workspace.maxWidth).to.eql(32767);
     });
 

@@ -938,9 +938,9 @@ describe('restoreWorkspace() Should', function () {
 
             workspace = await glue.workspaces.restoreWorkspace(layoutName);
 
-            expect(workspace.minWidth).to.eql(10);
+            expect(workspace.minWidth).to.eql(20);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10);
+            expect(workspace.minHeight).to.eql(20);
             expect(workspace.maxHeight).to.eql(32767);
         });
 

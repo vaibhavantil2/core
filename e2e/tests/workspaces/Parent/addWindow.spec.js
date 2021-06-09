@@ -171,7 +171,7 @@ describe("addWindow() Should", () => {
 
             await workspace.refreshReference();
 
-            expect(workspace.minWidth).to.eql(520);
+            expect(workspace.minWidth).to.eql(540);
             expect(workspace.maxWidth).to.eql(32767); // the neighbours have a max maxWidth so they can compensate
             expect(workspace.minHeight).to.eql(550 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(700 + decorationsHeight);
@@ -192,7 +192,7 @@ describe("addWindow() Should", () => {
 
             await workspace.refreshReference();
 
-            expect(workspace.minWidth).to.eql(520);
+            expect(workspace.minWidth).to.eql(540);
             expect(workspace.maxWidth).to.eql(32767); // the neighbours have a max maxWidth so they can compensate
             expect(workspace.minHeight).to.eql(550);
             expect(workspace.maxHeight).to.eql(700);
@@ -213,7 +213,7 @@ describe("addWindow() Should", () => {
 
             await workspace.refreshReference();
 
-            expect(workspace.minWidth).to.eql(520);
+            expect(workspace.minWidth).to.eql(540);
             expect(workspace.maxWidth).to.eql(32767); // the neighbours have a max maxWidth so they can compensate
             expect(workspace.minHeight).to.eql(550);
             expect(workspace.maxHeight).to.eql(700);
@@ -232,9 +232,9 @@ describe("addWindow() Should", () => {
 
             await workspace.refreshReference();
 
-            expect(workspace.minWidth).to.eql(30);
+            expect(workspace.minWidth).to.eql(60);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -251,9 +251,9 @@ describe("addWindow() Should", () => {
 
             await workspace.refreshReference();
 
-            expect(workspace.minWidth).to.eql(30);
+            expect(workspace.minWidth).to.eql(60);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -270,9 +270,9 @@ describe("addWindow() Should", () => {
 
             await workspace.refreshReference();
 
-            expect(workspace.minWidth).to.eql(30);
+            expect(workspace.minWidth).to.eql(60);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -289,9 +289,9 @@ describe("addWindow() Should", () => {
 
             await workspace.refreshReference();
 
-            expect(workspace.minWidth).to.eql(30);
+            expect(workspace.minWidth).to.eql(60);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -308,9 +308,9 @@ describe("addWindow() Should", () => {
 
             await workspace.refreshReference();
 
-            expect(workspace.minWidth).to.eql(30);
+            expect(workspace.minWidth).to.eql(60);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -327,9 +327,9 @@ describe("addWindow() Should", () => {
 
             await workspace.refreshReference();
 
-            expect(workspace.minWidth).to.eql(30);
+            expect(workspace.minWidth).to.eql(60);
             expect(workspace.maxWidth).to.eql(32767);
-            expect(workspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(workspace.minHeight).to.eql(20 + decorationsHeight);
             expect(workspace.maxHeight).to.eql(32767);
         });
 
@@ -360,7 +360,7 @@ describe("addWindow() Should", () => {
 
             expect(secondWorkspace.minWidth).to.eql(800);
             expect(secondWorkspace.maxWidth).to.eql(1000);
-            expect(secondWorkspace.minHeight).to.eql(10 + decorationsHeight);
+            expect(secondWorkspace.minHeight).to.eql(20 + decorationsHeight);
             expect(secondWorkspace.maxHeight).to.eql(32767);
         });
 
@@ -389,7 +389,7 @@ describe("addWindow() Should", () => {
 
             await secondWorkspace.refreshReference();
 
-            expect(secondWorkspace.minWidth).to.eql(10);
+            expect(secondWorkspace.minWidth).to.eql(20);
             expect(secondWorkspace.maxWidth).to.eql(32767);
             expect(secondWorkspace.minHeight).to.eql(800);
             expect(secondWorkspace.maxHeight).to.eql(1000);
@@ -422,7 +422,7 @@ describe("addWindow() Should", () => {
 
             expect(secondWorkspace.minWidth).to.eql(800);
             expect(secondWorkspace.maxWidth).to.eql(1000);
-            expect(secondWorkspace.minHeight).to.eql(10);
+            expect(secondWorkspace.minHeight).to.eql(20);
             expect(secondWorkspace.maxHeight).to.eql(32767);
         });
 
@@ -451,7 +451,7 @@ describe("addWindow() Should", () => {
 
             await secondWorkspace.refreshReference();
 
-            expect(secondWorkspace.minWidth).to.eql(10);
+            expect(secondWorkspace.minWidth).to.eql(20);
             expect(secondWorkspace.maxWidth).to.eql(32767);
             expect(secondWorkspace.minHeight).to.eql(800);
             expect(secondWorkspace.maxHeight).to.eql(1000);
@@ -484,7 +484,7 @@ describe("addWindow() Should", () => {
 
             expect(secondWorkspace.minWidth).to.eql(800);
             expect(secondWorkspace.maxWidth).to.eql(1000);
-            expect(secondWorkspace.minHeight).to.eql(10);
+            expect(secondWorkspace.minHeight).to.eql(20);
             expect(secondWorkspace.maxHeight).to.eql(32767);
         });
 
@@ -513,7 +513,7 @@ describe("addWindow() Should", () => {
 
             await secondWorkspace.refreshReference();
 
-            expect(secondWorkspace.minWidth).to.eql(10);
+            expect(secondWorkspace.minWidth).to.eql(20);
             expect(secondWorkspace.maxWidth).to.eql(32767);
             expect(secondWorkspace.minHeight).to.eql(800);
             expect(secondWorkspace.maxHeight).to.eql(1000);
