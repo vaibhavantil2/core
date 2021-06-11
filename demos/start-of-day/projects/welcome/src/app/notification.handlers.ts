@@ -18,7 +18,7 @@ const getWorkspaceWithClient = async (glue: Glue42Web.API | Glue42.Glue, client:
         const ctxClientName = (await glue.contexts.get(ctxId)).client.firstName;
 
         if (ctxClientName.toLowerCase() !== client.firstName.toLowerCase()) {
-            return;
+            continue;
         }
 
         const wsp = await glue.workspaces.getWorkspace((wsp) => !!wsp.getWindow((w) => w.id === app.id));

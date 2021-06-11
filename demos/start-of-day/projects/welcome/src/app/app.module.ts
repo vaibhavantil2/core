@@ -16,6 +16,7 @@ import GlueWorkspaces from "@glue42/workspaces-api";
 import { start } from "./demo-plugin";
 import { handleTransactionOpen, openWorkspace } from './notification.handlers';
 import { Client } from 'shared/interfaces/ng-interfaces';
+import { RouterModule } from '@angular/router';
 
 // notifications: {
 //   defaultClick: handleTransactionOpen,
@@ -121,7 +122,8 @@ const config: Glue42WebPlatform.Config = {
     }),
     DataModule.forRoot(),
     ComponentsModule,
-    ClickOutsideModule
+    ClickOutsideModule,
+    RouterModule.forRoot([]),
   ],
   providers: [],
   bootstrap: [AppComponent]

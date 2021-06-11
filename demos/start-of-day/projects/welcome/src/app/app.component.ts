@@ -4,6 +4,7 @@ import { Client, News, Stock, AllData } from '../../../../shared/interfaces/ng-i
 import { GlueService } from '../../../../shared/data/glue.service';
 import { Glue42Workspaces } from '@glue42/workspaces-api';
 import shortid from 'shortid';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,7 @@ export class AppComponent implements OnInit {
   public showAll = false;
   private allData: AllData;
 
-  constructor(private readonly dataService: DataService, private readonly glueService: GlueService) { }
+  constructor(private readonly dataService: DataService, private readonly glueService: GlueService, private route: ActivatedRoute) { }
 
   public async ngOnInit(): Promise<void> {
     this.showAll = !!(window as any).SharedWorker;
@@ -35,6 +36,25 @@ export class AppComponent implements OnInit {
     this.news = this.getSortedAllNews();
     this.stocks = this.allData.stocks;
     console.log(this.glueService.glue.version);
+
+    // http://localhost:8080/?client=kristina&type=openClient
+    // http://localhost:8080/?client=kristina&type=openTransaction
+    this.route.queryParams.subscribe(params => {
+      const clientFirstName = params['client'];
+      const type = params['type'];
+
+      if (!clientFirstName || !type) {
+        return;
+      }
+
+      const client = this.clients.find((cl) => cl.firstName.toLowerCase() === clientFirstName.toLowerCase());
+
+      if (!client) {
+        return;
+      }
+
+      this.glueService.glue.interop.invoke("handleDefault", { data: { type, client } }).catch(console.warn);
+    });
   }
 
   public async handleClientSelect(client?: Client) {
