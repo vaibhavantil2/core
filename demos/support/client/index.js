@@ -1,4 +1,4 @@
-const clientCalling = async (clientName) => {
+const clientCalling = async (clientName, email) => {
     const client = window.clients.find((client) => client.firstName.toLowerCase() === clientName.toLowerCase());
 
     const config = {
@@ -7,7 +7,8 @@ const clientCalling = async (clientName) => {
             image: client.image,
             description: client.about,
             data: { client, type: "openClient" }
-        }
+        },
+        email
     };
 
     fetch('http://localhost:4224/api/client-call', {
