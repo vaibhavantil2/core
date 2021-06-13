@@ -1,3 +1,5 @@
+5.4.8
+chore: resolved dependency vulnerabilities
 5.4.7
 chore: resolved dependency vulnerabilities
 5.4.6

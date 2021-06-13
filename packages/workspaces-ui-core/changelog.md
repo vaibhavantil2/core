@@ -1,4 +1,6 @@
 1.4.2
+chore: resolved dependency vulnerabilities
+chore: updated @glue42/desktop dependency
 fix: Increased the default min size to improve the UX when the tabs reach minWidth
 1.4.1
 fix: Fixed invalid workspace elements sizes when the workspace is not focused

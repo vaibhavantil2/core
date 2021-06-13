@@ -1,3 +1,5 @@
+1.6.2
+chore: updated @glue42/desktop dependency
 1.6.1
 fix: fixed broken backward compatibility due to expected constraints properties
 fix: added missing optional properties in the workspaces config result
