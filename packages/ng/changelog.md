@@ -1,3 +1,5 @@
+2.2.2
+chore: updated @glue42/desktop dependency
 2.2.1
 fix: increased the ng-specific timeout to 60000ms to allow for the underlying libs to reject on their own any problems
 2.2.0
