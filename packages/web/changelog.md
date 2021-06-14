@@ -1,3 +1,7 @@
+2.2.1
+chore: Resolved dependency vulnerabilities
+chore: updated @glue42/desktop dependency
+fix: changed requestPermission to optional due to compatibility issues with enterprise
 2.2.0
 feat: added support for advanced notifications
 2.1.8

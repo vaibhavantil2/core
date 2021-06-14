@@ -26,7 +26,8 @@
         "build": "npm run build:min && npm run build:less",
         "build:min": "gulp build",
         "build:less": "grunt less",
-        "audit": "node ../../scripts/audit/index.js",
+        "audit": "echo no audit found",
+        "audit:V1": "node ../../scripts/audit/index.js",
         "preversion": "npm run build && npm run test && npm run audit",
         "version": "npm run build"
     },
