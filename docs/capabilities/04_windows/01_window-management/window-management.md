@@ -279,7 +279,7 @@ await myWindow.close();
 
 ## Context
 
-Each Glue42 Window has a dedicated [context](../../data-sharing-between-apps/shared-contexts/javascript/index.html). The window context is a JavaScript object which may contain any information regarding the window instance in the form of key/value pairs. 
+Each Glue42 Window has a dedicated [context](../../data-sharing-between-apps/shared-contexts/index.html). The window context is a JavaScript object which may contain any information regarding the window instance in the form of key/value pairs. 
 
 Contexts can be set/passed initially on window creation and updated at runtime. Context changes can be tracked by subscribing to an event which fires when the window context has been updated (see [Window Events](#window_events)).
 

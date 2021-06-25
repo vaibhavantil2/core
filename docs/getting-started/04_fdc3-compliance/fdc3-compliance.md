@@ -194,6 +194,6 @@ Use the [code of the demo](https://github.com/Glue42/fdc3-demos/tree/adapt-for-g
 
 #### Extension
 
-The demo project also contains a [Chrome extension](https://github.com/Glue42/fdc3-demos/tree/adapt-for-glue42/extension) that auto injects `@glue42/fdc3` in all web pages. It spares you the need to reference the library in all your projects and redeploy them or when integrating with 3rd party closed source applications.
+The demo project also contains a Chrome extension that auto injects `@glue42/fdc3` in all web pages. It spares you the need to reference the library in all your projects and redeploy them or when integrating with 3rd party closed source applications.
 
 To install the extension, follow the instructions in the [README](https://github.com/Glue42/fdc3-demos/blob/adapt-for-glue42/README.md) file.

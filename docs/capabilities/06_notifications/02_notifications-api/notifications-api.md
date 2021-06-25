@@ -60,7 +60,7 @@ notification.onclick = () => console.log("Notification was clicked.");
 
 ### Interop Click Handler
 
-You can also use the `clickInterop` property of the [`RaiseOptions`](../../../reference/core/latest/notifications/index.html#RaiseOptions) object to specify an Interop method that will be invoked when the user clicks on the notification. For instance, when another application has [registered an Interop method](../../data-sharing-between-apps/interop/javascript/index.html#method_registration):
+You can also use the `clickInterop` property of the [`RaiseOptions`](../../../reference/core/latest/notifications/index.html#RaiseOptions) object to specify an Interop method that will be invoked when the user clicks on the notification. For instance, when another application has [registered an Interop method](../../data-sharing-between-apps/interop/index.html#method_registration):
 
 ```javascript
 const methodName = "HandleNotificationClick";
@@ -129,9 +129,9 @@ See below how to create standard notification actions (actions that don't requir
 
 ### Interop Actions
 
-The [`NotificationAction`](../../../reference/core/latest/notifications/index.html#NotificationAction) object provides an `interop` property which you can use to [invoke Interop methods](../../data-sharing-between-apps/interop/javascript/index.html#method_invocation) when the user clicks an action button in the notification.
+The [`NotificationAction`](../../../reference/core/latest/notifications/index.html#NotificationAction) object provides an `interop` property which you can use to [invoke Interop methods](../../data-sharing-between-apps/interop/index.html#method_invocation) when the user clicks an action button in the notification.
 
-First, [register an Interop method](../../data-sharing-between-apps/interop/javascript/index.html#method_registration) from another application:
+First, [register an Interop method](../../data-sharing-between-apps/interop/index.html#method_registration) from another application:
 
 ```javascript
 const methodName = "HandleNotificationClick";
