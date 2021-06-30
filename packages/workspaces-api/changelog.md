@@ -1,3 +1,5 @@
+1.7.2
+chore: bump due to dependencies update
 1.7.1
 fix: fixed allowDropLeft, allowDropTop, allowDropRight, allowDropBottom in the workspaces config object by adding them to the decoders
 1.7.0
