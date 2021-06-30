@@ -1,3 +1,5 @@
+2.2.6
+fix: Fix an issue with the validation of raiseIntent()
 2.2.5
 chore: updated @glue42/desktop dependency
 2.2.4
