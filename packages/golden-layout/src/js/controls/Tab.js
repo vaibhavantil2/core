@@ -134,7 +134,7 @@ lm.utils.copy(lm.controls.Tab.prototype, {
 		const isWorkspaceLayout = this.contentItem.layoutManager.config.settings.mode === "workspace";
 		const hasLessThanTwoTabs = this.contentItem.parent.header.tabs.length < 2;
 		const isMissingWindowId = !this.contentItem.config.windowId && (this.contentItem.config.componentState && !this.contentItem.config.componentState.windowId);
-		const isWorkspaceExtractEnabled = true;
+		const isWorkspaceExtractEnabled = !this.contentItem.layoutManager.config.settings.workspaceInnerDrag && isWorkspaceLayout;
 
 		if (isWorkspaceLayout && hasLessThanTwoTabs) {
 			return;
