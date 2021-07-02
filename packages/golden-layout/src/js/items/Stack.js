@@ -360,7 +360,7 @@ lm.utils.copy(lm.items.Stack.prototype, {
 				return;
 			}
 		}
-
+		this._resetHeaderDropZone();
 		this.layoutManager.dropTargetIndicator.highlightArea(null);
 	},
 
