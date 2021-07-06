@@ -113,16 +113,11 @@ lm.utils.copy(lm.controls.Header.prototype, {
 		this.tabs.splice(index, 0, tab);
 		this._updateTabSizesWithoutDropdown();
 	},
-	moveTab: function (tab, fromIndex, toIndex) {
-		console.log(tab, fromIndex, toIndex);
-		// if (toIndex === 0) {
-		// 	this.tabs[toIndex].element.before(tab.element);
-		// } else {
-		// 	this.tabs[toIndex].element.after(tab.element);
-		// }
+	moveTab: function (fromIndex, toIndex) {
 		lm.utils.moveInArray(this.tabs, fromIndex, toIndex);
 
 		this._updateTabSizesWithoutDropdown();
+		this.parent._syncContentItemOrder();
 	},
 
 	/**

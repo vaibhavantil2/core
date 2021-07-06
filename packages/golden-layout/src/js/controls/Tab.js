@@ -172,6 +172,9 @@ lm.utils.copy(lm.controls.Tab.prototype, {
 	},
 
 	_onReorderStart: function (x, y) {
+		if (this.contentItem.config.workspacesConfig && this.contentItem.config.workspacesConfig.allowExtract === false) {
+			return;
+		}
 		const tabX = this.element[0].getBoundingClientRect().x;
 		const tabWidth = this.element[0].getBoundingClientRect().width;
 		this._elementOffset = tabX - x;
@@ -194,14 +197,14 @@ lm.utils.copy(lm.controls.Tab.prototype, {
 			const previousTabDimensions = lm.utils.getBounds(this.header.tabs[tabIndex - 1].element);
 
 			if (x < previousTabDimensions.x + previousTabDimensions.width / 2) {
-				this.header.moveTab(this, tabIndex, tabIndex - 1);
+				this.header.moveTab(tabIndex, tabIndex - 1);
 				this._xOfLastReorder = x;
 			}
 		} else if (this._xOfLastReorder < x && tabIndex < this.header.tabs.length - 1) {
 			const nextTabDimensions = lm.utils.getBounds(this.header.tabs[tabIndex + 1].element);
 
 			if (x > nextTabDimensions.x + nextTabDimensions.width / 2) {
-				this.header.moveTab(this, tabIndex, tabIndex + 1);
+				this.header.moveTab(tabIndex, tabIndex + 1);
 				this._xOfLastReorder = x;
 			}
 		}
