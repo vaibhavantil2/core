@@ -78,6 +78,11 @@ export interface ColumnSnapshotConfig extends BaseChildSnapshotConfig {
 export interface GroupSnapshotConfig extends BaseChildSnapshotConfig {
     type?: "group";
     allowDrop?: boolean;
+    allowDropLeft?: boolean;
+    allowDropRight?: boolean;
+    allowDropTop?: boolean;
+    allowDropBottom?: boolean;
+    allowDropHeader?: boolean;
     allowExtract?: boolean;
     showMaximizeButton?: boolean;
     showEjectButton?: boolean;
@@ -324,6 +329,11 @@ export interface LockGroupConfig {
     config?: {
         allowExtract?: boolean;
         allowDrop?: boolean;
+        allowDropLeft?: boolean;
+        allowDropRight?: boolean;
+        allowDropTop?: boolean;
+        allowDropBottom?: boolean;
+        allowDropHeader?: boolean;
         showMaximizeButton?: boolean;
         showEjectButton?: boolean;
         showAddWindowButton?: boolean;

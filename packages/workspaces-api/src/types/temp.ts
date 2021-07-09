@@ -37,6 +37,11 @@ export interface WorkspaceWindowLockConfig {
 export interface GroupLockConfig {
     allowExtract?: boolean;
     allowDrop?: boolean;
+    allowDropLeft?: boolean;
+    allowDropRight?: boolean;
+    allowDropTop?: boolean;
+    allowDropBottom?: boolean;
+    allowDropHeader?: boolean;
     showMaximizeButton?: boolean;
     showEjectButton?: boolean;
     showAddWindowButton?: boolean;
@@ -77,6 +82,11 @@ export interface GroupDefinitionConfig {
     showMaximizeButton?: boolean;
     showEjectButton?: boolean;
     allowDrop?: boolean;
+    allowDropLeft?: boolean;
+    allowDropRight?: boolean;
+    allowDropTop?: boolean;
+    allowDropBottom?: boolean;
+    allowDropHeader?: boolean;
     showAddWindowButton?: boolean;
 }
 

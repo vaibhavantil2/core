@@ -708,9 +708,15 @@ lm.utils.copy(lm.LayoutManager.prototype, {
 				this._itemAreas.push(area);
 				var header = {};
 				lm.utils.copy(header, area);
-				lm.utils.copy(header, area.contentItem._contentAreaDimensions.header.highlightArea);
-				header.surface = (header.x2 - header.x1) * (header.y2 - header.y1);
-				this._itemAreas.push(header);
+				if(area.contentItem._contentAreaDimensions.header){
+					lm.utils.copy(header, area.contentItem._contentAreaDimensions.header.highlightArea);
+					header.surface = (header.x2 - header.x1) * (header.y2 - header.y1);
+					this._itemAreas.push(header);
+				}
+
+				if (allContentItems[i]._dropSegment) {
+					allContentItems[i]._dropSegment = null;
+				}
 			}
 		}
 

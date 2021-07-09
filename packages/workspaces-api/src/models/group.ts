@@ -56,6 +56,26 @@ export class Group implements Glue42Workspaces.Group {
         return getBase(this).getAllowExtract(this);
     }
 
+    public get allowDropLeft(): boolean {
+        return getBase(this).getAllowDropLeft(this);
+    }
+
+    public get allowDropRight(): boolean {
+        return getBase(this).getAllowDropRight(this);
+    }
+
+    public get allowDropTop(): boolean {
+        return getBase(this).getAllowDropTop(this);
+    }
+
+    public get allowDropBottom(): boolean {
+        return getBase(this).getAllowDropBottom(this);
+    }
+
+    public get allowDropHeader(): boolean {
+        return getBase(this).getAllowDropHeader(this);
+    }
+
     public get allowDrop(): boolean {
         return getBase(this).getAllowDrop(this);
     }
