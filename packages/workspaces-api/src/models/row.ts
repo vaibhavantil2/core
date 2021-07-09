@@ -60,6 +60,10 @@ export class Row implements Glue42Workspaces.Row {
         return getBase(this).getAllowDrop(this);
     }
 
+    public get allowSplitters(): boolean {
+        return getBase(this).getAllowSplitters(this);
+    }
+
     public get minWidth(): number {
         return getBase(this).getMinWidth(this);
     }

@@ -44,10 +44,12 @@ export interface GroupLockConfig {
 
 export interface RowLockConfig {
     allowDrop?: boolean;
+    allowSplitters?: boolean;
 }
 
 export interface ColumnLockConfig {
     allowDrop?: boolean;
+    allowSplitters?: boolean;
 }
 
 export interface Constraints {
@@ -82,6 +84,7 @@ export interface RowDefinitionConfig {
     minHeight?: number;
     maxHeight?: number;
     allowDrop?: boolean;
+    allowSplitters?: boolean;
     isPinned?: boolean;
 }
 
@@ -89,5 +92,6 @@ export interface ColumnDefinitionConfig {
     minWidth?: number;
     maxWidth?: number;
     allowDrop?: boolean;
+    allowSplitters?: boolean;
     isPinned?: boolean;
 }

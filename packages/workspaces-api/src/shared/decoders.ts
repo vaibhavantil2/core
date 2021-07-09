@@ -127,6 +127,7 @@ export const rowDefinitionConfigDecoder: Decoder<RowDefinitionConfig> = object({
     minHeight: optional(number()),
     maxHeight: optional(number()),
     allowDrop: optional(boolean()),
+    allowSplitters: optional(boolean()),
     isPinned: optional(boolean())
 });
 
@@ -134,6 +135,7 @@ export const columnDefinitionConfigDecoder: Decoder<ColumnDefinitionConfig> = ob
     minWidth: optional(number()),
     maxWidth: optional(number()),
     allowDrop: optional(boolean()),
+    allowSplitters: optional(boolean()),
     isPinned: optional(boolean())
 });
 
@@ -715,10 +717,12 @@ export const lockWindowDecoder: Decoder<LockWindowConfig> = object({
 
 export const rowLockConfigDecoder: Decoder<RowLockConfig> = object({
     allowDrop: optional(boolean()),
+    allowSplitters: optional(boolean()),
 });
 
 export const columnLockConfigDecoder: Decoder<ColumnLockConfig> = object({
     allowDrop: optional(boolean()),
+    allowSplitters: optional(boolean()),
 });
 
 export const groupLockConfigDecoder: Decoder<GroupLockConfig> = object({

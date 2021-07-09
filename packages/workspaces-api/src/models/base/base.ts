@@ -187,6 +187,16 @@ export class Base {
         return getData(this, model).config.allowDrop;
     }
 
+    public getAllowSplitters(model: Row | Column): boolean {
+        const privateData = getData(this, model);
+
+        if (privateData.type === "group") {
+            throw new Error(`Cannot get allow splitters from private data ${privateData.type}`);
+        }
+
+        return privateData.config.allowSplitters;
+    }
+
     public getAllowExtract(model: Group): boolean {
         const privateData = getData(this, model);
         if (privateData.type !== "group") {
