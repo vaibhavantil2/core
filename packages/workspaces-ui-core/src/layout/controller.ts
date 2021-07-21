@@ -1530,6 +1530,10 @@ export class LayoutController {
                 }
 
                 this.refreshTabSizeClass(tab);
+
+                tab._dragListener.on("reorderStop", () => {
+                    store.syncWorkspaceOrder();
+                });
             });
 
             store.workspaceLayout.on("tabCloseRequested", (tab: GoldenLayout.Tab) => {
