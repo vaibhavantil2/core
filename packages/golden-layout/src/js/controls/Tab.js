@@ -176,8 +176,10 @@ lm.utils.copy(lm.controls.Tab.prototype, {
 			return;
 		}
 		const tabX = this.element[0].getBoundingClientRect().x;
+		const parentX = this.header.element[0].getBoundingClientRect().x;
+		const tabXParentOffset = tabX - parentX;
 		const tabWidth = this.element[0].getBoundingClientRect().width;
-		this._elementOffset = tabX - x;
+		this._elementOffset = tabXParentOffset - x;
 
 		this._xOfLastReorder = x;
 		this.element.css("position", `absolute`);
