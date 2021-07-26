@@ -118,6 +118,12 @@ lm.utils.copy(lm.items.Stack.prototype, {
 			console.log("returning 0", obj);
 			return 0;
 		}
+		const heightWithoutClone = obj.height();
+
+		if (heightWithoutClone > 0) {
+			return heightWithoutClone;
+		}
+		
 		var clone = obj.clone();
 		clone.css("visibility", "hidden");
 		$('body').append(clone);

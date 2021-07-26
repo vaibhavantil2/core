@@ -95,7 +95,7 @@ export class Frame implements Glue42Workspaces.Frame {
 
     public async workspaces(): Promise<Glue42Workspaces.Workspace[]> {
         const controller = getData(this).controller;
-        return controller.getWorkspaces((wsp) => wsp.frameId === this.id);
+        return controller.getWorkspacesByFrameId(this.id);
     }
 
     public async constraints(): Promise<Constraints> {
@@ -195,7 +195,7 @@ export class Frame implements Glue42Workspaces.Frame {
         const myId = getData(this).summary.id;
 
         const wrappedCallback = async (payload: WorkspaceStreamData): Promise<void> => {
-            const workspace = await getData(this).controller.getWorkspace((wsp) => wsp.id === payload.workspaceSummary.id);
+            const workspace = await getData(this).controller.getWorkspaceById(payload.workspaceSummary.id);
             callback(workspace);
         };
 
@@ -214,7 +214,7 @@ export class Frame implements Glue42Workspaces.Frame {
         const myId = getData(this).summary.id;
 
         const wrappedCallback = async (payload: WorkspaceStreamData): Promise<void> => {
-            const workspace = await getData(this).controller.getWorkspace((wsp) => wsp.id === payload.workspaceSummary.id);
+            const workspace = await getData(this).controller.getWorkspaceById(payload.workspaceSummary.id);
             callback(workspace);
         };
 
