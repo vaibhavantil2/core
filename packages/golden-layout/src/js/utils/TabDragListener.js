@@ -126,6 +126,7 @@ lm.utils.copy(lm.utils.TabDragListener.prototype, {
 
     _startReorder: function (e) {
         this._inReorder = true;
+        this._oDocument.find('iframe').css('pointer-events', 'none');
         this.emit('reorderStart', this._nOriginalX, this._nOriginalY, e);
     },
     _onReorder: function (e) {
