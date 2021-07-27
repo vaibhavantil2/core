@@ -860,7 +860,7 @@ lm.utils.copy(lm.items.RowOrColumn.prototype, {
 	 */
 	_onSplitterDragStop: function (splitter) {
 
-		if (this._layoutManager.config && this._layoutManager.config.workspacesOptions.allowSplitters === false) {
+		if (this._layoutManager.config && this.config.workspacesConfig.allowSplitters === false) {
 			return;
 		}
 

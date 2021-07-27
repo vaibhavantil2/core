@@ -79,6 +79,12 @@ export const composeAPI = (glue: any, ioc: IoC): Glue42Workspaces.API => {
         return (await controller.getWorkspaces(predicate))[0];
     };
 
+    const getWorkspaceById = async (workspaceId: string): Promise<Glue42Workspaces.Workspace> => {
+        nonEmptyStringDecoder.runWithException(workspaceId);
+
+        return controller.getWorkspaceById(workspaceId);
+    };
+
     const getAllWorkspaces = (predicate?: (workspace: Glue42Workspaces.Workspace) => boolean): Promise<Glue42Workspaces.Workspace[]> => {
         checkThrowCallback(predicate, true);
         return controller.getWorkspaces(predicate);
@@ -264,6 +270,7 @@ export const composeAPI = (glue: any, ioc: IoC): Glue42Workspaces.API => {
         getAllWorkspacesSummaries,
         getMyWorkspace,
         getWorkspace,
+        getWorkspaceById,
         getAllWorkspaces,
         getWindow,
         getBox: getParent,
