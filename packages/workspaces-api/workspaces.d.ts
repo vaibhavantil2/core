@@ -1022,7 +1022,7 @@ export namespace Glue42Workspaces {
         getWorkspace(predicate: (workspace: Workspace) => boolean): Promise<Workspace>;
 
         /**
-         * Returns an instance of the workspace with the passed id.
+         * Returns an instance of the workspace with the passed id. The performance is better than getWorkspace when querying for a workspace by id.
          * @param workspaceId The id of the desired workspace 
          */
         getWorkspaceById(workspaceId: string): Promise<Workspace>;
