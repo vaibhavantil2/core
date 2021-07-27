@@ -1,3 +1,5 @@
+5.4.10
+docs: improved the d.ts for better reference documentation
 5.4.9
 fix: Glue performance events backwards compat fix
 5.4.8
