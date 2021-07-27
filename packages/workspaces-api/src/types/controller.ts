@@ -18,8 +18,10 @@ export interface WorkspacesController {
     processGlobalSubscription(callback: (callbackData: unknown) => void, streamType: WorkspaceEventType, action: WorkspaceEventAction): Promise<Glue42Workspaces.Unsubscribe>;
     getFrame(selector: { windowId?: string; predicate?: (frame: Glue42Workspaces.Frame) => boolean }): Promise<Glue42Workspaces.Frame>;
     getFrames(predicate?: (frame: Glue42Workspaces.Frame) => boolean): Promise<Glue42Workspaces.Frame[]>;
+    getWorkspaceById(workspaceId: string): Promise<Glue42Workspaces.Workspace>;
     getWorkspace(predicate: (workspace: Glue42Workspaces.Workspace) => boolean): Promise<Glue42Workspaces.Workspace>;
     getWorkspaces(predicate?: (workspace: Glue42Workspaces.Workspace) => boolean): Promise<Glue42Workspaces.Workspace[]>;
+    getWorkspacesByFrameId(frameId: string): Promise<Glue42Workspaces.Workspace[]>;
     getAllWorkspaceSummaries(): Promise<Glue42Workspaces.WorkspaceSummary[]>;
     getWindow(predicate: (swimlaneWindow: Glue42Workspaces.WorkspaceWindow) => boolean): Promise<Glue42Workspaces.WorkspaceWindow>;
     getParent(predicate: (parent: Glue42Workspaces.WorkspaceBox) => boolean): Promise<Glue42Workspaces.WorkspaceBox>;

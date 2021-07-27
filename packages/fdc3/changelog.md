@@ -1,3 +1,5 @@
+2.2.7
+chore: bump due to dependencies update
 2.2.6
 fix: Fix an issue with the validation of raiseIntent()
 2.2.5

@@ -96,6 +96,10 @@ export class MainController implements WorkspacesController {
         return this.base.getFrames(allFrameSummaries.summaries, predicate);
     }
 
+    public getWorkspaceById(workspaceId: string): Promise<Workspace> {
+        return this.base.fetchWorkspace(workspaceId);
+    }
+
     public async getWorkspace(predicate: (workspace: Workspace) => boolean): Promise<Workspace> {
         let foundWorkspace: Workspace;
 
@@ -119,6 +123,17 @@ export class MainController implements WorkspacesController {
         });
 
         return matchingWorkspaces;
+    }
+
+    public async getWorkspacesByFrameId(frameId: string): Promise<Workspace[]> {
+        const workspaceSummaries = await this.getAllWorkspaceSummaries();
+        const summariesForFrame = workspaceSummaries.filter((s) => s.frameId === frameId);
+
+        const workspacesForFrame = await Promise.all(summariesForFrame.map((summary) => {
+            return this.base.fetchWorkspace(summary.id);
+        }));
+
+        return workspacesForFrame;
     }
 
     public async getAllWorkspaceSummaries(): Promise<Glue42Workspaces.WorkspaceSummary[]> {
