@@ -691,7 +691,7 @@ lm.utils.copy(lm.LayoutManager.prototype, {
 			const isAllowDropExplicitlyTrue = allContentItems[i].config.workspacesConfig && allContentItems[i].config.workspacesConfig.allowDrop === true;
 
 			if (this.config.workspacesOptions.allowDrop === false && !isAllowDropExplicitlyTrue) {
-				return;
+				continue;
 			}
 
 			if (allContentItems[i].config.workspacesConfig && allContentItems[i].config.workspacesConfig.allowDrop === false) {

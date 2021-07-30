@@ -154,6 +154,11 @@ export class Group implements Glue42Workspaces.Group {
         if (typeof config === "function") {
             const currentLockConfig = {
                 allowDrop: this.allowDrop,
+                allowDropHeader: this.allowDropHeader,
+                allowDropLeft: this.allowDropLeft,
+                allowDropRight: this.allowDropRight,
+                allowDropTop: this.allowDropTop,
+                allowDropBottom: this.allowDropBottom,
                 allowExtract: this.allowExtract,
                 showAddWindowButton: this.showAddWindowButton,
                 showEjectButton: this.showEjectButton,

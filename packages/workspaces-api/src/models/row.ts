@@ -136,6 +136,7 @@ export class Row implements Glue42Workspaces.Row {
         if (typeof config === "function") {
             const currentLockConfig = {
                 allowDrop: this.allowDrop,
+                allowSplitters: this.allowSplitters
             };
 
             lockConfigResult = config(currentLockConfig);

@@ -448,7 +448,7 @@ export class WorkspacesManager {
         return this._layoutsManager.generateLayout(name, workspace);
     }
 
-    public async resumeWorkspace(workspaceId: string) {
+    public async resumeWorkspace(workspaceId: string): Promise<void> {
         const workspace = store.getById(workspaceId);
         if (!workspace) {
             throw new Error(`Could not find workspace ${workspaceId} in any of the frames`);
@@ -556,19 +556,34 @@ export class WorkspacesManager {
         if (!lockConfig.config && lockConfig.type === "column") {
             lockConfig.config = {
                 allowDrop: false,
+                allowSplitters: false
             };
         } else if (!lockConfig.config && lockConfig.type === "row") {
             lockConfig.config = {
-                allowDrop: false
+                allowDrop: false,
+                allowSplitters: false
             };
         } else if (!lockConfig.config && lockConfig.type === "group") {
             lockConfig.config = {
                 allowDrop: false,
+                allowDropHeader: false,
+                allowDropLeft: false,
+                allowDropRight: false,
+                allowDropTop: false,
+                allowDropBottom: false,
                 allowExtract: false,
                 showAddWindowButton: false,
                 showEjectButton: false,
                 showMaximizeButton: false
             };
+        }
+
+        if (typeof lockConfig.config.allowDrop !== "undefined" && lockConfig.type==="group") {
+            lockConfig.config.allowDropHeader = lockConfig.config.allowDropHeader ?? lockConfig.config.allowDrop;
+            lockConfig.config.allowDropLeft = lockConfig.config.allowDropLeft ?? lockConfig.config.allowDrop;
+            lockConfig.config.allowDropTop = lockConfig.config.allowDropTop ?? lockConfig.config.allowDrop;
+            lockConfig.config.allowDropRight = lockConfig.config.allowDropRight ?? lockConfig.config.allowDrop;
+            lockConfig.config.allowDropBottom = lockConfig.config.allowDropBottom ?? lockConfig.config.allowDrop;
         }
 
         Object.keys(lockConfig.config).forEach((key) => {
@@ -1300,9 +1315,9 @@ export class WorkspacesManager {
         }
 
         if (allowDrop === false) {
-            this._controller.disableGroupDrop(data.itemId);
+            this._controller.disableGroupDrop(data.itemId, data.config);
         } else {
-            this._controller.enableGroupDrop(data.itemId, allowDrop);
+            this._controller.enableGroupDrop(data.itemId, data.config);
         }
 
         const workspace = store.getByContainerId(data.itemId);
@@ -1312,21 +1327,33 @@ export class WorkspacesManager {
     }
 
     private handleRowLockRequested(data: LockRowArguments): void {
-        const { allowDrop } = data.config;
+        const { allowDrop, allowSplitters } = data.config;
         if (allowDrop === false) {
             this._controller.disableRowDrop(data.itemId);
         } else {
             this._controller.enableRowDrop(data.itemId, allowDrop);
         }
+
+        if (allowSplitters === false) {
+            this._controller.disableRowSplitters(data.itemId);
+        } else {
+            this._controller.enableRowSplitters(data.itemId, allowSplitters);
+        }
     }
 
     private handleColumnLockRequested(data: LockColumnArguments): void {
-        const { allowDrop } = data.config;
+        const { allowDrop, allowSplitters } = data.config;
 
         if (allowDrop === false) {
             this._controller.disableColumnDrop(data.itemId);
         } else {
             this._controller.enableColumnDrop(data.itemId, allowDrop);
+        }
+
+        if (allowSplitters === false) {
+            this._controller.disableColumnSplitters(data.itemId);
+        } else {
+            this._controller.enableColumnSplitters(data.itemId, allowSplitters);
         }
     }
 

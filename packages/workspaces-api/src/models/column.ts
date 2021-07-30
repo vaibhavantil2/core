@@ -132,6 +132,7 @@ export class Column implements Glue42Workspaces.Column {
         if (typeof config === "function") {
             const currentLockConfig = {
                 allowDrop: this.allowDrop,
+                allowSplitters: this.allowSplitters
             };
 
             lockConfigResult = config(currentLockConfig);
