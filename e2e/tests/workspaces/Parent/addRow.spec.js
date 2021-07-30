@@ -390,7 +390,94 @@ describe("addRow() Should", () => {
         expect(row.children[0].allowDrop).to.be.true;
     });
 
+    // allowSplitters
+    it("add a locked row when a config with allowSplitters:false is passed", async () => {
+        const column = workspace.getAllColumns()[0];
 
+        const row = await column.addRow({
+            children: [
+                {
+                    type: "window",
+                    appName: "noGlueApp"
+                },
+                {
+                    type: "window",
+                    appName: "noGlueApp",
+                }
+            ],
+            config: {
+                allowSplitters: false
+            }
+        });
+
+        await workspace.refreshReference();
+
+        expect(row.allowSplitters).to.be.false;
+    });
+
+    it("add a row with locked contents when a config with allowSplitters:false is passed", async () => {
+        const column = workspace.getAllColumns()[0];
+
+        const row = await column.addRow({
+            children: [
+                {
+                    type: "column",
+                    children: [
+                        {
+                            type: "group",
+                            children: [
+                                {
+                                    type: "window",
+                                    appName: "noGlueApp"
+                                },
+                            ]
+                        }
+                    ]
+                }
+            ],
+            config: {
+                allowSplitters: false
+            }
+        });
+
+        await workspace.refreshReference();
+
+        expect(row.children[0].allowSplitters).to.be.false;
+    });
+
+    it("add a locked row with unlocked contents when the children override the allowSplitters constraint", async () => {
+        const column = workspace.getAllColumns()[0];
+
+        const row = await column.addRow({
+            children: [
+                {
+                    type: "column",
+                    children: [
+                        {
+                            type: "group",
+                            children: [
+                                {
+                                    type: "window",
+                                    appName: "noGlueApp"
+                                },
+                            ]
+                        }
+                    ],
+                    config: {
+                        allowSplitters: true
+                    }
+                }
+            ],
+            config: {
+                allowSplitters: false
+            }
+        });
+
+        await workspace.refreshReference();
+
+        expect(row.allowSplitters).to.be.false;
+        expect(row.children[0].allowSplitters).to.be.true;
+    });
 
     it("reject when the parent is a row and is passed a row definition", (done) => {
         const allBoxes = workspace.getAllBoxes();

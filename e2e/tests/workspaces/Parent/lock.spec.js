@@ -30,11 +30,16 @@ describe("lock()", () => {
                                 type: "row",
                                 children: [
                                     {
-                                        type: "group",
-                                        children: [
+                                        type:"column",
+                                        children:[
                                             {
-                                                type: "window",
-                                                appName: "noGlueApp"
+                                                type: "group",
+                                                children: [
+                                                    {
+                                                        type: "window",
+                                                        appName: "noGlueApp"
+                                                    }
+                                                ]
                                             }
                                         ]
                                     }
@@ -339,7 +344,6 @@ describe("lock()", () => {
             expect(column.allowSplitters).to.eql(false);
         });
 
-        // TODO improve
         it("Should set allowSplitters to false of all its children when invoked without arguments and the container is a column", async () => {
             const column = workspace.getAllColumns()[0];
 

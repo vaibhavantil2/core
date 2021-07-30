@@ -336,6 +336,95 @@ describe("addColumn() Should", () => {
         expect(column.allowDrop).to.be.false;
         expect(column.children[0].allowDrop).to.be.true;
     });
+    // allowSplitters
+    it("add a locked column when a config with allowSplitters:false is passed", async () => {
+        const row = workspace.getAllRows()[0];
+
+        const column = await row.addColumn({
+            children: [
+                {
+                    type: "window",
+                    appName: "noGlueApp"
+                },
+                {
+                    type: "window",
+                    appName: "noGlueApp",
+                }
+            ],
+            config: {
+                allowSplitters: false
+            }
+        });
+
+        await workspace.refreshReference();
+
+        expect(column.allowSplitters).to.be.false;
+    });
+
+    it("add a column with locked contents when a config with allowSplitters:false is passed", async () => {
+        const row = workspace.getAllRows()[0];
+
+        const column = await row.addColumn({
+            children: [
+                {
+                    type:"row",
+                    children:[
+                        {
+                            type: "group",
+                            children: [
+                                {
+                                    type: "window",
+                                    appName: "noGlueApp"
+                                },
+                            ]
+                        }
+                    ]
+                }
+               
+            ],
+            config: {
+                allowSplitters: false
+            }
+        });
+
+        await workspace.refreshReference();
+
+        expect(column.children[0].allowSplitters).to.be.false;
+    });
+
+    it("add a locked column with unlocked contents when the children override the allowDrop constraint", async () => {
+        const row = workspace.getAllRows()[0];
+
+        const column = await row.addColumn({
+            children: [
+                {
+                    type:"row",
+                    children:[
+                        {
+                            type: "group",
+                            children: [
+                                {
+                                    type: "window",
+                                    appName: "noGlueApp"
+                                },
+                            ]
+                        }
+                    ],
+                    config: {
+                        allowSplitters: true
+                    }
+                }
+            ],
+            config: {
+                allowSplitters: false
+            }
+        });
+
+        await workspace.refreshReference();
+
+        expect(column.allowSplitters).to.be.false;
+        expect(column.children[0].allowSplitters).to.be.true;
+    });
 
     it("add a column with valid width when the column is pinned", async () => {
         const row = workspace.getAllRows().find(r => r.children.length);

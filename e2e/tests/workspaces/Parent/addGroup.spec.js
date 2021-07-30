@@ -1,4 +1,4 @@
-describe("addGroup() Should", () => {
+describe.only("addGroup() Should", () => {
     const config = {
         children: [
             {
@@ -635,9 +635,98 @@ describe("addGroup() Should", () => {
         await workspace.refreshReference();
 
         expect(group.allowDrop).to.be.false;
+        expect(group.allowDropHeader).to.be.false;
+        expect(group.allowDropLeft).to.be.false;
+        expect(group.allowDropTop).to.be.false;
+        expect(group.allowDropRight).to.be.false;
+        expect(group.allowDropBottom).to.be.false;
         expect(group.allowExtract).to.be.false;
         expect(group.showMaximizeButton).to.be.false;
         expect(group.showEjectButton).to.be.false;
+    });
+
+    it("be able to override allowDrop with the specific allowDrop constraints when allowDrop is false", async () => {
+        const workspace = await glue.workspaces.createWorkspace({
+            children: [
+                {
+                    type: "row",
+                    children: [],
+                }
+            ]
+        })
+        const row = workspace.getAllRows()[0];
+
+        const group = await row.addGroup({
+            children: [
+                {
+                    type: "window",
+                    appName: "noGlueApp"
+                },
+                {
+                    type: "window",
+                    appName: "noGlueApp",
+                }
+            ],
+            config: {
+                allowDrop: false,
+                allowDropLeft: true,
+                allowDropTop: true,
+                allowDropRight: true,
+                allowDropBottom: true,
+                allowDropHeader: true,
+            }
+        });
+
+        await workspace.refreshReference();
+
+        expect(group.allowDrop).to.be.false;
+        expect(group.allowDropHeader).to.be.true;
+        expect(group.allowDropLeft).to.be.true;
+        expect(group.allowDropTop).to.be.true;
+        expect(group.allowDropRight).to.be.true;
+        expect(group.allowDropBottom).to.be.true;
+    });
+
+    it("be able to override allowDrop with the specific allowDrop constraints when allowDrop is true", async () => {
+        const workspace = await glue.workspaces.createWorkspace({
+            children: [
+                {
+                    type: "row",
+                    children: [],
+                }
+            ]
+        })
+        const row = workspace.getAllRows()[0];
+
+        const group = await row.addGroup({
+            children: [
+                {
+                    type: "window",
+                    appName: "noGlueApp"
+                },
+                {
+                    type: "window",
+                    appName: "noGlueApp",
+                }
+            ],
+            config: {
+                allowDrop: true,
+                allowDropLeft: false,
+                allowDropTop: false,
+                allowDropRight: false,
+                allowDropBottom: false,
+                allowDropHeader: false,
+            }
+        });
+
+        await workspace.refreshReference();
+
+        expect(group.allowDrop).to.be.true;
+        expect(group.allowDropHeader).to.be.false;
+        expect(group.allowDropLeft).to.be.false;
+        expect(group.allowDropTop).to.be.false;
+        expect(group.allowDropRight).to.be.false;
+        expect(group.allowDropBottom).to.be.false;
     });
 
     it("add a locked group with locked children when the parent is an empty row and the group has constraints set", async () => {
@@ -753,6 +842,11 @@ describe("addGroup() Should", () => {
         await workspace.refreshReference();
 
         expect(group.allowDrop).to.be.false;
+        expect(group.allowDropHeader).to.be.false;
+        expect(group.allowDropLeft).to.be.false;
+        expect(group.allowDropTop).to.be.false;
+        expect(group.allowDropRight).to.be.false;
+        expect(group.allowDropBottom).to.be.false;
         expect(group.allowExtract).to.be.false;
         expect(group.showMaximizeButton).to.be.false;
         expect(group.showEjectButton).to.be.false;
