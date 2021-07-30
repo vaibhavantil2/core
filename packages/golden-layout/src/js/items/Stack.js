@@ -118,6 +118,12 @@ lm.utils.copy(lm.items.Stack.prototype, {
 			console.log("returning 0", obj);
 			return 0;
 		}
+		const heightWithoutClone = obj.height();
+
+		if (heightWithoutClone > 0) {
+			return heightWithoutClone;
+		}
+		
 		var clone = obj.clone();
 		clone.css("visibility", "hidden");
 		$('body').append(clone);
@@ -364,6 +370,7 @@ lm.utils.copy(lm.items.Stack.prototype, {
 			}
 		}
 		this._dropSegment = null;
+		this._resetHeaderDropZone();
 		this.layoutManager.dropTargetIndicator.highlightArea(null);
 	},
 
@@ -619,5 +626,25 @@ lm.utils.copy(lm.items.Stack.prototype, {
 		var highlightArea = this._contentAreaDimensions[segment].highlightArea;
 		this.layoutManager.dropTargetIndicator.highlightArea(highlightArea);
 		this._dropSegment = segment;
+	},
+
+	_syncContentItemOrder: function () {
+		const newContentOrder = [];
+		this.header.tabs.forEach((t) => {
+			const tabContentItemId = Array.isArray(t.contentItem.config.id) ? t.contentItem.config.id[0] : t.contentItem.config.id;
+			const nextContentItem = this.contentItems.find((ci) => {
+				const contentItemId = Array.isArray(ci.config.id) ? ci.config.id[0] : ci.config.id;
+
+				return tabContentItemId === contentItemId;
+			});
+
+			if (nextContentItem) {
+				newContentOrder.push(nextContentItem);
+			}
+		});
+
+		if (this.contentItems.length === newContentOrder.length) {
+			this.contentItems = newContentOrder;
+		}
 	}
 });

@@ -287,6 +287,11 @@ declare module '@glue42/golden-layout' {
              *  default mode - behaves like workspaceContent 
              */
             mode: "workspace" | "default" | "workspaceContent";
+
+            /**
+             * controls whether the workspace tab item should have dragging behavior
+             */
+            workspaceInnerDrag?: boolean;
         }
 
         export interface Dimensions {
