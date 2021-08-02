@@ -1,4 +1,4 @@
-describe.only("addGroup() Should", () => {
+describe("addGroup() Should", () => {
     const config = {
         children: [
             {
