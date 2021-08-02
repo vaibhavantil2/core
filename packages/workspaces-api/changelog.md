@@ -1,3 +1,5 @@
+1.7.5
+feat: added allowSplitters to rows and columns and allowDropLeft, allowDropTop, allowDropRight, allowDropBottom, allowDropHeader to the groups
 1.7.4
 feat: added getWorkspaceById method and made internal performance optimizations
 1.7.3

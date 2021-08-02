@@ -1,3 +1,5 @@
+1.4.5
+feat: implemented allowSplitters to rows and columns and allowDropLeft, allowDropTop, allowDropRight, allowDropBottom, allowDropHeader to the groups and added style improvements
 1.4.4
 chore: bump due to dependencies update
 1.4.3
