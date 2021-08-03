@@ -1,3 +1,5 @@
+1.7.5
+fix: started firing open and close workspace events when the last workspace in a frame acting like a platform has been closed
 1.7.4
 feat: added getWorkspaceById method and made internal performance optimizations
 1.7.3
