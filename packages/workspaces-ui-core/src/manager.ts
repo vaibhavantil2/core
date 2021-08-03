@@ -1390,7 +1390,7 @@ export class WorkspacesManager {
         }
     }
 
-    private handleOnWorkspaceAddedWithSnapshot(workspace: Workspace) {
+    private handleOnWorkspaceAddedWithSnapshot(workspace: Workspace): void {
         const allOtherWindows = store.workspaceIds.filter((wId) => wId !== workspace.id).reduce((acc, w) => {
             return [...acc, ...store.getById(w).windows];
         }, []);
@@ -1399,6 +1399,7 @@ export class WorkspacesManager {
             action: "opened",
             payload: {
                 frameSummary: { id: this._frameId },
+                workspaceSnapshot: snapshot,
                 workspaceSummary: this.stateResolver.getWorkspaceSummary(workspace.id)
             }
         });
