@@ -178,16 +178,7 @@ export const composeAPI = (glue: any, ioc: IoC): Glue42Workspaces.API => {
 
         checkThrowCallback(callback);
         const wrappedCallback = async (payload: WorkspaceStreamData): Promise<void> => {
-            const frameConfig: FrameCreateConfig = {
-                summary: payload.frameSummary
-            };
-            const frame = ioc.getModel<"frame">("frame", frameConfig);
-
-            const snapshot = (await controller.getSnapshot(payload.workspaceSummary.id, "workspace")) as WorkspaceSnapshotResult;
-
-            const workspaceConfig: WorkspaceIoCCreateConfig = { frame, snapshot };
-
-            const workspace = ioc.getModel<"workspace">("workspace", workspaceConfig);
+            const workspace = await controller.transformStreamPayloadToWorkspace(payload);
 
             callback(workspace);
         };
