@@ -293,7 +293,7 @@ export class LayoutController {
             type: "component",
             workspacesConfig: {},
             id,
-            noTabHeader: config.workspacesOptions?.noTabHeader,
+            noTabHeader: config?.workspacesOptions?.noTabHeader,
             title: (config?.workspacesOptions as any)?.title || this._configFactory.getWorkspaceTitle(store.workspaceTitles)
         };
 
@@ -314,8 +314,6 @@ export class LayoutController {
         }
 
         this.setupContentLayouts(id);
-
-        this.emitter.raiseEvent("workspace-added", { workspace: store.getById(id) });
     }
 
     public reinitializeWorkspace(id: string, config: GoldenLayout.Config): Promise<unknown> {
@@ -329,9 +327,8 @@ export class LayoutController {
 
     public removeWorkspace(workspaceId: string): void {
         const workspaceToBeRemoved = store.getWorkspaceLayoutItemById(workspaceId);
-
         if (!workspaceToBeRemoved) {
-            throw new Error(`Could find workspace to remove with id ${workspaceId}`);
+            throw new Error(`Could not find workspace to remove with id ${workspaceId}`);
         }
         store.removeById(workspaceId);
         workspaceToBeRemoved.remove();
@@ -1371,7 +1368,7 @@ export class LayoutController {
                 return;
             }
 
-            const wrapper = new WorkspaceWindowWrapper(this._stateResolver,tab.contentItem, this._frameId);
+            const wrapper = new WorkspaceWindowWrapper(this._stateResolver, tab.contentItem, this._frameId);
 
             if ((layout.config.workspacesOptions as any).showWindowCloseButtons === false && wrapper.showCloseButton !== true) {
                 uiExecutor.hideWindowCloseButton(tab.contentItem);

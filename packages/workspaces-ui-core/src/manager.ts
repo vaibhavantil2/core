@@ -786,9 +786,6 @@ export class WorkspacesManager {
 
             this._controller.removeLayoutElement(idAsString(item.config.id));
             this._frameController.remove(idAsString(item.config.id));
-            if (!workspace.windows.length) {
-                this.checkForEmptyWorkspace(workspace);
-            }
         });
 
         this._controller.emitter.onWorkspaceTabCloseRequested((workspace) => {
@@ -843,43 +840,7 @@ export class WorkspacesManager {
         });
 
         this._controller.emitter.onWorkspaceAdded((workspace) => {
-            const allOtherWindows = store.workspaceIds.filter((wId) => wId !== workspace.id).reduce((acc, w) => {
-                return [...acc, ...store.getById(w).windows];
-            }, []);
-
-            this._workspacesEventEmitter.raiseWorkspaceEvent({
-                action: "opened",
-                payload: {
-                    frameSummary: { id: this._frameId },
-                    workspaceSummary: this.stateResolver.getWorkspaceSummary(workspace.id)
-                }
-            });
-            if (store.getActiveWorkspace().id === workspace.id) {
-                this._workspacesEventEmitter.raiseWorkspaceEvent({
-                    action: "selected",
-                    payload: {
-                        frameSummary: { id: this._frameId },
-                        workspaceSummary: this.stateResolver.getWorkspaceSummary(workspace.id)
-                    }
-                });
-                if (!workspace.layout) {
-                    this._frameController.selectionChangedDeep([], allOtherWindows.map((w) => w.id));
-                    return;
-                }
-                const allWinsInLayout = getAllWindowsFromConfig(workspace.layout.toConfig().content);
-
-                this._frameController.selectionChangedDeep(allWinsInLayout.map((w) => idAsString(w.id)), allOtherWindows.map((w) => w.id));
-            }
-
-            if (!workspace.layout) {
-                return;
-            }
-            const workspaceOptions = workspace.layout.config.workspacesOptions as { title: string; name: string };
-            const title = workspaceOptions.title || workspaceOptions.name;
-
-            if (title) {
-                store.getWorkspaceLayoutItemById(workspace.id)?.setTitle(title);
-            }
+            this.handleOnWorkspaceAdded(workspace);
         });
 
         this._controller.emitter.onWorkspaceSelectionChanged((workspace, toBack) => {
@@ -1096,7 +1057,6 @@ export class WorkspacesManager {
 
         const currentWorkspaces = store.layouts.filter(l => !l.layout?.config?.workspacesOptions?.noTabHeader);
 
-
         this._layoutsManager.saveWorkspacesFrame(currentWorkspaces);
 
         this.workspacesEventEmitter.raiseFrameEvent({ action: "closed", payload: { frameSummary: { id: this._frameId } } });
@@ -1193,10 +1153,12 @@ export class WorkspacesManager {
         await this._glue.contexts.set(getWorkspaceContextName(id), config?.workspacesOptions?.context || {});
         await this._controller.addWorkspace(id, config);
 
+        this._controller.emitter.raiseEvent("workspace-added", { workspace: store.getById(id) });
+
         const workspacesSystemSettings = await systemSettings.getSettings(this._glue);
         const loadingStrategy = this._applicationFactory.getLoadingStrategy(workspacesSystemSettings, config);
         this.handleWindows(id, loadingStrategy).catch((e) => {
-            // If it failes do nothing
+            // If it fails do nothing
             console.log(e);
         });
     }
@@ -1219,15 +1181,17 @@ export class WorkspacesManager {
         // Closing all workspaces except the last one
         if (store.layouts.length === 1) {
             if (this._isLayoutInitialized && (window as any).glue42core.isPlatformFrame) {
-                workspace.windows = [];
-                workspace.layout?.destroy();
-                workspace.layout = undefined;
-                this._controller.showAddButton(workspace.id);
-                const currentTitle = store.getWorkspaceTitle(workspace.id);
-                const title = this._configFactory.getWorkspaceTitle(store.workspaceTitles.filter((wt) => wt !== currentTitle));
-                this._controller.setWorkspaceTitle(workspace.id, title);
+                const newId = this._configFactory.getId();
 
-                return true;
+                this._controller.addWorkspace(newId, undefined).then(() => {
+                    this.handleOnWorkspaceAddedWithSnapshot(store.getById(newId));
+                    this.checkForEmptyWorkspace(workspace);
+                }).catch(() => {
+                    // Can happen if the workspace has already been closed
+                    // e.g the closing of the last window in a workspace could potentially trigger this behavior
+                });
+
+                return false;
             } else if (this._isLayoutInitialized) {
                 try {
                     this._facade.executeAfterControlIsDone(() => {
@@ -1384,6 +1348,86 @@ export class WorkspacesManager {
         };
 
         traverseAndApply(initialConfig, currentConfig as GoldenLayout.ContentItem);
+    }
+
+    private handleOnWorkspaceAdded(workspace: Workspace) {
+        const allOtherWindows = store.workspaceIds.filter((wId) => wId !== workspace.id).reduce((acc, w) => {
+            return [...acc, ...store.getById(w).windows];
+        }, []);
+
+        this._workspacesEventEmitter.raiseWorkspaceEvent({
+            action: "opened",
+            payload: {
+                frameSummary: { id: this._frameId },
+                workspaceSummary: this.stateResolver.getWorkspaceSummary(workspace.id)
+            }
+        });
+        if (store.getActiveWorkspace().id === workspace.id) {
+            this._workspacesEventEmitter.raiseWorkspaceEvent({
+                action: "selected",
+                payload: {
+                    frameSummary: { id: this._frameId },
+                    workspaceSummary: this.stateResolver.getWorkspaceSummary(workspace.id)
+                }
+            });
+            if (!workspace.layout) {
+                this._frameController.selectionChangedDeep([], allOtherWindows.map((w) => w.id));
+                return;
+            }
+            const allWinsInLayout = getAllWindowsFromConfig(workspace.layout.toConfig().content);
+
+            this._frameController.selectionChangedDeep(allWinsInLayout.map((w) => idAsString(w.id)), allOtherWindows.map((w) => w.id));
+        }
+
+        if (!workspace.layout) {
+            return;
+        }
+        const workspaceOptions = workspace.layout.config.workspacesOptions as { title: string; name: string };
+        const title = workspaceOptions.title || workspaceOptions.name;
+
+        if (title) {
+            store.getWorkspaceLayoutItemById(workspace.id)?.setTitle(title);
+        }
+    }
+
+    private handleOnWorkspaceAddedWithSnapshot(workspace: Workspace) {
+        const allOtherWindows = store.workspaceIds.filter((wId) => wId !== workspace.id).reduce((acc, w) => {
+            return [...acc, ...store.getById(w).windows];
+        }, []);
+        const snapshot = this._stateResolver.getWorkspaceSnapshot(workspace.id);
+        this._workspacesEventEmitter.raiseWorkspaceEvent({
+            action: "opened",
+            payload: {
+                frameSummary: { id: this._frameId },
+                workspaceSummary: this.stateResolver.getWorkspaceSummary(workspace.id)
+            }
+        });
+        if (store.getActiveWorkspace().id === workspace.id) {
+            this._workspacesEventEmitter.raiseWorkspaceEvent({
+                action: "selected",
+                payload: {
+                    frameSummary: { id: this._frameId },
+                    workspaceSummary: this.stateResolver.getWorkspaceSummary(workspace.id)
+                }
+            });
+            if (!workspace.layout) {
+                this._frameController.selectionChangedDeep([], allOtherWindows.map((w) => w.id));
+                return;
+            }
+            const allWinsInLayout = getAllWindowsFromConfig(workspace.layout.toConfig().content);
+
+            this._frameController.selectionChangedDeep(allWinsInLayout.map((w) => idAsString(w.id)), allOtherWindows.map((w) => w.id));
+        }
+
+        if (!workspace.layout) {
+            return;
+        }
+        const workspaceOptions = workspace.layout.config.workspacesOptions as { title: string; name: string };
+        const title = workspaceOptions.title || workspaceOptions.name;
+
+        if (title) {
+            store.getWorkspaceLayoutItemById(workspace.id)?.setTitle(title);
+        }
     }
 }
 
