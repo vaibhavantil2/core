@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Bridge } from "../communication/bridge";
-import { IsWindowInSwimlaneResult, WorkspaceCreateConfigProtocol, WorkspaceSnapshotResult, FrameSummariesResult, WorkspaceSummariesResult, LayoutSummariesResult, ExportedLayoutsResult, FrameSnapshotResult, AddItemResult, WindowStreamData, FrameStateResult, FrameBoundsResult } from "../types/protocol";
+import { IsWindowInSwimlaneResult, WorkspaceCreateConfigProtocol, WorkspaceSnapshotResult, FrameSummariesResult, WorkspaceSummariesResult, LayoutSummariesResult, ExportedLayoutsResult, FrameSnapshotResult, AddItemResult, WindowStreamData, FrameStateResult, FrameBoundsResult, WorkspaceStreamData } from "../types/protocol";
 import { OPERATIONS } from "../communication/constants";
 import { SubscriptionConfig, WorkspaceEventType, WorkspaceEventAction } from "../types/subscription";
 import { Workspace } from "../models/workspace";
@@ -98,6 +98,10 @@ export class MainController implements WorkspacesController {
 
     public getWorkspaceById(workspaceId: string): Promise<Workspace> {
         return this.base.fetchWorkspace(workspaceId);
+    }
+
+    public transformStreamPayloadToWorkspace(payload: WorkspaceStreamData): Promise<Workspace> {
+        return this.base.transformStreamPayloadToWorkspace(payload);
     }
 
     public async getWorkspace(predicate: (workspace: Workspace) => boolean): Promise<Workspace> {

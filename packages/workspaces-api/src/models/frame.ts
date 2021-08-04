@@ -195,7 +195,7 @@ export class Frame implements Glue42Workspaces.Frame {
         const myId = getData(this).summary.id;
 
         const wrappedCallback = async (payload: WorkspaceStreamData): Promise<void> => {
-            const workspace = await getData(this).controller.getWorkspaceById(payload.workspaceSummary.id);
+            const workspace = await getData(this).controller.transformStreamPayloadToWorkspace(payload);
             callback(workspace);
         };
 
