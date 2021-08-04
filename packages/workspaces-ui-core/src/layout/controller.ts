@@ -294,7 +294,7 @@ export class LayoutController {
             type: "component",
             workspacesConfig: {},
             id,
-            noTabHeader: config.workspacesOptions?.noTabHeader,
+            noTabHeader: config?.workspacesOptions?.noTabHeader,
             title: (config?.workspacesOptions as any)?.title || this._configFactory.getWorkspaceTitle(store.workspaceTitles)
         };
 
@@ -315,8 +315,6 @@ export class LayoutController {
         }
 
         this.setupContentLayouts(id);
-
-        this.emitter.raiseEvent("workspace-added", { workspace: store.getById(id) });
     }
 
     public reinitializeWorkspace(id: string, config: GoldenLayout.Config): Promise<unknown> {
@@ -330,9 +328,8 @@ export class LayoutController {
 
     public removeWorkspace(workspaceId: string): void {
         const workspaceToBeRemoved = store.getWorkspaceLayoutItemById(workspaceId);
-
         if (!workspaceToBeRemoved) {
-            throw new Error(`Could find workspace to remove with id ${workspaceId}`);
+            throw new Error(`Could not find workspace to remove with id ${workspaceId}`);
         }
         store.removeById(workspaceId);
         workspaceToBeRemoved.remove();

@@ -280,9 +280,12 @@ export interface FrameStreamData {
     frameSummary: FrameSummaryResult;
 }
 
+// the optional workspaceSnapshot is expected only when the last workspace in a Core platform-frame is being closed, which triggers the creation of a default workspace 
+// reason: explicit snapshot in this case will make sure that even if new new workspace was quickly closed (spamming of the close button), the event will provide correct data
 export interface WorkspaceStreamData {
     workspaceSummary: WorkspaceSummaryResult;
     frameSummary: FrameSummaryResult;
+    workspaceSnapshot?: WorkspaceSnapshotResult;
 }
 
 export interface ContainerStreamData {

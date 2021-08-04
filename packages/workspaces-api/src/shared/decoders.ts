@@ -665,7 +665,8 @@ export const frameStreamDataDecoder: Decoder<FrameStreamData> = object({
 
 export const workspaceStreamDataDecoder: Decoder<WorkspaceStreamData> = object({
     workspaceSummary: workspaceSummaryResultDecoder,
-    frameSummary: frameSummaryDecoder
+    frameSummary: frameSummaryDecoder,
+    workspaceSnapshot: optional(workspaceSnapshotResultDecoder)
 });
 
 export const containerStreamDataDecoder: Decoder<ContainerStreamData> = object({

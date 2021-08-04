@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Glue42Workspaces } from "../../workspaces";
-import { AddItemResult, WorkspaceSnapshotResult, FrameSnapshotResult } from "./protocol";
+import { AddItemResult, WorkspaceSnapshotResult, FrameSnapshotResult, WorkspaceStreamData } from "./protocol";
 import { SubscriptionConfig, WorkspaceEventType, WorkspaceEventAction } from "./subscription";
 import { RefreshChildrenConfig } from "./privateData";
 import { Child, ContainerLockConfig, SubParentTypes } from "./builders";
@@ -19,6 +19,7 @@ export interface WorkspacesController {
     getFrame(selector: { windowId?: string; predicate?: (frame: Glue42Workspaces.Frame) => boolean }): Promise<Glue42Workspaces.Frame>;
     getFrames(predicate?: (frame: Glue42Workspaces.Frame) => boolean): Promise<Glue42Workspaces.Frame[]>;
     getWorkspaceById(workspaceId: string): Promise<Glue42Workspaces.Workspace>;
+    transformStreamPayloadToWorkspace(payload: WorkspaceStreamData): Promise<Glue42Workspaces.Workspace>;
     getWorkspace(predicate: (workspace: Glue42Workspaces.Workspace) => boolean): Promise<Glue42Workspaces.Workspace>;
     getWorkspaces(predicate?: (workspace: Glue42Workspaces.Workspace) => boolean): Promise<Glue42Workspaces.Workspace[]>;
     getWorkspacesByFrameId(frameId: string): Promise<Glue42Workspaces.Workspace[]>;

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Workspace } from "../models/workspace";
-import { WorkspaceSnapshotResult, WorkspaceCreateConfigProtocol, FrameSummaryResult, AddItemResult, WorkspaceSummariesResult, WorkspaceSummaryResult, SimpleWindowOperationSuccessResult, FrameSnapshotResult } from "../types/protocol";
+import { WorkspaceSnapshotResult, WorkspaceCreateConfigProtocol, FrameSummaryResult, AddItemResult, WorkspaceSummariesResult, WorkspaceSummaryResult, SimpleWindowOperationSuccessResult, FrameSnapshotResult, WorkspaceStreamData } from "../types/protocol";
 import { OPERATIONS } from "../communication/constants";
 import { FrameCreateConfig, WorkspaceIoCCreateConfig, WindowCreateConfig, ParentCreateConfig } from "../types/ioc";
 import { IoC } from "../shared/ioc";
@@ -152,6 +152,21 @@ export class BaseController {
         };
 
         return this.layouts.onRemoved(wrappedCallback);
+    }
+
+    public async transformStreamPayloadToWorkspace(payload: WorkspaceStreamData): Promise<Workspace> {
+        const frameConfig: FrameCreateConfig = {
+            summary: payload.frameSummary
+        };
+        const frame = this.ioc.getModel<"frame">("frame", frameConfig);
+
+        const snapshot = payload.workspaceSnapshot || (await this.bridge.send<WorkspaceSnapshotResult>(OPERATIONS.getWorkspaceSnapshot.name, { itemId: payload.workspaceSummary.id }));
+
+        const workspaceConfig: WorkspaceIoCCreateConfig = { frame, snapshot };
+
+        const workspace = this.ioc.getModel<"workspace">("workspace", workspaceConfig);
+
+        return workspace;
     }
 
     public async fetchWorkspace(workspaceId: string): Promise<Workspace> {
