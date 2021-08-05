@@ -16,6 +16,7 @@ import { WorkspaceContainerWrapper } from "../state/containerWrapper";
 import { WorkspaceWrapper } from "../state/workspaceWrapper";
 import { WorkspaceWindowWrapper } from "../state/windowWrapper";
 import uiExecutor from "../uiExecutor";
+import { LockGroupArguments } from "../interop/types";
 
 export class LayoutController {
     private readonly _maximizedId = "__glMaximised";
@@ -776,7 +777,51 @@ export class LayoutController {
         wrapper.allowDrop = false;
     }
 
-    public enableGroupDrop(itemId: string, allowDrop: boolean): void {
+    public enableColumnSplitters(itemId: string, allowSplitters: boolean): void {
+        const containerContenteItem = store.getContainer(itemId);
+
+        if (containerContenteItem.type !== "column") {
+            throw new Error(`Expected item with type column but received ${containerContenteItem.type} ${itemId}`);
+        }
+
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver, containerContenteItem, this._frameId);
+        wrapper.allowSplitters = allowSplitters;
+    }
+
+    public disableColumnSplitters(itemId: string): void {
+        const containerContenteItem = store.getContainer(itemId);
+
+        if (containerContenteItem.type !== "column") {
+            throw new Error(`Expected item with type column but received ${containerContenteItem.type} ${itemId}`);
+        }
+
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver, containerContenteItem, this._frameId);
+        wrapper.allowSplitters = false;
+    }
+
+    public enableRowSplitters(itemId: string, allowSplitters: boolean): void {
+        const containerContenteItem = store.getContainer(itemId);
+
+        if (containerContenteItem.type !== "row") {
+            throw new Error(`Expected item with type row but received ${containerContenteItem.type} ${itemId}`);
+        }
+
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver, containerContenteItem, this._frameId);
+        wrapper.allowSplitters = allowSplitters;
+    }
+
+    public disableRowSplitters(itemId: string): void {
+        const containerContenteItem = store.getContainer(itemId);
+
+        if (containerContenteItem.type !== "row") {
+            throw new Error(`Expected item with type row but received ${containerContenteItem.type} ${itemId}`);
+        }
+
+        const wrapper = new WorkspaceContainerWrapper(this._stateResolver, containerContenteItem, this._frameId);
+        wrapper.allowSplitters = false;
+    }
+
+    public enableGroupDrop(itemId: string, groupDropOptions: LockGroupArguments["config"]): void {
         const containerContenteItem = store.getContainer(itemId);
 
         if (containerContenteItem.type !== "stack") {
@@ -784,10 +829,15 @@ export class LayoutController {
         }
 
         const wrapper = new WorkspaceContainerWrapper(this._stateResolver, containerContenteItem, this._frameId);
-        wrapper.allowDrop = allowDrop;
+        wrapper.allowDrop = groupDropOptions.allowDrop;
+        wrapper.allowDropHeader = groupDropOptions.allowDropHeader;
+        wrapper.allowDropLeft = groupDropOptions.allowDropLeft;
+        wrapper.allowDropTop = groupDropOptions.allowDropTop;
+        wrapper.allowDropRight = groupDropOptions.allowDropRight;
+        wrapper.allowDropBottom = groupDropOptions.allowDropBottom;
     }
 
-    public disableGroupDrop(itemId: string): void {
+    public disableGroupDrop(itemId: string, groupDropOptions: LockGroupArguments["config"]): void {
         const containerContenteItem = store.getContainer(itemId);
 
         if (containerContenteItem.type !== "stack") {
@@ -796,6 +846,11 @@ export class LayoutController {
 
         const wrapper = new WorkspaceContainerWrapper(this._stateResolver, containerContenteItem, this._frameId);
         wrapper.allowDrop = false;
+        wrapper.allowDropHeader = groupDropOptions.allowDropHeader;
+        wrapper.allowDropLeft = groupDropOptions.allowDropLeft;
+        wrapper.allowDropTop = groupDropOptions.allowDropTop;
+        wrapper.allowDropRight = groupDropOptions.allowDropRight;
+        wrapper.allowDropBottom = groupDropOptions.allowDropBottom;
     }
 
     public enableGroupMaximizeButton(itemId: string, showMaximizeButton: boolean): void {
@@ -1527,6 +1582,10 @@ export class LayoutController {
                 }
 
                 this.refreshTabSizeClass(tab);
+
+                tab._dragListener.on("reorderStop", () => {
+                    store.syncWorkspaceOrder();
+                });
             });
 
             store.workspaceLayout.on("tabCloseRequested", (tab: GoldenLayout.Tab) => {
@@ -1731,35 +1790,40 @@ export class LayoutController {
     }
 
     private applyLockConfig(itemConfig: GoldenLayout.ItemConfig, parent: GoldenLayout.ContentItem, workspaceWrapper: WorkspaceWrapper, isParentWorkspace: boolean): void {
-        const parentAllowDrop = isParentWorkspace ? workspaceWrapper.allowDrop : (parent.config.workspacesConfig as any).allowDrop;
+        const parentAllowDrop = isParentWorkspace ? workspaceWrapper.allowDrop : parent.config.workspacesConfig.allowDrop;
+        const parentAllowSplitters = isParentWorkspace ? workspaceWrapper.allowSplitters : parent.config.workspacesConfig.allowSplitters;
+
         if (itemConfig.type === "stack") {
-            if (typeof (itemConfig.workspacesConfig as any).allowDrop === "undefined") {
-                (itemConfig.workspacesConfig as any).allowDrop = (itemConfig.workspacesConfig as any).allowDrop ?? parentAllowDrop;
+            if (typeof itemConfig.workspacesConfig.allowDrop === "undefined") {
+                itemConfig.workspacesConfig.allowDrop = itemConfig.workspacesConfig.allowDrop ?? parentAllowDrop;
             }
 
-            if (typeof (itemConfig.workspacesConfig as any).allowExtract === "undefined") {
+            if (typeof itemConfig.workspacesConfig.allowExtract === "undefined") {
                 const parentAllowExtract = workspaceWrapper.allowExtract;
-                (itemConfig.workspacesConfig as any).allowExtract = (itemConfig.workspacesConfig as any).allowExtract ?? parentAllowExtract;
+                itemConfig.workspacesConfig.allowExtract = itemConfig.workspacesConfig.allowExtract ?? parentAllowExtract;
             }
 
-            if (typeof (itemConfig.workspacesConfig as any).showAddWindowButton === "undefined") {
-                (itemConfig.workspacesConfig as any).showAddWindowButton = workspaceWrapper.showAddWindowButtons;
+            if (typeof itemConfig.workspacesConfig.showAddWindowButton === "undefined") {
+                itemConfig.workspacesConfig.showAddWindowButton = workspaceWrapper.showAddWindowButtons;
             }
 
-            if (typeof (itemConfig.workspacesConfig as any).showEjectButton === "undefined") {
-                (itemConfig.workspacesConfig as any).showEjectButton = workspaceWrapper.showEjectButtons;
+            if (typeof itemConfig.workspacesConfig.showEjectButton === "undefined") {
+                itemConfig.workspacesConfig.showEjectButton = workspaceWrapper.showEjectButtons;
             }
         } else if (itemConfig.type === "row" || itemConfig.type === "column") {
-            if (typeof (itemConfig.workspacesConfig as any).allowDrop === "undefined") {
-                (itemConfig.workspacesConfig as any).allowDrop = (itemConfig.workspacesConfig as any).allowDrop ?? parentAllowDrop;
+            if (typeof itemConfig.workspacesConfig.allowDrop === "undefined") {
+                itemConfig.workspacesConfig.allowDrop = itemConfig.workspacesConfig.allowDrop ?? parentAllowDrop;
+            }
+            if (typeof itemConfig.workspacesConfig.allowSplitters === "undefined") {
+                itemConfig.workspacesConfig.allowSplitters = itemConfig.workspacesConfig.allowSplitters ?? parentAllowSplitters;
             }
         } else if (itemConfig.type === "component") {
-            if (typeof (itemConfig.workspacesConfig as any).allowExtract === "undefined") {
-                const parentAllowExtract = isParentWorkspace ? workspaceWrapper.allowExtract : (parent.config.workspacesConfig as any).allowExtract;
-                (itemConfig.workspacesConfig as any).allowExtract = parentAllowExtract;
+            if (typeof itemConfig.workspacesConfig.allowExtract === "undefined") {
+                const parentAllowExtract = isParentWorkspace ? workspaceWrapper.allowExtract : parent.config.workspacesConfig.allowExtract;
+                itemConfig.workspacesConfig.allowExtract = parentAllowExtract;
             }
-            if (typeof (itemConfig.workspacesConfig as any).showCloseButton === "undefined") {
-                (itemConfig.workspacesConfig as any).allowExtract = workspaceWrapper.showWindowCloseButtons;
+            if (typeof itemConfig.workspacesConfig.showCloseButton === "undefined") {
+                itemConfig.workspacesConfig.allowExtract = workspaceWrapper.showWindowCloseButtons;
             }
         }
     }

@@ -55,6 +55,9 @@ export class Column implements Glue42Workspaces.Column {
     public get allowDrop(): boolean {
         return getBase(this).getAllowDrop(this);
     }
+    public get allowSplitters(): boolean {
+        return getBase(this).getAllowSplitters(this);
+    }
 
     public get minWidth(): number {
         return getBase(this).getMinWidth(this);
@@ -129,6 +132,7 @@ export class Column implements Glue42Workspaces.Column {
         if (typeof config === "function") {
             const currentLockConfig = {
                 allowDrop: this.allowDrop,
+                allowSplitters: this.allowSplitters
             };
 
             lockConfigResult = config(currentLockConfig);

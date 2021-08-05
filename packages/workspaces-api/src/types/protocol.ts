@@ -60,6 +60,7 @@ export type ParentSnapshotConfig = RowSnapshotConfig | ColumnSnapshotConfig | Gr
 export interface RowSnapshotConfig extends BaseChildSnapshotConfig {
     type?: "row";
     allowDrop?: boolean;
+    allowSplitters?: boolean;
     widthInPx?: number;
     heightInPx?: number;
     isPinned?: boolean;
@@ -68,6 +69,7 @@ export interface RowSnapshotConfig extends BaseChildSnapshotConfig {
 export interface ColumnSnapshotConfig extends BaseChildSnapshotConfig {
     type?: "column";
     allowDrop?: boolean;
+    allowSplitters?: boolean;
     widthInPx?: number;
     heightInPx?: number;
     isPinned?: boolean;
@@ -76,6 +78,11 @@ export interface ColumnSnapshotConfig extends BaseChildSnapshotConfig {
 export interface GroupSnapshotConfig extends BaseChildSnapshotConfig {
     type?: "group";
     allowDrop?: boolean;
+    allowDropLeft?: boolean;
+    allowDropRight?: boolean;
+    allowDropTop?: boolean;
+    allowDropBottom?: boolean;
+    allowDropHeader?: boolean;
     allowExtract?: boolean;
     showMaximizeButton?: boolean;
     showEjectButton?: boolean;
@@ -306,6 +313,7 @@ export interface LockRowConfig {
     type: "row";
     config?: {
         allowDrop?: boolean;
+        allowSplitters?: boolean;
     };
 }
 
@@ -314,6 +322,7 @@ export interface LockColumnConfig {
     type: "column";
     config?: {
         allowDrop?: boolean;
+        allowSplitters?: boolean;
     };
 }
 
@@ -323,6 +332,11 @@ export interface LockGroupConfig {
     config?: {
         allowExtract?: boolean;
         allowDrop?: boolean;
+        allowDropLeft?: boolean;
+        allowDropRight?: boolean;
+        allowDropTop?: boolean;
+        allowDropBottom?: boolean;
+        allowDropHeader?: boolean;
         showMaximizeButton?: boolean;
         showEjectButton?: boolean;
         showAddWindowButton?: boolean;

@@ -836,7 +836,7 @@ lm.utils.copy(lm.items.RowOrColumn.prototype, {
 	 * @returns {void}
 	 */
 	_onSplitterDrag: function (splitter, offsetX, offsetY) {
-		if (this._layoutManager.config && this._layoutManager.config.workspacesOptions.allowSplitters === false) {
+		if (this._layoutManager.config && this.config.workspacesConfig.allowSplitters === false) {
 			return;
 		}
 		var offset = this._isColumn ? offsetY : offsetX;

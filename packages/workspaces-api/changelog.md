@@ -1,4 +1,5 @@
 1.7.5
+feat: added allowSplitters to rows and columns and allowDropLeft, allowDropTop, allowDropRight, allowDropBottom, allowDropHeader to the groups
 fix: started firing open and close workspace events when the last workspace in a frame acting like a platform has been closed
 1.7.4
 feat: added getWorkspaceById method and made internal performance optimizations

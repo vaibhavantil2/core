@@ -1,3 +1,5 @@
+2.1.6
+feat: Greater control over the splitters and the dropping options
 2.1.5
 feat: Improved the dragging behavior of window and workspace tabs
 2.1.4

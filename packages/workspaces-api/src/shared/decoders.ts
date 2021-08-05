@@ -118,6 +118,11 @@ export const groupDefinitionConfigDecoder: Decoder<GroupDefinitionConfig> = obje
     maxHeight: optional(number()),
     allowExtract: optional(boolean()),
     allowDrop: optional(boolean()),
+    allowDropHeader: optional(boolean()),
+    allowDropLeft: optional(boolean()),
+    allowDropRight: optional(boolean()),
+    allowDropTop: optional(boolean()),
+    allowDropBottom: optional(boolean()),
     showMaximizeButton: optional(boolean()),
     showEjectButton: optional(boolean()),
     showAddWindowButton: optional(boolean())
@@ -127,6 +132,7 @@ export const rowDefinitionConfigDecoder: Decoder<RowDefinitionConfig> = object({
     minHeight: optional(number()),
     maxHeight: optional(number()),
     allowDrop: optional(boolean()),
+    allowSplitters: optional(boolean()),
     isPinned: optional(boolean())
 });
 
@@ -134,6 +140,7 @@ export const columnDefinitionConfigDecoder: Decoder<ColumnDefinitionConfig> = ob
     minWidth: optional(number()),
     maxWidth: optional(number()),
     allowDrop: optional(boolean()),
+    allowSplitters: optional(boolean()),
     isPinned: optional(boolean())
 });
 
@@ -716,15 +723,22 @@ export const lockWindowDecoder: Decoder<LockWindowConfig> = object({
 
 export const rowLockConfigDecoder: Decoder<RowLockConfig> = object({
     allowDrop: optional(boolean()),
+    allowSplitters: optional(boolean()),
 });
 
 export const columnLockConfigDecoder: Decoder<ColumnLockConfig> = object({
     allowDrop: optional(boolean()),
+    allowSplitters: optional(boolean()),
 });
 
 export const groupLockConfigDecoder: Decoder<GroupLockConfig> = object({
     allowExtract: optional(boolean()),
     allowDrop: optional(boolean()),
+    allowDropLeft: optional(boolean()),
+    allowDropRight: optional(boolean()),
+    allowDropTop: optional(boolean()),
+    allowDropBottom: optional(boolean()),
+    allowDropHeader: optional(boolean()),
     showMaximizeButton: optional(boolean()),
     showEjectButton: optional(boolean()),
     showAddWindowButton: optional(boolean()),
