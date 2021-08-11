@@ -1,3 +1,7 @@
+2.2.9
+chore: resolved dependency vulnerabilities
+2.2.8
+chore: bump due to dependencies update
 2.2.7
 chore: bump due to dependencies update
 2.2.6

@@ -1,3 +1,5 @@
+5.4.11
+chore: resolved dependency vulnerabilities
 5.4.10
 docs: improved the d.ts for better reference documentation
 5.4.9

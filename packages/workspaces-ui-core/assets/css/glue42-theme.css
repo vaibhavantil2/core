@@ -173,7 +173,10 @@
   background-color: auto;
 }
 .lm_header .lm_tab .lm_close_tab::before {
-  background-color: var(--t42-content-color);
+  background-color: hsl(var(--t42-bg-light-base), 35%);
+  transition-timing-function: cubic-bezier(0.45, 0, 0.15, 1);
+  transition-duration: 250ms;
+  transition-property: background-color;
 }
 .lm_header .lm_tab .lm_close_tab:hover {
   background-color: var(--t42-color-opacity-10);
@@ -199,7 +202,10 @@
 .lm_controls .lm_minimise::before,
 .lm_controls .lm_popout::before,
 .lm_controls .workspace_content.lm_maximise::before {
-  background-color: var(--t42-content-color-muted);
+  background-color: hsl(var(--t42-bg-light-base), 35%);
+  transition-timing-function: cubic-bezier(0.45, 0, 0.15, 1);
+  transition-duration: 250ms;
+  transition-property: background-color;
 }
 .lm_controls .lm_minimise:hover::before,
 .lm_controls .lm_popout:hover::before,
@@ -207,13 +213,19 @@
   background-color: var(--t42-content-color);
 }
 .lm_controls .lm_restore::after {
-  border-color: var(--t42-content-color-muted);
+  border-color: hsl(var(--t42-bg-light-base), 35%);
+  transition-timing-function: cubic-bezier(0.45, 0, 0.15, 1);
+  transition-duration: 250ms;
+  transition-property: border-color;
 }
 .lm_controls .lm_restore:hover::after {
   border-color: var(--t42-content-color);
 }
 .lm_controls .lm_close::before {
-  background-color: var(--t42-content-color);
+  background-color: hsl(var(--t42-bg-light-base), 35%);
+  transition-timing-function: cubic-bezier(0.45, 0, 0.15, 1);
+  transition-duration: 250ms;
+  transition-property: background-color;
 }
 .lm_controls .lm_close:hover {
   background-color: var(--t42-danger-color);
@@ -222,7 +234,10 @@
   background-color: hsl(var(--t42-content-color-base), 100%);
 }
 .lm_controls li::before {
-  color: var(--t42-content-color-muted);
+  color: hsl(var(--t42-bg-light-base), 35%);
+  transition-timing-function: cubic-bezier(0.45, 0, 0.15, 1);
+  transition-duration: 250ms;
+  transition-property: color;
 }
 .lm_controls li:hover {
   background-color: var(--t42-header-bg);
@@ -248,14 +263,15 @@
 .add-button::before,
 .lm_add_button::after,
 .add-button::after {
-  color: var(--t42-content-color-muted);
-  background-color: var(--t42-content-color-muted);
+  background-color: hsl(var(--t42-bg-light-base), 33%);
+  transition-timing-function: cubic-bezier(0.45, 0, 0.15, 1);
+  transition-duration: 250ms;
+  transition-property: background-color;
 }
 .lm_add_button:hover::before,
 .add-button:hover::before,
 .lm_add_button:hover::after,
 .add-button:hover::after {
-  color: var(--t42-link-color);
   background-color: var(--t42-link-color);
 }
 .loading-animation {

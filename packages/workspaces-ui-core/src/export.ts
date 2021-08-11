@@ -17,8 +17,6 @@ window.addEventListener("beforeunload", () => {
     if (done) {
         done();
     }
-
-    return "Are you sure you want to leave? changes will be lost";
 });
 
 const init = (glue: Glue42Web.API, componentFactory?: ComponentFactory) => {

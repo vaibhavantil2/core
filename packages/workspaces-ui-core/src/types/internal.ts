@@ -147,10 +147,16 @@ export interface ContainerSummary {
         workspaceId: string;
         positionIndex: number;
         allowDrop: boolean;
+        allowDropHeader?: boolean;
+        allowDropLeft?: boolean;
+        allowDropTop?: boolean;
+        allowDropRight?: boolean;
+        allowDropBottom?: boolean;
         allowExtract?: boolean;
         showMaximizeButton?: boolean;
         showEjectButton?: boolean;
         showAddWindowButton?: boolean;
+        allowSplitters?: boolean;
         minWidth?: number;
         maxWidth?: number;
         minHeight?: number;

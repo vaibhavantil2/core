@@ -187,6 +187,56 @@ export class Base {
         return getData(this, model).config.allowDrop;
     }
 
+    public getAllowDropLeft(model: Group): boolean {
+        const privateData = getData(this, model);
+        if (privateData.type !== "group") {
+            throw new Error(`Property allowDropLeft is available only for groups and not on ${model.type} ${model.id}`);
+        }
+        return privateData.config.allowDropLeft;
+    }
+
+    public getAllowDropRight(model: Group): boolean {
+        const privateData = getData(this, model);
+        if (privateData.type !== "group") {
+            throw new Error(`Property allowDropRight is available only for groups and not on ${model.type} ${model.id}`);
+        }
+        return privateData.config.allowDropRight;
+    }
+
+    public getAllowDropTop(model: Group): boolean {
+        const privateData = getData(this, model);
+        if (privateData.type !== "group") {
+            throw new Error(`Property allowDropTop is available only for groups and not on ${model.type} ${model.id}`);
+        }
+        return privateData.config.allowDropTop;
+    }
+
+    public getAllowDropBottom(model: Group): boolean {
+        const privateData = getData(this, model);
+        if (privateData.type !== "group") {
+            throw new Error(`Property allowDropBottom is available only for groups and not on ${model.type} ${model.id}`);
+        }
+        return privateData.config.allowDropBottom;
+    }
+
+    public getAllowDropHeader(model: Group): boolean {
+        const privateData = getData(this, model);
+        if (privateData.type !== "group") {
+            throw new Error(`Property allowDropHeader is available only for groups and not on ${model.type} ${model.id}`);
+        }
+        return privateData.config.allowDropHeader;
+    }
+
+    public getAllowSplitters(model: Row | Column): boolean {
+        const privateData = getData(this, model);
+
+        if (privateData.type === "group") {
+            throw new Error(`Cannot get allow splitters from private data ${privateData.type}`);
+        }
+
+        return privateData.config.allowSplitters;
+    }
+
     public getAllowExtract(model: Group): boolean {
         const privateData = getData(this, model);
         if (privateData.type !== "group") {

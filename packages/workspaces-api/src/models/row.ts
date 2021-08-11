@@ -60,6 +60,10 @@ export class Row implements Glue42Workspaces.Row {
         return getBase(this).getAllowDrop(this);
     }
 
+    public get allowSplitters(): boolean {
+        return getBase(this).getAllowSplitters(this);
+    }
+
     public get minWidth(): number {
         return getBase(this).getMinWidth(this);
     }
@@ -132,6 +136,7 @@ export class Row implements Glue42Workspaces.Row {
         if (typeof config === "function") {
             const currentLockConfig = {
                 allowDrop: this.allowDrop,
+                allowSplitters: this.allowSplitters
             };
 
             lockConfigResult = config(currentLockConfig);

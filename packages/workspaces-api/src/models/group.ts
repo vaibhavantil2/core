@@ -56,6 +56,26 @@ export class Group implements Glue42Workspaces.Group {
         return getBase(this).getAllowExtract(this);
     }
 
+    public get allowDropLeft(): boolean {
+        return getBase(this).getAllowDropLeft(this);
+    }
+
+    public get allowDropRight(): boolean {
+        return getBase(this).getAllowDropRight(this);
+    }
+
+    public get allowDropTop(): boolean {
+        return getBase(this).getAllowDropTop(this);
+    }
+
+    public get allowDropBottom(): boolean {
+        return getBase(this).getAllowDropBottom(this);
+    }
+
+    public get allowDropHeader(): boolean {
+        return getBase(this).getAllowDropHeader(this);
+    }
+
     public get allowDrop(): boolean {
         return getBase(this).getAllowDrop(this);
     }
@@ -134,6 +154,11 @@ export class Group implements Glue42Workspaces.Group {
         if (typeof config === "function") {
             const currentLockConfig = {
                 allowDrop: this.allowDrop,
+                allowDropHeader: this.allowDropHeader,
+                allowDropLeft: this.allowDropLeft,
+                allowDropRight: this.allowDropRight,
+                allowDropTop: this.allowDropTop,
+                allowDropBottom: this.allowDropBottom,
                 allowExtract: this.allowExtract,
                 showAddWindowButton: this.showAddWindowButton,
                 showEjectButton: this.showEjectButton,
