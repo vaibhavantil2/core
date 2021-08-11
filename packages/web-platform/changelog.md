@@ -1,5 +1,6 @@
 1.6.5
 feat: added allowSplitters to rows and columns and allowDropLeft, allowDropTop, allowDropRight, allowDropBottom, allowDropHeader to the groups
+chore: Resolved dependency vulnerabilities
 1.6.4
 chore: bump due to dependencies update
 1.6.3
