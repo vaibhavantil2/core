@@ -1,3 +1,5 @@
+2.2.4
+chore: bump due to dependencies update
 2.2.3
 docs: improved the d.ts for better reference documentation
 2.2.2
