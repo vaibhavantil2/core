@@ -556,6 +556,7 @@ export const glue42NotificationOptionsDecoder: Decoder<Glue42Web.Notifications.R
     title: nonEmptyStringDecoder,
     clickInterop: optional(interopActionSettingsDecoder),
     actions: optional(array(glue42NotificationActionDecoder)),
+    focusPlatformOnDefaultClick: optional(boolean()),
     badge: optional(string()),
     body: optional(string()),
     data: optional(anyJson()),

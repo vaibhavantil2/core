@@ -127,7 +127,11 @@ export class NotificationsController implements LibController {
     private async handleRequestPermission(_: unknown, commandId: string): Promise<PermissionRequestResult> {
         this.logger?.trace(`[${commandId}] handling a request permission message`);
 
-        const permissionValue = await Notification.requestPermission();
+        let permissionValue = Notification.permission;
+
+        if (permissionValue !== "granted") {
+            permissionValue = await Notification.requestPermission();
+        }
 
         const permissionGranted = permissionValue === "granted";
 
@@ -174,6 +178,10 @@ export class NotificationsController implements LibController {
                 timestamp: event.target.timestamp,
                 vibrate: event.target.vibrate
             };
+
+            if (settings.focusPlatformOnDefaultClick) {
+                window.focus();
+            }
 
             this.handleNotificationClick({ action: "", glueData, definition });
         };
