@@ -1,3 +1,5 @@
+1.6.6
+feat: added an option to focus the platform when a notification receives a default click
 1.6.5
 feat: added allowSplitters to rows and columns and allowDropLeft, allowDropTop, allowDropRight, allowDropBottom, allowDropHeader to the groups
 chore: Resolved dependency vulnerabilities
