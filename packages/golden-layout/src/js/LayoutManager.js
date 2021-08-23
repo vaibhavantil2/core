@@ -708,7 +708,7 @@ lm.utils.copy(lm.LayoutManager.prototype, {
 				this._itemAreas.push(area);
 				var header = {};
 				lm.utils.copy(header, area);
-				if(area.contentItem._contentAreaDimensions.header){
+				if (area.contentItem._contentAreaDimensions.header) {
 					lm.utils.copy(header, area.contentItem._contentAreaDimensions.header.highlightArea);
 					header.surface = (header.x2 - header.x1) * (header.y2 - header.y1);
 					this._itemAreas.push(header);
@@ -1132,6 +1132,13 @@ lm.utils.copy(lm.LayoutManager.prototype, {
 				this._findAllStackContainersRecursive(stackContainers, item);
 			}
 		}, this));
+	},
+	restoreMaximizedContainers: function () {
+		this.root.getItemsByFilter((item) => {
+			return item.hasId("__glMaximised") && item.type !== "component";
+		}).forEach((item) => {
+			this._$minimiseItem(item);
+		});
 	}
 });
 /**

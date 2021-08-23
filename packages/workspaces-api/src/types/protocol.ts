@@ -64,6 +64,7 @@ export interface RowSnapshotConfig extends BaseChildSnapshotConfig {
     widthInPx?: number;
     heightInPx?: number;
     isPinned?: boolean;
+    isMaximized?: boolean;
 }
 
 export interface ColumnSnapshotConfig extends BaseChildSnapshotConfig {
@@ -73,6 +74,7 @@ export interface ColumnSnapshotConfig extends BaseChildSnapshotConfig {
     widthInPx?: number;
     heightInPx?: number;
     isPinned?: boolean;
+    isMaximized?: boolean;
 }
 
 export interface GroupSnapshotConfig extends BaseChildSnapshotConfig {
@@ -89,6 +91,7 @@ export interface GroupSnapshotConfig extends BaseChildSnapshotConfig {
     showAddWindowButton?: boolean;
     widthInPx?: number;
     heightInPx?: number;
+    isMaximized?: boolean;
 }
 
 export interface SwimlaneWindowSnapshotConfig extends BaseChildSnapshotConfig {
