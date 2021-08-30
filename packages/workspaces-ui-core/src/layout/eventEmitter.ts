@@ -117,14 +117,6 @@ export class LayoutEventEmitter {
         return this._registry.add("workspace-save-requested", callback);
     }
 
-    public onStackMaximized(callback: (stack: GoldenLayout.ContentItem) => void): UnsubscribeFunction {
-        return this._registry.add("stack-maximized", callback);
-    }
-
-    public onStackRestored(callback: (stack: GoldenLayout.ContentItem) => void): UnsubscribeFunction {
-        return this._registry.add("stack-restored", callback);
-    }
-
     public onContainerMaximized(callback: (contentItem: GoldenLayout.ContentItem) => void): UnsubscribeFunction {
         return this._registry.add("container-maximized", callback);
     }
@@ -141,7 +133,7 @@ export class LayoutEventEmitter {
         return this._registry.add("workspace-global-selection-changed", callback);
     }
 
-    public raiseEvent(name: "stack-maximized" | "stack-restored" | "container-maximized" | "container-restored", data: { stack: GoldenLayout.ContentItem }): Promise<void> | Array<Promise<void>>;
+    public raiseEvent(name: "container-maximized" | "container-restored", data: { container: GoldenLayout.ContentItem }): Promise<void> | Array<Promise<void>>;
     public raiseEvent(name: "workspace-save-requested" | "workspace-container-resized", data: { workspaceId: string }): Promise<void> | Array<Promise<void>>;
     public raiseEvent(name: "workspace-selection-changed", data: { workspace: Workspace; toBack: Window[] }): Promise<void> | Array<Promise<void>>;
     public raiseEvent(name: "content-item-created", data: { workspaceId: string; item: GoldenLayout.ContentItem }): Promise<void> | Array<Promise<void>>;

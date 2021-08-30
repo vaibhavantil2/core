@@ -504,7 +504,6 @@ export class LayoutController {
 
         if (!contentItem.hasId("__glMaximised")) {
             (contentItem.layoutManager as any)._$maximiseItem(contentItem);
-            console.log("maximized", contentItem);
         }
     }
 
@@ -1306,13 +1305,13 @@ export class LayoutController {
                 if (!item.config.id || !item.config.id.length) {
                     item.addId(this._configFactory.getId());
                 }
-                if (item.type === "row" || item.type === "column") { // TODO implement for stack as well
+                if (item.type === "row" || item.type === "column" || item.type === "stack") {
                     item.on("maximized", () => {
-                        this.emitter.raiseEvent("container-maximized", { stack: item });
+                        this.emitter.raiseEvent("container-maximized", { container: item });
                     });
 
                     item.on("minimized", () => {
-                        this.emitter.raiseEvent("container-restored", { stack: item });
+                        this.emitter.raiseEvent("container-restored", { container: item });
                     });
                 }
             } else {
@@ -1378,13 +1377,13 @@ export class LayoutController {
             stack.on("maximized", () => {
                 maximizeButton.addClass("lm_restore");
                 maximizeButton.attr("title", this._stackRestoreLabel);
-                this.emitter.raiseEvent("stack-maximized", { stack });
+                // this.emitter.raiseEvent("stack-maximized", { stack });
             });
 
             stack.on("minimized", () => {
                 maximizeButton.removeClass("lm_restore");
                 maximizeButton.attr("title", this._stackMaximizeLabel);
-                this.emitter.raiseEvent("stack-restored", { stack });
+                // this.emitter.raiseEvent("stack-restored", { stack });
             });
 
             if (!this._options.disableCustomButtons) {

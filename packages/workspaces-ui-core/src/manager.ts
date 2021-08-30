@@ -1016,39 +1016,15 @@ export class WorkspacesManager {
             await this._popupManager.showSaveWorkspacePopup(targetBounds, payload);
         });
 
-        this._controller.emitter.onStackMaximized((stack: GoldenLayout.Stack) => {
-            const activeItem = stack.getActiveContentItem();
-            const toBack = stack.contentItems.map((ci) => idAsString(ci.config.id));
-
-            stack.contentItems.forEach((ci) => {
-                this._frameController.maximizeTab(idAsString(ci.config.id));
-            });
-            this._frameController.selectionChanged([idAsString(activeItem.config.id)], toBack);
-        });
-
-        this._controller.emitter.onStackRestored((stack: GoldenLayout.Stack) => {
-            const activeItem = stack.getActiveContentItem();
-            const toBack = stack.contentItems.map((ci) => idAsString(ci.config.id));
-
-            stack.contentItems.forEach((ci) => {
-                this._frameController.restoreTab(idAsString(ci.config.id));
-            });
-
-            this._frameController.selectionChanged([idAsString(activeItem.config.id)], toBack);
-        });
-
         this._controller.emitter.onContainerMaximized((contentItem: GoldenLayout.ContentItem) => {
             if (contentItem.config.type === "component") {
                 return;
             }
-            console.log("container maximized", contentItem);
             const components = contentItem.getItemsByFilter((ci) => ci.type === "component");
 
             components.forEach((c) => {
                 this._frameController.maximizeTab(idAsString(c.config.id));
             });
-
-            console.log("components maximized", components);
 
             const stacks = contentItem.getItemsByFilter((ci) => ci.type === "stack");
 
@@ -1064,9 +1040,6 @@ export class WorkspacesManager {
                 return acc;
             }, [[], []]);
 
-            console.log("selection changed");
-            console.log("tofront", toFront);
-            console.log("toback", toBack);
             this._frameController.selectionChanged(toFront, toBack);
         });
 

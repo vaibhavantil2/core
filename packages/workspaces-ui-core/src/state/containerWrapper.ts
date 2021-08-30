@@ -283,7 +283,6 @@ export class WorkspaceContainerWrapper {
     }
 
     public get isMaximized(): boolean {
-        console.log(this.containerContentItem);
         return this.containerContentItem.hasId("__glMaximised");
     }
 

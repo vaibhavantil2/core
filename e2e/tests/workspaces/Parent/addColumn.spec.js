@@ -619,7 +619,7 @@ describe("addColumn() Should", () => {
         }).catch(() => done());
     });
 
-    it.only("reject when there is a maximized window in the workspace", (done) => {
+    it("reject when there is a maximized window in the workspace", (done) => {
         const allBoxes = workspace.getAllBoxes();
         const window = workspace.getAllWindows()[0];
         const row = allBoxes.find(p => p.type === "row");
@@ -631,7 +631,7 @@ describe("addColumn() Should", () => {
     });
 
     Array.from(["row", "column", "group"]).forEach((maximizedParentType) => {
-        it.only(`reject when there is a maximized ${maximizedParentType} in the workspace`, (done) => {
+        it(`reject when there is a maximized ${maximizedParentType} in the workspace`, (done) => {
             const allBoxes = workspace.getAllBoxes();
             const parent = allBoxes.find(b => b.type === maximizedParentType);
             const row = allBoxes.find(p => p.type === "row");
