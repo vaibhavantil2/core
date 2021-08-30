@@ -958,7 +958,7 @@ describe("addGroup() Should", () => {
         row.addGroup({ type: "row", children: [] }).then(() => {
             done("Should not resolve");
         }).catch(() => done());
-    })
+    });
 
     it("reject when the parent is a row and the arguments is a column definition", (done) => {
         const allBoxes = workspace.getAllBoxes();
@@ -966,7 +966,7 @@ describe("addGroup() Should", () => {
         row.addGroup({ type: "column", children: [] }).then(() => {
             done("Should not resolve");
         }).catch(() => done());
-    })
+    });
 
     it("reject when the parent is a row and the arguments is a window definition", (done) => {
         const allBoxes = workspace.getAllBoxes();
@@ -974,7 +974,7 @@ describe("addGroup() Should", () => {
         row.addGroup({ type: "window" }).then(() => {
             done("Should not resolve");
         }).catch(() => done());
-    })
+    });
 
     it("reject when the parent is a column and the arguments is a row definition", (done) => {
         const allBoxes = workspace.getAllBoxes();
@@ -982,7 +982,7 @@ describe("addGroup() Should", () => {
         column.addGroup({ type: "column", children: [] }).then(() => {
             done("Should not resolve");
         }).catch(() => done());
-    })
+    });
 
     it("reject when the parent is a column and the arguments is a column definition", (done) => {
         const allBoxes = workspace.getAllBoxes();
@@ -990,7 +990,7 @@ describe("addGroup() Should", () => {
         column.addGroup({ type: "column", children: [] }).then(() => {
             done("Should not resolve");
         }).catch(() => done());
-    })
+    });
 
     it("reject when the parent is a column and the arguments is a window definition", (done) => {
         const allBoxes = workspace.getAllBoxes();
@@ -998,5 +998,29 @@ describe("addGroup() Should", () => {
         column.addGroup({ type: "window" }).then(() => {
             done("Should not resolve");
         }).catch(() => done());
-    })
+    });
+
+    it.only("reject when there is a maximized window in the workspace", (done) => {
+        const allBoxes = workspace.getAllBoxes();
+        const window = workspace.getAllWindows()[0];
+        const column = allBoxes.find(p => p.type === "column");
+        window.maximize().then(() => {
+            return column.addGroup({ type: "group", children: [] });
+        }).then(() => {
+            done("Should not resolve");
+        }).catch(() => done());
+    });
+
+    Array.from(["row", "column", "group"]).forEach((maximizedParentType) => {
+        it.only(`reject when there is a maximized ${maximizedParentType} in the workspace`, (done) => {
+            const allBoxes = workspace.getAllBoxes();
+            const parent = allBoxes.find(b => b.type === maximizedParentType);
+            const column = allBoxes.find(p => p.type === "column");
+            parent.maximize().then(() => {
+                return column.addGroup({ type: "group", children: [] });
+            }).then(() => {
+                done("Should not resolve");
+            }).catch(() => done());
+        });
+    });
 });

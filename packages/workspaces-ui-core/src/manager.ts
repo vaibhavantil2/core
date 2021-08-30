@@ -28,6 +28,7 @@ import { ApplicationFactory } from "./app/factory";
 import { DelayedExecutor } from "./utils/delayedExecutor";
 import systemSettings from "./config/system";
 import { ConstraintsValidator } from "./config/constraintsValidator";
+import { WorkspaceWrapper } from "./state/workspaceWrapper";
 
 export class WorkspacesManager {
     private _controller: LayoutController;
@@ -202,11 +203,35 @@ export class WorkspacesManager {
     }
 
     public maximizeItem(itemId: string): void {
-        this._controller.maximizeWindow(itemId);
+        const container = store.getContainer(itemId);
+        if (container) {
+            this._controller.maximizeContainer(itemId);
+            return;
+        }
+
+        const workspaceByWindowId = store.getByWindowId(itemId);
+        if (workspaceByWindowId) {
+            this._controller.maximizeWindow(itemId);
+            return;
+        }
+
+        throw new Error(`Could not find a window or a container with id ${itemId} in frame ${this.frameId} to maximize`);
     }
 
     public restoreItem(itemId: string): void {
-        this._controller.restoreWindow(itemId);
+        const container = store.getContainer(itemId);
+        if (container) {
+            this._controller.restoreContainer(itemId);
+            return;
+        }
+
+        const workspaceByWindowId = store.getByWindowId(itemId);
+        if (workspaceByWindowId) {
+            this._controller.restoreWindow(itemId);
+            return;
+        }
+
+        throw new Error(`Could not find a window or a container with id ${itemId} in frame ${this.frameId} to restore`);
     }
 
     public closeItem(itemId: string): void {
@@ -229,8 +254,15 @@ export class WorkspacesManager {
     }
 
     public async addContainer(config: GoldenLayout.RowConfig | GoldenLayout.StackConfig | GoldenLayout.ColumnConfig, parentId: string): Promise<string> {
-        const configWithtoutIsPinned = this.cleanIsPinned(config) as GoldenLayout.RowConfig | GoldenLayout.StackConfig | GoldenLayout.ColumnConfig;
-        const result = await this._controller.addContainer(configWithtoutIsPinned, parentId);
+        const configWithoutIsPinned = this.cleanIsPinned(config) as GoldenLayout.RowConfig | GoldenLayout.StackConfig | GoldenLayout.ColumnConfig;
+        const workspace = store.getByContainerId(parentId) || store.getById(parentId);
+        const workspaceContentItem = store.getWorkspaceContentItem(workspace.id);
+        const workspaceWrapper = new WorkspaceWrapper(this.stateResolver, workspace, workspaceContentItem, this.frameId);
+
+        if (workspaceWrapper.hasMaximizedItems) {
+            throw new Error(`Cannot add a new container to workspace ${workspaceWrapper.id}, because it contains maximized items`);
+        }
+        const result = await this._controller.addContainer(configWithoutIsPinned, parentId);
 
         const itemConfig = store.getContainer(result);
         if (itemConfig) {
@@ -238,7 +270,6 @@ export class WorkspacesManager {
         }
 
         const windowConfigs = getAllWindowsFromConfig(config.content);
-        const workspace = store.getById(parentId) || store.getByContainerId(parentId);
 
         Promise.all(windowConfigs.map(async (itemConfig) => {
             const component = store.getWindowContentItem(idAsString(itemConfig.id));
@@ -255,6 +286,12 @@ export class WorkspacesManager {
             itemConfig = this._configFactory.wrapInGroup([itemConfig]);
         }
         const workspace = store.getById(parentId) || store.getByContainerId(parentId);
+        const workspaceContentItem = store.getWorkspaceContentItem(workspace.id);
+        const workspaceWrapper = new WorkspaceWrapper(this.stateResolver, workspace, workspaceContentItem, this.frameId);
+
+        if (workspaceWrapper.hasMaximizedItems) {
+            throw new Error(`Cannot add a new window to workspace ${workspaceWrapper.id}, because it contains maximized items`);
+        }
         await this._controller.addWindow(itemConfig, parentId);
 
         const allWindowsInConfig = getAllWindowsFromConfig([itemConfig]);
@@ -578,7 +615,7 @@ export class WorkspacesManager {
             };
         }
 
-        if (typeof lockConfig.config.allowDrop !== "undefined" && lockConfig.type==="group") {
+        if (typeof lockConfig.config.allowDrop !== "undefined" && lockConfig.type === "group") {
             lockConfig.config.allowDropHeader = lockConfig.config.allowDropHeader ?? lockConfig.config.allowDrop;
             lockConfig.config.allowDropLeft = lockConfig.config.allowDropLeft ?? lockConfig.config.allowDrop;
             lockConfig.config.allowDropTop = lockConfig.config.allowDropTop ?? lockConfig.config.allowDrop;
@@ -732,6 +769,32 @@ export class WorkspacesManager {
             throw new Error(`Requested resize for ${item.type} ${args.itemId}, however an unsupported argument (width) was passed`);
         }
 
+        const workspace = store.getByContainerId(item.config.id) || store.getByWindowId(idAsString(item.config.id));
+        let maximizedWindow;
+        let maximizedContainer;
+
+        if (this.stateResolver.isWorkspaceHibernated(workspace.id)) {
+            throw new Error(`Requested resize for ${item.type} ${args.itemId}, however the workspace ${workspace.id} is hibernated`);
+        }
+
+        if (workspace) {
+            maximizedWindow = workspace.windows.find((w) => {
+                return this.stateResolver.isWindowMaximized(w.id);
+            });
+
+            maximizedContainer = workspace.layout?.root?.getItemsByFilter((layoutItem) => {
+                return layoutItem.hasId("__glMaximised") && layoutItem.type !== "component";
+            })[0];
+        }
+
+        if (maximizedWindow) {
+            this._controller.restoreWindow(maximizedWindow.id);
+        }
+
+        if (maximizedContainer) {
+            this._controller.restoreContainer(idAsString(maximizedContainer.config.id));
+        }
+
         if (item.type === "row") {
             this._controller.resizeRow(item, args.height);
         } else if (item.type === "column") {
@@ -740,6 +803,14 @@ export class WorkspacesManager {
             this._controller.resizeStack(item, args.width, args.height);
         } else {
             this._controller.resizeComponent(item, args.width, args.height);
+        }
+
+        if (maximizedWindow) {
+            this._controller.maximizeWindow(maximizedWindow.id);
+        }
+
+        if (maximizedContainer) {
+            this._controller.maximizeContainer(idAsString(maximizedContainer.config.id));
         }
     }
 
@@ -964,6 +1035,67 @@ export class WorkspacesManager {
             });
 
             this._frameController.selectionChanged([idAsString(activeItem.config.id)], toBack);
+        });
+
+        this._controller.emitter.onContainerMaximized((contentItem: GoldenLayout.ContentItem) => {
+            if (contentItem.config.type === "component") {
+                return;
+            }
+            console.log("container maximized", contentItem);
+            const components = contentItem.getItemsByFilter((ci) => ci.type === "component");
+
+            components.forEach((c) => {
+                this._frameController.maximizeTab(idAsString(c.config.id));
+            });
+
+            console.log("components maximized", components);
+
+            const stacks = contentItem.getItemsByFilter((ci) => ci.type === "stack");
+
+            if (contentItem.type === "stack") {
+                stacks.push(contentItem);
+            }
+
+            const [toFront, toBack] = stacks.reduce((acc, stack: GoldenLayout.Stack) => {
+                const activeItem = stack.getActiveContentItem();
+                const toBack = stack.contentItems.map((ci) => idAsString(ci.config.id));
+                acc[0].push(idAsString(activeItem.config.id));
+                acc[1] = [...acc[1], ...toBack];
+                return acc;
+            }, [[], []]);
+
+            console.log("selection changed");
+            console.log("tofront", toFront);
+            console.log("toback", toBack);
+            this._frameController.selectionChanged(toFront, toBack);
+        });
+
+        this._controller.emitter.onContainerRestored((contentItem: GoldenLayout.ContentItem) => {
+            if (contentItem.config.type === "component") {
+                return;
+            }
+
+            const components = contentItem.getItemsByFilter((ci) => ci.type === "component");
+
+            components.forEach((c) => {
+                this._frameController.restoreTab(idAsString(c.config.id));
+            });
+
+            const stacks = contentItem.getItemsByFilter((ci) => ci.type === "stack");
+
+            if (contentItem.type === "stack") {
+                stacks.push(contentItem);
+            }
+
+            const [toFront, toBack] = stacks.reduce((acc, stack: GoldenLayout.Stack) => {
+                const activeItem = stack.getActiveContentItem();
+                const toBack = stack.contentItems.map((ci) => idAsString(ci.config.id));
+                acc[0].push(idAsString(activeItem.config.id));
+                acc[1] = [...acc[1], ...toBack];
+                return acc;
+            }, [[], []]);
+
+            this._frameController.selectionChanged(toFront, toBack);
         });
 
         this._controller.emitter.onEjectRequested((item) => {

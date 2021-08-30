@@ -502,7 +502,7 @@ describe("addRow() Should", () => {
         column.addRow({ type: "column", children: [] }).then(() => {
             done("Should not resolve");
         }).catch(() => done());
-    })
+    });
 
     it("reject when the parent is a column and the arguments is a group definition", (done) => {
         const allBoxes = workspace.getAllBoxes();
@@ -510,7 +510,7 @@ describe("addRow() Should", () => {
         column.addRow({ type: "group", children: [] }).then(() => {
             done("Should not resolve");
         }).catch(() => done());
-    })
+    });
 
     it("reject when the parent is a row and the arguments is a window definition", (done) => {
         const allBoxes = workspace.getAllBoxes();
@@ -518,5 +518,29 @@ describe("addRow() Should", () => {
         column.addRow({ type: "window" }).then(() => {
             done("Should not resolve");
         }).catch(() => done());
-    })
+    });
+
+    it.only("reject when there is a maximized window in the workspace", (done) => {
+        const allBoxes = workspace.getAllBoxes();
+        const window = workspace.getAllWindows()[0];
+        const column = allBoxes.find(p => p.type === "column");
+        window.maximize().then(() => {
+            return column.addRow({ type: "row", children: [] });
+        }).then(() => {
+            done("Should not resolve");
+        }).catch(() => done());
+    });
+
+    Array.from(["row", "column", "group"]).forEach((maximizedParentType) => {
+        it.only(`reject when there is a maximized ${maximizedParentType} in the workspace`, (done) => {
+            const allBoxes = workspace.getAllBoxes();
+            const parent = allBoxes.find(b => b.type === maximizedParentType);
+            const column = allBoxes.find(p => p.type === "column");
+            parent.maximize().then(() => {
+                return column.addRow({ type: "row", children: [] });
+            }).then(() => {
+                done("Should not resolve");
+            }).catch(() => done());
+        });
+    });
 });

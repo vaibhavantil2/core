@@ -457,9 +457,17 @@ export class LayoutController {
         }
 
         const item = layoutWithWindow.layout.root.getItemsById(windowId)[0];
+        const workspace = store.getById(item.layoutManager.root.config.id);
+        const workspaceWrapper = new WorkspaceWrapper(this._stateResolver, workspace, undefined, this._frameId);
+
+        if (workspaceWrapper.hasMaximizedItems && !item.parent.hasId(this._maximizedId)) {
+            throw new Error(`Could not maximize window ${windowId}, because workspace ${workspace.id} contains another maximized item`);
+        }
+
         if (item.parent.hasId(this._maximizedId)) {
             return;
         }
+
         item.parent.toggleMaximise();
     }
 
@@ -477,6 +485,38 @@ export class LayoutController {
         const item = layoutWithWindow.layout.root.getItemsById(windowId)[0];
         if (item.parent.hasId(this._maximizedId)) {
             item.parent.toggleMaximise();
+        }
+    }
+
+    public maximizeContainer(itemId: string): void {
+        const contentItem = store.getContainer(itemId);
+
+        if (!contentItem) {
+            throw new Error(`Could not find item ${itemId} in frame ${this._frameId}`);
+        }
+
+        const workspace = store.getById(contentItem.layoutManager.root.config.id);
+        const workspaceWrapper = new WorkspaceWrapper(this._stateResolver, workspace, undefined, this._frameId);
+
+        if (workspaceWrapper.hasMaximizedItems && !contentItem.hasId("__glMaximised")) {
+            throw new Error(`Could not maximize container ${itemId}, because workspace ${workspace.id} contains another maximized item`);
+        }
+
+        if (!contentItem.hasId("__glMaximised")) {
+            (contentItem.layoutManager as any)._$maximiseItem(contentItem);
+            console.log("maximized", contentItem);
+        }
+    }
+
+    public restoreContainer(itemId: string): void {
+        const contentItem = store.getContainer(itemId);
+
+        if (!contentItem) {
+            throw new Error(`Could not find item ${itemId} in frame ${this._frameId}`);
+        }
+
+        if (contentItem.hasId("__glMaximised")) {
+            (contentItem.layoutManager as any)._$minimiseItem(contentItem);
         }
     }
 
@@ -1265,6 +1305,15 @@ export class LayoutController {
                 }
                 if (!item.config.id || !item.config.id.length) {
                     item.addId(this._configFactory.getId());
+                }
+                if (item.type === "row" || item.type === "column") { // TODO implement for stack as well
+                    item.on("maximized", () => {
+                        this.emitter.raiseEvent("container-maximized", { stack: item });
+                    });
+
+                    item.on("minimized", () => {
+                        this.emitter.raiseEvent("container-restored", { stack: item });
+                    });
                 }
             } else {
                 item.on("size-changed", () => {
