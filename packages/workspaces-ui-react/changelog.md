@@ -1,3 +1,7 @@
+1.4.6
+chore: bump due to dependencies update
+1.4.5
+chore: bump due to dependencies update
 1.4.4
 improvement: Optimized the performance of the AddApplication popup
 1.4.3

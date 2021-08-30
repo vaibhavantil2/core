@@ -10,6 +10,7 @@ export interface RaiseNotificationConfig {
 export interface GlueNotificationData {
     clickInterop?: Glue42Web.Notifications.InteropActionSettings;
     actions?: Glue42Web.Notifications.NotificationAction[];
+    focusPlatformOnDefaultClick?: boolean;
     id: string;
 }
 
