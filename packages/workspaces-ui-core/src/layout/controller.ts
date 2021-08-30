@@ -1377,13 +1377,11 @@ export class LayoutController {
             stack.on("maximized", () => {
                 maximizeButton.addClass("lm_restore");
                 maximizeButton.attr("title", this._stackRestoreLabel);
-                // this.emitter.raiseEvent("stack-maximized", { stack });
             });
 
             stack.on("minimized", () => {
                 maximizeButton.removeClass("lm_restore");
                 maximizeButton.attr("title", this._stackMaximizeLabel);
-                // this.emitter.raiseEvent("stack-restored", { stack });
             });
 
             if (!this._options.disableCustomButtons) {

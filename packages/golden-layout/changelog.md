@@ -1,3 +1,5 @@
+2.1.7
+feat: Added improved behavior of maximized components being manipulated
 2.1.6
 feat: Greater control over the splitters and the dropping options
 2.1.5

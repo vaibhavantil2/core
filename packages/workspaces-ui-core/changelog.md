@@ -1,3 +1,6 @@
+1.4.6
+feat: implemented container maximization
+improvement: updated styles
 1.4.5
 feat: implemented allowSplitters to rows and columns and allowDropLeft, allowDropTop, allowDropRight, allowDropBottom, allowDropHeader to the groups and added style improvements
 fix: started firing open and close workspace events when the last workspace in a frame acting like a platform has been closed
