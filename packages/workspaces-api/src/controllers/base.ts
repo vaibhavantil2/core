@@ -119,7 +119,8 @@ export class BaseController {
                 frameId: summary.config.frameId,
                 positionIndex: summary.config.positionIndex,
                 title: summary.config.title,
-                layoutName: summary.config.layoutName
+                layoutName: summary.config.layoutName,
+                isSelected: summary.config.isSelected
             };
         });
     }

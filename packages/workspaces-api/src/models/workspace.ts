@@ -53,6 +53,10 @@ export class Workspace implements Glue42Workspaces.Workspace {
         return getData(this).config.isHibernated;
     }
 
+    public get isSelected(): boolean {
+        return getData(this).config.isSelected;
+    }
+
     public get children(): Glue42Workspaces.WorkspaceElement[] {
         return getData(this).children;
     }

@@ -43,6 +43,7 @@ export interface WorkspaceConfigResult {
     showEjectButtons?: boolean;
     widthInPx?: number;
     heightInPx?: number;
+    isSelected?: boolean;
 }
 
 export interface BaseChildSnapshotConfig {
