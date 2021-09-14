@@ -92,6 +92,10 @@ export class Row implements Glue42Workspaces.Row {
         return getBase(this).getIsPinned(this);
     }
 
+    public get isMaximized(): boolean {
+        return getBase(this).getIsMaximized(this);
+    }
+
     public addWindow(definition: Glue42Workspaces.WorkspaceWindowDefinition): Promise<Glue42Workspaces.WorkspaceWindow> {
         return getBase(this).addWindow(this, definition, "row");
     }

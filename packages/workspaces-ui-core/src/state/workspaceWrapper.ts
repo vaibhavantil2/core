@@ -425,6 +425,18 @@ export class WorkspaceWrapper {
         }
     }
 
+    public get hasMaximizedItems(): boolean {
+        const layout = this.workspace.layout;
+
+        if (!layout) {
+            return false;
+        }
+
+        const items = layout.root.getItemsById("__glMaximised");
+
+        return items.length > 0;
+    }
+
     private transformComponentsToWindowSummary(glConfig: GoldenLayout.ItemConfig): void {
         if (glConfig.type === "component" && glConfig.componentName === EmptyVisibleWindowName) {
             return;
