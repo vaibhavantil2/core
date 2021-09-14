@@ -1,3 +1,6 @@
+1.4.7
+feat: implemented container maximization
+improvement: updated styles
 1.4.6
 chore: bump due to dependencies update
 1.4.5

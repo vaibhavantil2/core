@@ -9,7 +9,7 @@ import { Glue42Workspaces } from "../../../workspaces";
 import { Group } from "../group";
 import { Row } from "../row";
 import { Column } from "../column";
-import { ColumnSnapshotConfig, RowSnapshotConfig } from "../../types/protocol";
+import { ColumnSnapshotConfig, GroupSnapshotConfig, RowSnapshotConfig } from "../../types/protocol";
 
 interface PrivateData {
     manager: PrivateDataManager;
@@ -143,16 +143,28 @@ export class Base {
         await this.getMyWorkspace(model).refreshReference();
     }
 
-    public async maximize(model: AllParentTypes): Promise<void> {
+    public async maximize(model: SubParentTypes): Promise<void> {
         const controller = getData(this, model).controller;
 
         await controller.maximizeItem(getData(this, model).id);
+
+        if (model.parent instanceof Workspace) {
+            await model.parent.refreshReference();
+        } else {
+            await this.getMyWorkspace(model.parent).refreshReference();
+        }
     }
 
-    public async restore(model: AllParentTypes): Promise<void> {
+    public async restore(model: SubParentTypes): Promise<void> {
         const controller = getData(this, model).controller;
 
         await controller.restoreItem(getData(this, model).id);
+
+        if (model.parent instanceof Workspace) {
+            await model.parent.refreshReference();
+        } else {
+            await this.getMyWorkspace(model.parent).refreshReference();
+        }
     }
 
     public async close(model: SubParentTypes): Promise<void> {
@@ -309,6 +321,12 @@ export class Base {
         const privateData = getData(this, model);
 
         return (privateData.config as RowSnapshotConfig | ColumnSnapshotConfig).isPinned;
+    }
+
+    public getIsMaximized(model: Column | Row | Group): boolean {
+        const privateData = getData(this, model);
+
+        return (privateData.config as RowSnapshotConfig | ColumnSnapshotConfig | GroupSnapshotConfig).isMaximized;
     }
 
     public async setHeight(model: Row, height: number): Promise<void> {

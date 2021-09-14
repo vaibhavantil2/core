@@ -87,6 +87,10 @@ export class Column implements Glue42Workspaces.Column {
         return getBase(this).getIsPinned(this);
     }
 
+    public get isMaximized(): boolean {
+        return getBase(this).getIsMaximized(this);
+    }
+
     public addWindow(definition: Glue42Workspaces.WorkspaceWindowDefinition): Promise<Glue42Workspaces.WorkspaceWindow> {
         return getBase(this).addWindow(this, definition, "column");
     }

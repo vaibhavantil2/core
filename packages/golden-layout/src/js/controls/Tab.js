@@ -158,7 +158,7 @@ lm.utils.copy(lm.controls.Tab.prototype, {
 		if (isWorkspaceExtractEnabled) {
 			return;
 		}
-
+		this._layoutManager.restoreMaximizedContainers.apply(this._layoutManager);
 		const newProxy = new lm.controls.DragProxy(
 			x,
 			y,

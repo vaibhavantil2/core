@@ -198,7 +198,8 @@ export class ConfigConverter {
                 minHeight: configAsAny.workspacesConfig?.minHeight,
                 maxHeight: configAsAny.workspacesConfig?.maxHeight,
                 widthInPx: configAsAny.workspacesConfig?.widthInPx,
-                heightInPx: configAsAny.workspacesConfig?.heightInPx
+                heightInPx: configAsAny.workspacesConfig?.heightInPx,
+                isMaximized: configAsAny.workspacesConfig?.isMaximized
             }
         };
 
