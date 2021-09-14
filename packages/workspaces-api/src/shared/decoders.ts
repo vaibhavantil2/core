@@ -323,7 +323,8 @@ export const workspaceSummaryDecoder: Decoder<Glue42Workspaces.WorkspaceSummary>
     positionIndex: number(),
     title: nonEmptyStringDecoder,
     focused: boolean(),
-    layoutName: optional(nonEmptyStringDecoder)
+    layoutName: optional(nonEmptyStringDecoder),
+    isSelected: optional(boolean())
 });
 
 export const containerSummaryDecoder: Decoder<Glue42Workspaces.BoxSummary> = object({

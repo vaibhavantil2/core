@@ -1,4 +1,5 @@
 1.7.6
+feat: added isSelected to the workspace object
 feat: implemented the maximization of containers
 1.7.5
 feat: added allowSplitters to rows and columns and allowDropLeft, allowDropTop, allowDropRight, allowDropBottom, allowDropHeader to the groups

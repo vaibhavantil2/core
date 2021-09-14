@@ -279,6 +279,9 @@ export namespace Glue42Workspaces {
 
         /** The name of the originating layout of the current workspace if any */
         layoutName: string | undefined;
+
+        /** Indicates if the workspace is selected in its frame. Can be undefined if using with an older version of GlueDesktop or GlueCore */
+        isSelected?: boolean;
     }
 
     /** An object describing the basic details of a workspace window */
