@@ -69,7 +69,7 @@ export class WorkspaceWindowWrapper {
     }
 
     public get index(): number {
-        return this.windowContentItem.parent?.contentItems.indexOf(this.windowContentItem) || 0;
+        return this.windowContentItem.parent?.contentItems?.indexOf(this.windowContentItem) || 0;
     }
 
     public get isTabless(): boolean {
@@ -115,7 +115,9 @@ export class WorkspaceWindowWrapper {
     }
 
     private getSummaryCore(windowContentItem: GoldenLayout.Component, winId: string): WindowSummary {
-        const isFocused = windowContentItem.parent.getActiveContentItem().config.id === windowContentItem.config.id;
+        const parent = windowContentItem?.parent;
+        const activeContentItem = (typeof parent?.getActiveContentItem === "function") ? parent.getActiveContentItem() : undefined;
+        const isFocused = !activeContentItem || activeContentItem.config.id === windowContentItem.config.id;
         const isLoaded = windowContentItem.config.componentState.windowId !== undefined;
         const positionIndex = this.index;
         const workspaceId = store.getByWindowId(winId)?.id;

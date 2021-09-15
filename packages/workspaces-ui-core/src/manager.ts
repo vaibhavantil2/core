@@ -912,6 +912,13 @@ export class WorkspacesManager {
             mutationObserver.observe(dragElement, {
                 attributes: true
             });
+
+            const windowSummary = this.stateResolver.getWindowSummarySync(tab.contentItem.config.id, tab.contentItem as GoldenLayout.Component);
+            this.workspacesEventEmitter.raiseWindowEvent({
+                action: "removed", payload: {
+                    windowSummary
+                }
+            });
         });
 
         this._controller.emitter.onTabDragEnd((tab) => {
@@ -1080,6 +1087,21 @@ export class WorkspacesManager {
 
         this._controller.emitter.onComponentSelectedInWorkspace((component, workspaceId) => {
             this._applicationFactory.start(component, workspaceId);
+        });
+
+        this._controller.emitter.onContentComponentCreated((component, workspaceId) => {
+            const workspace = store.getById(workspaceId);
+            const isHibernatedWindow = workspace.hibernatedWindows.some(w => w.id === idAsString(component.config.id));
+            if (!isHibernatedWindow) {
+                const windowSummary = this._stateResolver.getWindowSummarySync(component.config.id, component);
+
+                this.workspacesEventEmitter.raiseWindowEvent({
+                    action: "added",
+                    payload: {
+                        windowSummary
+                    }
+                });
+            }
         });
 
         const resizedTimeouts: { [id: string]: NodeJS.Timeout } = {};
