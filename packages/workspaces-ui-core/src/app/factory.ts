@@ -281,6 +281,14 @@ export class ApplicationFactory {
             component.setTitle(windowTitle);
         }
         if (isNewWindow && !isHibernatedWindow) {
+            const windowSummary = this._stateResolver.getWindowSummarySync(component.config.id, component);
+            this._manager.workspacesEventEmitter.raiseWindowEvent({
+                action: "added",
+                payload: {
+                    windowSummary
+                }
+            });
+
             const glueWinOutsideOfWorkspace = this._glue.windows.findById(windowId);
             if (glueWinOutsideOfWorkspace) {
                 try {

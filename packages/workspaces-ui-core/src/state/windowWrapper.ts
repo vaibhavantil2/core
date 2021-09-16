@@ -61,7 +61,7 @@ export class WorkspaceWindowWrapper {
     }
 
     public get isMaximized(): boolean {
-        return this.windowContentItem?.parent ? this.windowContentItem?.parent?.isMaximized : false;
+        return this.windowContentItem?.parent?.isMaximized ?? false;
     }
 
     public get isSelected(): boolean {
@@ -124,10 +124,9 @@ export class WorkspaceWindowWrapper {
         const { appName, url, windowId } = windowContentItem.config.componentState;
 
         const userFriendlyParent = this.getUserFriendlyParent(windowContentItem);
-
         return {
             itemId: idAsString(windowContentItem.config.id),
-            parentId: idAsString(userFriendlyParent.config.id),
+            parentId: idAsString(userFriendlyParent?.config?.id) ?? idAsString(windowContentItem.config.id),
             config: {
                 frameId: this.frameId,
                 isFocused,

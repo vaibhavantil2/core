@@ -133,6 +133,11 @@ export class LayoutEventEmitter {
         return this._registry.add("workspace-global-selection-changed", callback);
     }
 
+    public onItemDropped(callback: (item: GoldenLayout.ContentItem) => void): UnsubscribeFunction {
+        return this._registry.add("item-dropped", callback);
+    }
+
+    public raiseEvent(name: "item-dropped", data: { item: GoldenLayout.ContentItem }): Promise<void> | Array<Promise<void>>;
     public raiseEvent(name: "container-maximized" | "container-restored", data: { container: GoldenLayout.ContentItem }): Promise<void> | Array<Promise<void>>;
     public raiseEvent(name: "workspace-save-requested" | "workspace-container-resized", data: { workspaceId: string }): Promise<void> | Array<Promise<void>>;
     public raiseEvent(name: "workspace-selection-changed", data: { workspace: Workspace; toBack: Window[] }): Promise<void> | Array<Promise<void>>;

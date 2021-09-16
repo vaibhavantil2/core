@@ -409,7 +409,7 @@ export class WorkspacesManager {
         });
     }
 
-    public async focusItem(itemId: string) {
+    public async focusItem(itemId: string): Promise<void> {
         const workspace = store.getById(itemId);
 
         if (this._frameId === itemId) {
@@ -424,7 +424,7 @@ export class WorkspacesManager {
         }
     }
 
-    public bundleWorkspace(workspaceId: string, type: "row" | "column") {
+    public bundleWorkspace(workspaceId: string, type: "row" | "column"): void {
         if (this._stateResolver.isWorkspaceHibernated(workspaceId)) {
             throw new Error(`Could not bundle workspace ${workspaceId} because its hibernated`);
         }
@@ -444,7 +444,7 @@ export class WorkspacesManager {
         };
     }
 
-    public async moveWindowTo(itemId: string, containerId: string) {
+    public async moveWindowTo(itemId: string, containerId: string): Promise<void> {
         const sourceWorkspace = store.getByWindowId(itemId);
         const targetWorkspace = store.getByContainerId(containerId) || store.getById(containerId);
         if (!targetWorkspace) {
@@ -467,13 +467,29 @@ export class WorkspacesManager {
         if (!targetWindow) {
             throw new Error(`Could not find window ${itemId} in frame ${this._frameId}`);
         }
-        const movedWindow = sourceWorkspace.windows.find(w => w.id === itemId || w.windowId === itemId)
+        const movedWindow = sourceWorkspace.windows.find(w => w.id === itemId || w.windowId === itemId);
+        const windowSummaryBeforeMove = this.stateResolver.getWindowSummarySync(movedWindow.id);
 
         this._controller.removeLayoutElement(itemId);
         store.removeWindow(movedWindow, sourceWorkspace.id);
         store.addWindow(movedWindow, targetWorkspace.id);
         // this.closeTab(targetWindow);
         await this._controller.addWindow(targetWindow.config, containerId);
+
+        const windowSummary = this.stateResolver.getWindowSummarySync(movedWindow.id);
+
+        this.workspacesEventEmitter.raiseWindowEvent({
+            action: "removed",
+            payload: {
+                windowSummary: windowSummaryBeforeMove
+            }
+        });
+        this.workspacesEventEmitter.raiseWindowEvent({
+            action: "added",
+            payload: {
+                windowSummary
+            }
+        });
     }
 
     public generateWorkspaceLayout(name: string, itemId: string) {
@@ -745,7 +761,7 @@ export class WorkspacesManager {
         }
     }
 
-    public unmount() {
+    public unmount(): void {
         try {
             this._popupManager.hidePopup();
         } catch (error) {
@@ -754,7 +770,7 @@ export class WorkspacesManager {
         }
     }
 
-    private resizeWorkspaceItem(args: ResizeItemArguments) {
+    private resizeWorkspaceItem(args: ResizeItemArguments): void {
         const item = store.getContainer(args.itemId) || store.getWindowContentItem(args.itemId);
 
         if (!item) {
@@ -921,10 +937,13 @@ export class WorkspacesManager {
             });
         });
 
-        this._controller.emitter.onTabDragEnd((tab) => {
-            const toBack = tab.header.tabs.filter((t) => t.contentItem.config.id !== tab.contentItem.config.id);
-            this._frameController.selectionChanged([idAsString(tab.contentItem.id)],
-                toBack.map((t) => idAsString(t.contentItem.id)));
+        this._controller.emitter.onItemDropped((item) => {
+            const windowSummary = this.stateResolver.getWindowSummarySync(item.config.id, item as GoldenLayout.Component);
+            this.workspacesEventEmitter.raiseWindowEvent({
+                action: "added", payload: {
+                    windowSummary
+                }
+            });
         });
 
         this._controller.emitter.onSelectionChanged(async (toBack, toFront) => {
@@ -1087,21 +1106,6 @@ export class WorkspacesManager {
 
         this._controller.emitter.onComponentSelectedInWorkspace((component, workspaceId) => {
             this._applicationFactory.start(component, workspaceId);
-        });
-
-        this._controller.emitter.onContentComponentCreated((component, workspaceId) => {
-            const workspace = store.getById(workspaceId);
-            const isHibernatedWindow = workspace.hibernatedWindows.some(w => w.id === idAsString(component.config.id));
-            if (!isHibernatedWindow) {
-                const windowSummary = this._stateResolver.getWindowSummarySync(component.config.id, component);
-
-                this.workspacesEventEmitter.raiseWindowEvent({
-                    action: "added",
-                    payload: {
-                        windowSummary
-                    }
-                });
-            }
         });
 
         const resizedTimeouts: { [id: string]: NodeJS.Timeout } = {};
