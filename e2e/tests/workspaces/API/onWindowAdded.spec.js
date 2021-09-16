@@ -124,9 +124,9 @@ describe("onWindowAdded() Should", () => {
         }).catch(done);
     });
 
-    it("not notify that a window has been added when the unsubscribe function is immediately invoked", (done)=>{
+    it("not notify that a window has been added when the unsubscribe function is immediately invoked", (done) => {
         timeout = setTimeout(() => {
-           done();
+            done();
         }, 3000);
         glue.workspaces.onWindowAdded(() => {
             done("Should not be invoked")
@@ -273,7 +273,7 @@ describe("onWindowAdded() Should", () => {
             workspace = w;
             return glue.workspaces.onWindowAdded(() => {
                 done();
-            }).then(()=>{
+            }).then(() => {
                 return workspace.refreshReference();
             });
         }).then((unSub) => {
@@ -296,6 +296,28 @@ describe("onWindowAdded() Should", () => {
             return glue.workspaces.onWindowAdded(() => {
                 done();
             })
+        }).then((unSub) => {
+            unSubFuncs.push(unSub);
+            const targetContainer = firstWorkspace.getAllBoxes().find(b => !b.children.length);
+            const windowToMove = secondWorkspace.getAllWindows()[0];
+
+            return windowToMove.moveTo(targetContainer);
+        }).catch(done);
+    });
+
+    it("notify that a window has been added with a valid workspaceId property when a window is added through moveTo in a different workspace", (done) => {
+        let firstWorkspace = undefined;
+        let secondWorkspace = undefined;
+        glue.workspaces.createWorkspace(basicMoveToConfig).then((w) => {
+            firstWorkspace = w;
+            return glue.workspaces.createWorkspace(basicMoveToConfig);
+        }).then((w) => {
+            secondWorkspace = w;
+            return glue.workspaces.onWindowAdded(async (w) => {
+                if (firstWorkspace.id === w.workspace.id) {
+                    done();
+                }
+            });
         }).then((unSub) => {
             unSubFuncs.push(unSub);
             const targetContainer = firstWorkspace.getAllBoxes().find(b => !b.children.length);
