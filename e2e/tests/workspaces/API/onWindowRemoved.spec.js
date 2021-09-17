@@ -283,8 +283,6 @@ describe("onWindowRemoved ", () => {
                 workspace = w;
                 return glue.workspaces.onWindowRemoved(() => {
                     done();
-                }).then(() => {
-                    return workspace.refreshReference();
                 });
             }).then((unSub) => {
                 unSubFuncs.push(unSub);

@@ -273,8 +273,6 @@ describe("onWindowAdded() Should", () => {
             workspace = w;
             return glue.workspaces.onWindowAdded(() => {
                 done();
-            }).then(() => {
-                return workspace.refreshReference();
             });
         }).then((unSub) => {
             unSubFuncs.push(unSub);
