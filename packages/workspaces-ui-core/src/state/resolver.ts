@@ -235,7 +235,7 @@ export class LayoutStateResolver {
         return result;
     }
 
-    private waitForWindowContentItem(windowId: string):Promise<void> {
+    private waitForWindowContentItem(windowId: string): Promise<void> {
         return new Promise<void>((res) => {
             const unsub = this._layoutEventEmitter.onContentComponentCreated((component) => {
                 if (component.config.id === windowId) {

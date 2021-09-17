@@ -573,7 +573,7 @@ export class LayoutController {
     public hideLoadingIndicator(itemId: string): void {
         const windowContentItem = store.getWindowContentItem(itemId);
 
-        if (windowContentItem) {
+        if (windowContentItem?.tab) {
             const hibernationIcon = windowContentItem.tab.element[0].getElementsByClassName("lm_hibernationIcon")[0];
             hibernationIcon?.remove();
         }
@@ -1449,7 +1449,7 @@ export class LayoutController {
                 this.emitter.raiseEvent("tab-drag-start", { tab });
             });
 
-            tab._dragListener.on("dragEnd", () => {
+            tab._dragListener.on("dragStop", () => {
                 this.emitter.raiseEvent("tab-drag-end", { tab });
             });
 
@@ -1499,6 +1499,10 @@ export class LayoutController {
 
         layout.on("activeContentItemChanged", (component: GoldenLayout.Component) => {
             this.emitter.raiseEvent("workspace-global-selection-changed", { component, workspaceId: id });
+        });
+
+        layout.on("itemDropped", (item: GoldenLayout.ContentItem) => {
+            this.emitter.raiseEvent("item-dropped", { item });
         });
 
         layout._ignorePinned = true;
