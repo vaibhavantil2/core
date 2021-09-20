@@ -52,7 +52,6 @@ import {
 } from "../types/protocol";
 import { WorkspaceEventType, WorkspaceEventAction } from "../types/subscription";
 import { Glue42Workspaces } from "../../workspaces";
-import { ColumnDefinitionConfig, ColumnLockConfig, GroupDefinitionConfig, GroupLockConfig, RowDefinitionConfig, RowLockConfig, WindowDefinitionConfig, WorkspaceLockConfig, WorkspaceWindowLockConfig } from "../types/temp";
 
 export const nonEmptyStringDecoder: Decoder<string> = string().where((s) => s.length > 0, "Expected a non-empty string");
 export const nonNegativeNumberDecoder: Decoder<number> = number().where((num) => num >= 0, "Expected a non-negative number");
@@ -102,7 +101,7 @@ export const deleteLayoutConfigDecoder: Decoder<DeleteLayoutConfig> = object({
     name: nonEmptyStringDecoder
 });
 
-export const windowDefinitionConfigDecoder: Decoder<WindowDefinitionConfig> = object({
+export const windowDefinitionConfigDecoder: Decoder<Glue42Workspaces.WorkspaceWindowDefinitionConfig> = object({
     minWidth: optional(number()),
     maxWidth: optional(number()),
     minHeight: optional(number()),
@@ -111,7 +110,7 @@ export const windowDefinitionConfigDecoder: Decoder<WindowDefinitionConfig> = ob
     showCloseButton: optional(boolean())
 });
 
-export const groupDefinitionConfigDecoder: Decoder<GroupDefinitionConfig> = object({
+export const groupDefinitionConfigDecoder: Decoder<Glue42Workspaces.GroupDefinitionConfig> = object({
     minWidth: optional(number()),
     maxWidth: optional(number()),
     minHeight: optional(number()),
@@ -128,7 +127,7 @@ export const groupDefinitionConfigDecoder: Decoder<GroupDefinitionConfig> = obje
     showAddWindowButton: optional(boolean())
 });
 
-export const rowDefinitionConfigDecoder: Decoder<RowDefinitionConfig> = object({
+export const rowDefinitionConfigDecoder: Decoder<Glue42Workspaces.RowDefinitionConfig> = object({
     minHeight: optional(number()),
     maxHeight: optional(number()),
     allowDrop: optional(boolean()),
@@ -136,7 +135,7 @@ export const rowDefinitionConfigDecoder: Decoder<RowDefinitionConfig> = object({
     isPinned: optional(boolean())
 });
 
-export const columnDefinitionConfigDecoder: Decoder<ColumnDefinitionConfig> = object({
+export const columnDefinitionConfigDecoder: Decoder<Glue42Workspaces.ColumnDefinitionConfig> = object({
     minWidth: optional(number()),
     maxWidth: optional(number()),
     allowDrop: optional(boolean()),
@@ -317,16 +316,6 @@ export const frameSummaryDecoder: Decoder<FrameSummaryResult> = object({
     id: nonEmptyStringDecoder
 });
 
-export const workspaceSummaryDecoder: Decoder<Glue42Workspaces.WorkspaceSummary> = object({
-    id: nonEmptyStringDecoder,
-    frameId: nonEmptyStringDecoder,
-    positionIndex: number(),
-    title: nonEmptyStringDecoder,
-    focused: boolean(),
-    layoutName: optional(nonEmptyStringDecoder),
-    isSelected: optional(boolean())
-});
-
 export const containerSummaryDecoder: Decoder<Glue42Workspaces.BoxSummary> = object({
     type: subParentDecoder,
     id: nonEmptyStringDecoder,
@@ -369,8 +358,8 @@ export const workspaceConfigResultDecoder: Decoder<WorkspaceConfigResult> = obje
     positionIndex: nonNegativeNumberDecoder,
     name: nonEmptyStringDecoder,
     layoutName: optional(nonEmptyStringDecoder),
-    isHibernated: optional(boolean()), // to support backwards comptability with older versions of GD
-    isSelected: optional(boolean()), // to support backwards comptability with older versions of GD
+    isHibernated: optional(boolean()),
+    isSelected: optional(boolean()),
     allowDrop: optional(boolean()),
     allowExtract: optional(boolean()),
     allowSplitters: optional(boolean()),
@@ -692,7 +681,7 @@ export const workspaceSelectorDecoder: Decoder<WorkspaceSelector> = object({
     workspaceId: nonEmptyStringDecoder,
 });
 
-export const workspaceLockConfigDecoder: Decoder<WorkspaceLockConfig> = object({
+export const workspaceLockConfigDecoder: Decoder<Glue42Workspaces.WorkspaceLockConfig> = object({
     allowDrop: optional(boolean()),
     allowDropLeft: optional(boolean()),
     allowDropTop: optional(boolean()),
@@ -712,9 +701,14 @@ export const lockWorkspaceDecoder: Decoder<LockWorkspaceConfig> = object({
     config: optional(workspaceLockConfigDecoder)
 });
 
-export const windowLockConfigDecoder: Decoder<WorkspaceWindowLockConfig> = object({
+export const windowLockConfigDecoder: Decoder<Glue42Workspaces.WorkspaceWindowLockConfig> = object({
     allowExtract: optional(boolean()),
     showCloseButton: optional(boolean())
+});
+
+export const elementResizeConfigDecoder: Decoder<Glue42Workspaces.ElementResizeConfig> = object({
+    width: optional(nonNegativeNumberDecoder),
+    height: optional(nonNegativeNumberDecoder)
 });
 
 export const lockWindowDecoder: Decoder<LockWindowConfig> = object({
@@ -722,17 +716,17 @@ export const lockWindowDecoder: Decoder<LockWindowConfig> = object({
     config: optional(windowLockConfigDecoder)
 });
 
-export const rowLockConfigDecoder: Decoder<RowLockConfig> = object({
+export const rowLockConfigDecoder: Decoder<Glue42Workspaces.RowLockConfig> = object({
     allowDrop: optional(boolean()),
     allowSplitters: optional(boolean()),
 });
 
-export const columnLockConfigDecoder: Decoder<ColumnLockConfig> = object({
+export const columnLockConfigDecoder: Decoder<Glue42Workspaces.ColumnLockConfig> = object({
     allowDrop: optional(boolean()),
     allowSplitters: optional(boolean()),
 });
 
-export const groupLockConfigDecoder: Decoder<GroupLockConfig> = object({
+export const groupLockConfigDecoder: Decoder<Glue42Workspaces.GroupLockConfig> = object({
     allowExtract: optional(boolean()),
     allowDrop: optional(boolean()),
     allowDropLeft: optional(boolean()),

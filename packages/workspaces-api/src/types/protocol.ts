@@ -24,7 +24,7 @@ export interface WorkspaceConfigResult {
     name: string;
     positionIndex: number;
     layoutName: string | undefined;
-    isHibernated: boolean;
+    isHibernated?: boolean;
     allowSplitters?: boolean;
     allowDrop?: boolean;
     allowDropLeft?: boolean;
