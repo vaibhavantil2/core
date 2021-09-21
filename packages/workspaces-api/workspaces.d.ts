@@ -210,111 +210,155 @@ export namespace Glue42Workspaces {
         loadStrategy?: LoadingStrategy;
     }
 
-    /** Provides fine grain control when locking a workspace */
+    /** A config object which provides fine grain control when locking a workspace */
     export interface WorkspaceLockConfig {
         /** Prevents the splitters for being draggable, so the windows cannot be resized */
         allowSplitters?: boolean;
-        /** (enterprise only) Controls the ability of the users to drop outside windows in the workspace */
+        /** (Enterprise only) Controls the ability of the users to drop outside windows in the workspace */
         allowDrop?: boolean;
-        /**Controls the users ability to drop windows in left zone of the workspace */
+        /** Controls the users ability to drop windows in left-most zone of the workspace */
         allowDropLeft?: boolean;
-        /**Controls the users ability to drop windows in top zone of the workspace */
+        /** Controls the users ability to drop windows in top-most zone of the workspace */
         allowDropTop?: boolean;
-        /**Controls the users ability to drop windows in right zone of the workspace */
+        /** Controls the users ability to drop windows in right-most zone of the workspace */
         allowDropRight?: boolean;
-        /**Controls the users ability to drop windows in bottom zone of the workspace */
+        /** Controls the users ability to drop windows in bottom-most zone of the workspace */
         allowDropBottom?: boolean;
         /** Controls the ability of the users to extract (or rearrange) windows inside the workspace */
         allowExtract?: boolean;
-        /** Controls the visibility of the close button location in the workspaces tab */
+        /** Controls the visibility of the close button located in the workspaces tab */
         showCloseButton?: boolean;
         /** Controls the visibility of the save workspace button located in the workspace tab */
         showSaveButton?: boolean;
         /** Controls the visibility of all the add window buttons (the ones with the plus icon) located in the group headers */
         showAddWindowButtons?: boolean;
-        /**Controls the visibility of all eject buttons located in the group headers */
+        /** Controls the visibility of all eject buttons located in the groups' headers */
         showEjectButtons?: boolean;
-        /**Controls the visibility of all close button located in the windows' tab elements */
+        /** Controls the visibility of all close button located in the windows' tab elements */
         showWindowCloseButtons?: boolean;
     }
 
-    /**Provides fine grain control when locking a window */
+    /** A config object which provides fine grain control when locking a window */
     export interface WorkspaceWindowLockConfig {
         /**  Blocks the users ability to extract the specified window */
         allowExtract?: boolean;
-        /** Controls the visibility of the close button which appears is located in the specified tab */
+        /** Controls the visibility of the close button which is located in the window's tab */
         showCloseButton?: boolean;
     }
 
-    /** TODO */
+    /** A config object which provides fine grain control when locking a group */
     export interface GroupLockConfig {
+        /**  Blocks the users ability to extract windows from the group */
         allowExtract?: boolean;
+        /** (Enterprise only) Controls the ability of the users to drop outside windows in the group */
         allowDrop?: boolean;
+        /** Controls the users ability to drop windows in left zone of the group */
         allowDropLeft?: boolean;
+        /** Controls the users ability to drop windows in right zone of the group */
         allowDropRight?: boolean;
+        /** Controls the users ability to drop windows in top zone of the group */
         allowDropTop?: boolean;
+        /** Controls the users ability to drop windows in bottom zone of the group */
         allowDropBottom?: boolean;
+        /** Controls the users ability to drop windows in header zone of the group */
         allowDropHeader?: boolean;
+        /** Controls the visibility of the maximize/restore button located in the group header */
         showMaximizeButton?: boolean;
+        /** Controls the visibility of the eject button located in the group header */
         showEjectButton?: boolean;
+        /** Controls the visibility of the add window buttons (the ones with the plus icon) located in the group header */
         showAddWindowButton?: boolean;
     }
 
-    /** TODO */
+    /** A config object which provides fine grain control when locking a row */
     export interface RowLockConfig {
+        /** (Enterprise only) Controls the ability of the users to drop outside windows in the row */
         allowDrop?: boolean;
+        /** Prevents the splitters for being draggable, so the windows cannot be resized within the row */
         allowSplitters?: boolean;
     }
 
-    /** TODO */
+    /** A config object which provides fine grain control when locking a column */
     export interface ColumnLockConfig {
+        /** (Enterprise only) Controls the ability of the users to drop outside windows in the column */
         allowDrop?: boolean;
+        /** Prevents the splitters for being draggable, so the windows cannot be resized within the row */
         allowSplitters?: boolean;
     }
 
-    /** TODO */
+    /** A config object which defines various workspace window-specific settings */
     export interface WorkspaceWindowDefinitionConfig {
+        /** Specifies the minimum width in pixels for the workspace window */
         minWidth?: number;
+        /** Specifies the maximum width in pixels for the workspace window */
         maxWidth?: number;
+        /** Specifies the minimum height in pixels for the workspace window */
         minHeight?: number;
+        /** Specifies the maximum height in pixels for the workspace window */
         maxHeight?: number;
+        /**  Blocks the users ability to extract the specified window */
         allowExtract?: boolean;
+        /** Controls the visibility of the close button which is located in the window's tab */
         showCloseButton?: boolean;
     }
 
-    /** TODO */
+    /** A config object which defines various group-specific settings */
     export interface GroupDefinitionConfig {
+        /** Specifies the minimum width in pixels for the group */
         minWidth?: number;
+        /** Specifies the maximum width in pixels for the group */
         maxWidth?: number;
+        /** Specifies the minimum height in pixels for the group */
         minHeight?: number;
+        /** Specifies the maximum height in pixels for the group */
         maxHeight?: number;
+        /**  Blocks the users ability to extract windows from the group */
         allowExtract?: boolean;
+        /** Controls the visibility of the maximize/restore button located in the group header */
         showMaximizeButton?: boolean;
+        /** Controls the visibility of the eject button located in the group header */
         showEjectButton?: boolean;
+        /** (Enterprise only) Controls the ability of the users to drop outside windows in the group */
         allowDrop?: boolean;
+        /** Controls the users ability to drop windows in left zone of the group */
         allowDropLeft?: boolean;
+        /** Controls the users ability to drop windows in right zone of the group */
         allowDropRight?: boolean;
+        /** Controls the users ability to drop windows in top zone of the group */
         allowDropTop?: boolean;
+        /** Controls the users ability to drop windows in bottom zone of the group */
         allowDropBottom?: boolean;
+        /** Controls the users ability to drop windows in header zone of the group */
         allowDropHeader?: boolean;
+        /** Controls the visibility of the add window buttons (the ones with the plus icon) located in the group header */
         showAddWindowButton?: boolean;
     }
 
-    /** TODO */
+    /** A config object which defines various row-specific settings */
     export interface RowDefinitionConfig {
+        /** Specifies the minimum height in pixels for the row */
         minHeight?: number;
+        /** Specifies the maximum height in pixels for the row */
         maxHeight?: number;
+        /** (Enterprise only) Controls the ability of the users to drop outside windows in the row */
         allowDrop?: boolean;
+        /** Prevents the splitters for being draggable, so the windows cannot be resized within the row */
         allowSplitters?: boolean;
+        /** Specifies if a row should be pinned. A pinned row will always maintain it's height, unless the user manually changes it by dragging the splitter */
         isPinned?: boolean;
     }
 
-    /** TODO */
+    /** A config object which defines various column-specific settings */
     export interface ColumnDefinitionConfig {
+        /** Specifies the minimum width in pixels for the column */
         minWidth?: number;
+        /** Specifies the maximum width in pixels for the column */
         maxWidth?: number;
+        /** (Enterprise only) Controls the ability of the users to drop outside windows in the column */
         allowDrop?: boolean;
+        /** Prevents the splitters for being draggable, so the windows cannot be resized within the column */
         allowSplitters?: boolean;
+        /** Specifies if a column should be pinned. A pinned column will always maintain it's width, unless the user manually changes it by dragging the splitter */
         isPinned?: boolean;
     }
 
@@ -347,7 +391,7 @@ export namespace Glue42Workspaces {
         /** An array of all the box's children which will also be opened. */
         children?: Array<WorkspaceWindowDefinition | BoxDefinition>;
 
-        /** TODO */
+        /** An optional config object which defines various box-specific settings */
         config?: GroupDefinitionConfig | RowDefinitionConfig | ColumnDefinitionConfig;
     }
 
@@ -365,21 +409,27 @@ export namespace Glue42Workspaces {
         /** An object which will be passed to the newly created window. This object is then accessible via the Windows API */
         context?: any;
 
-        /** TODO */
+        /** A config object which defines various workspace window-specific settings */
         config?: WorkspaceWindowDefinitionConfig;
     }
 
-    /** TODO */
+    /** A config object which shows the possible frame size constraints, which are calculated using all internal elements' constraints */
     export interface FrameConstraints {
+        /** Shows the minimum width of the frame */
         minWidth: number;
+        /** Shows the maximum width of the frame */
         maxWidth: number;
+        /** Shows the minimum height of the frame */
         minHeight: number;
+        /** Shows the maximum height of the frame */
         maxHeight: number;
     }
 
-    /** TODO */
+    /** A config object which defines how a workspace element should be resized */
     export interface ElementResizeConfig {
+        /** Defines the desired new width of the element */
         width?: number;
+        /** Defines the desired new height of the element */
         height?: number;
     }
 
