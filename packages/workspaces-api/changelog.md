@@ -1,4 +1,5 @@
-1.7.6
+1.8.0
+feat: updated all typings to be inline with Enterprise 3.12
 feat: added isSelected to the workspace object
 feat: implemented the maximization of containers
 1.7.5

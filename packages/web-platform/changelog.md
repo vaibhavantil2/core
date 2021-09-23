@@ -1,5 +1,5 @@
-1.6.7
-feat: added isSelected to the workspace object
+1.7.0
+feat: added isSelected to the workspace object and dependencies update inline with 3.12 Enterprise release
 1.6.6
 feat: added an option to focus the platform when a notification receives a default click
 1.6.5
