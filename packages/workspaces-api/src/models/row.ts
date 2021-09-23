@@ -1,8 +1,6 @@
 import { Base } from "./base/base";
 import { Glue42Workspaces } from "../../workspaces.d";
-import { rowLockConfigDecoder } from "../shared/decoders";
-import { RowLockConfig } from "../types/temp";
-import { number } from "decoder-validate";
+import { nonNegativeNumberDecoder, rowLockConfigDecoder } from "../shared/decoders";
 
 interface PrivateData {
     base: Base;
@@ -92,6 +90,10 @@ export class Row implements Glue42Workspaces.Row {
         return getBase(this).getIsPinned(this);
     }
 
+    public get isMaximized(): boolean {
+        return getBase(this).getIsMaximized(this);
+    }
+
     public addWindow(definition: Glue42Workspaces.WorkspaceWindowDefinition): Promise<Glue42Workspaces.WorkspaceWindow> {
         return getBase(this).addWindow(this, definition, "row");
     }
@@ -130,7 +132,7 @@ export class Row implements Glue42Workspaces.Row {
         return getBase(this).close(this);
     }
 
-    public lock(config?: RowLockConfig | ((config: RowLockConfig) => RowLockConfig)): Promise<void> {
+    public lock(config?: Glue42Workspaces.RowLockConfig | ((config: Glue42Workspaces.RowLockConfig) => Glue42Workspaces.RowLockConfig)): Promise<void> {
         let lockConfigResult = undefined;
 
         if (typeof config === "function") {
@@ -150,7 +152,7 @@ export class Row implements Glue42Workspaces.Row {
     }
 
     public async setHeight(height: number): Promise<void> {
-        number().where(n => n > 0, "The value should be positive").runWithException(height);
+        nonNegativeNumberDecoder.runWithException(height);
         return getBase(this).setHeight(this, height);
     }
 

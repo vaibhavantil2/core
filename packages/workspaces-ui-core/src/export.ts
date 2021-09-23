@@ -73,6 +73,6 @@ const workspacesManagerAPI: WorkspacesManager = {
     requestFocus: () => {
         return;
     }
-}
+};
 
 export default workspacesManagerAPI;

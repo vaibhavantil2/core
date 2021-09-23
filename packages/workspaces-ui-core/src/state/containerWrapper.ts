@@ -238,7 +238,8 @@ export class WorkspaceContainerWrapper {
             maxHeight: this.maxHeight,
             widthInPx: this.bounds.width,
             heightInPx: this.bounds.height,
-            isPinned: this.isPinned
+            isPinned: this.isPinned,
+            isMaximized: this.isMaximized
         };
 
         const type = userFriendlyType === "window" ? undefined : userFriendlyType;
@@ -279,6 +280,10 @@ export class WorkspaceContainerWrapper {
         containerConfig.workspacesConfig.isPinned = containerConfig.workspacesConfig.isPinned ?? false;
 
         return containerConfig;
+    }
+
+    public get isMaximized(): boolean {
+        return this.containerContentItem.hasId("__glMaximised");
     }
 
     private populateChildrenAllowDrop(value: boolean | undefined): void {

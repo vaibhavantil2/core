@@ -1,3 +1,5 @@
+5.4.12
+fix: isLocal should be coming from the resolved identity
 5.4.11
 chore: resolved dependency vulnerabilities
 5.4.10

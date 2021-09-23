@@ -217,10 +217,10 @@ export class ApplicationFactory {
                 }
             },
             () => triggersActivated
-        ]
+        ];
     }
 
-    private vaidateTitle(title: string) {
+    private vaidateTitle(title: string): string {
         if (!title?.length) {
             return undefined;
         }
@@ -235,10 +235,10 @@ export class ApplicationFactory {
         return {
             visibleComponents,
             notImmediatelyVisibleComponents
-        }
+        };
     }
 
-    private async startCore(component: GoldenLayout.Component, workspace: Workspace) {
+    private async startCore(component: GoldenLayout.Component, workspace: Workspace): Promise<void> {
         const newWindowBounds = getElementBounds(component.element);
         const { componentState } = component.config;
         const { title, appName } = componentState;
@@ -281,7 +281,7 @@ export class ApplicationFactory {
             component.setTitle(windowTitle);
         }
         if (isNewWindow && !isHibernatedWindow) {
-            const windowSummary = this._stateResolver.getWindowSummarySync(componentId, component);
+            const windowSummary = this._stateResolver.getWindowSummarySync(component.config.id, component);
             this._manager.workspacesEventEmitter.raiseWindowEvent({
                 action: "added",
                 payload: {

@@ -24,7 +24,7 @@ export interface WorkspaceConfigResult {
     name: string;
     positionIndex: number;
     layoutName: string | undefined;
-    isHibernated: boolean;
+    isHibernated?: boolean;
     allowSplitters?: boolean;
     allowDrop?: boolean;
     allowDropLeft?: boolean;
@@ -43,6 +43,7 @@ export interface WorkspaceConfigResult {
     showEjectButtons?: boolean;
     widthInPx?: number;
     heightInPx?: number;
+    isSelected?: boolean;
 }
 
 export interface BaseChildSnapshotConfig {
@@ -64,6 +65,7 @@ export interface RowSnapshotConfig extends BaseChildSnapshotConfig {
     widthInPx?: number;
     heightInPx?: number;
     isPinned?: boolean;
+    isMaximized?: boolean;
 }
 
 export interface ColumnSnapshotConfig extends BaseChildSnapshotConfig {
@@ -73,6 +75,7 @@ export interface ColumnSnapshotConfig extends BaseChildSnapshotConfig {
     widthInPx?: number;
     heightInPx?: number;
     isPinned?: boolean;
+    isMaximized?: boolean;
 }
 
 export interface GroupSnapshotConfig extends BaseChildSnapshotConfig {
@@ -89,6 +92,7 @@ export interface GroupSnapshotConfig extends BaseChildSnapshotConfig {
     showAddWindowButton?: boolean;
     widthInPx?: number;
     heightInPx?: number;
+    isMaximized?: boolean;
 }
 
 export interface SwimlaneWindowSnapshotConfig extends BaseChildSnapshotConfig {
