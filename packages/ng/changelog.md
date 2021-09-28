@@ -1,3 +1,5 @@
+2.3.0
+chore: bump due to dependencies update inline with 3.12 Enterprise release
 2.2.6
 chore: bump due to dependencies update
 2.2.5

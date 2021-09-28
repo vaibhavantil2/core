@@ -1,7 +1,7 @@
-1.4.7
+1.5.0
 fix: started invoking onWindowAdded and onWindowRemoved when the window is being dragged in the frame
 feat: implemented container maximization
-improvement: updated styles
+chore: updated styles
 1.4.6
 chore: bump due to dependencies update
 1.4.5
