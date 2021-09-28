@@ -1,3 +1,5 @@
+1.5.1
+chore: bump due to dependencies update
 1.5.0
 chore: bump due to dependencies update inline with Enterprise 3.12
 1.4.6
