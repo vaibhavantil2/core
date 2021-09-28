@@ -1,3 +1,5 @@
+1.7.1
+feat: added support for getPermission
 1.7.0
 feat: added isSelected to the workspace object and dependencies update inline with 3.12 Enterprise release
 1.6.6

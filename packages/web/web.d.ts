@@ -531,6 +531,9 @@ export namespace Glue42Web {
              * @param notification notification options
              */
             raise(notification: RaiseOptions): Promise<Notification>;
+
+            getPermission?(): Promise<"default" | "granted" | "denied">;
+
             requestPermission?(): Promise<boolean>;
         }
 
