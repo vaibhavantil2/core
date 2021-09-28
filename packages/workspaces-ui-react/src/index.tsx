@@ -24,10 +24,16 @@ import {
     AddWorkspacePopupProps,
     SaveWorkspacePopupProps,
     AddApplicationPopupProps,
-    WorkspaceContentsProps
+    WorkspaceContentsProps,
+    AddWindowButtonProps,
+    MaximizeGroupButtonProps,
+    EjectButtonProps
 } from './types/internal';
 import WorkspacesElementCreationWrapper from './WorkspacesElementCreationWrapper'
 import workspacesManager from './workspacesManager';
+import AddWindowButton from './defaultComponents/groups/AddWindowButton';
+import MaximizeGroupButton from './defaultComponents/groups/MaximizeGroupButton';
+import EjectButton from './defaultComponents/groups/EjectButton';
 
 export {
     SaveWorkspacePopup,
@@ -38,6 +44,9 @@ export {
     MaximizeFrameButton,
     MinimizeFrameButton,
     AddWorkspaceButton,
+    AddWindowButton,
+    MaximizeGroupButton,
+    EjectButton,
     WorkspacePopup,
     useWorkspacePopup,
     useWorkspaceWindowClicked,
@@ -54,6 +63,9 @@ export {
     AddWorkspaceButtonProps,
     MaximizeFrameButtonProps,
     MinimizeFrameButtonProps,
+    AddWindowButtonProps,
+    MaximizeGroupButtonProps,
+    EjectButtonProps,
     SaveWorkspacePopupComponentProps,
     AddWorkspacePopupComponentProps,
     AddApplicationPopupComponentProps,

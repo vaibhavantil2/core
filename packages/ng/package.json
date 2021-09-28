@@ -24,7 +24,7 @@
         "test": "echo no tests found",
         "ng": "ng",
         "start": "ng serve",
-        "build": "ng build --prod && node ./publish/removeRedundantDist.js",
+        "build": "",
         "test:V1": "ng test --source-map=false --watch=false --browsers=ChromeHeadless",
         "lint": "ng lint",
         "audit": "echo no audit found",

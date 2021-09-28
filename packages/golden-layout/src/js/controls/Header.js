@@ -20,7 +20,7 @@ lm.controls.Header = function (layoutManager, parent) {
 	}
 
 	if (this.layoutManager.config.settings.mode === "workspace" && this.layoutManager._componentFactory) {
-		const headerControlls = this.element.children(".lm_controls")[0];
+		const headerControls = this.element.children(".lm_controls")[0];
 		const workspaceControlsContainer = this.element.children(".lm_workspace_controls")[0];
 		const logoContainer = this.element.children(".lm_logo")[0];
 
@@ -33,7 +33,13 @@ lm.controls.Header = function (layoutManager, parent) {
 		}
 
 		if (this.layoutManager._componentFactory.createSystemButtons) {
-			this.layoutManager._componentFactory.createSystemButtons({ domNode: headerControlls });
+			this.layoutManager._componentFactory.createSystemButtons({ domNode: headerControls });
+		}
+	} else if (this.layoutManager._componentFactory) {
+		const headerControls = this.element.children(".lm_controls")[0];
+		if (this.layoutManager._componentFactory.createGroupHeaderButtons) {
+			console.log(parent, parent.config.id);
+			this.layoutManager._componentFactory.createGroupHeaderButtons({ domNode: headerControls, groupId: lm.utils.idAsString(parent.config.id) });
 		}
 	}
 
@@ -54,7 +60,11 @@ lm.controls.Header = function (layoutManager, parent) {
 
 	this._lastVisibleTabIndex = -1;
 	this._tabControlOffset = this.layoutManager.config.settings.tabControlOffset;
-	if (!(this.layoutManager.config.settings.mode === "workspace" && this.layoutManager._componentFactory && this.layoutManager._componentFactory.createSystemButtons)) {
+	const isOuterLayout = this.layoutManager.config.settings.mode === "workspace";
+	const hasSystemButtons = this.layoutManager._componentFactory && this.layoutManager._componentFactory.createSystemButtons;
+	const hasHeaderButtons = this.layoutManager._componentFactory && this.layoutManager._componentFactory.createGroupHeaderButtons;
+
+	if ((!(isOuterLayout && hasSystemButtons)) && (!(hasHeaderButtons && !isOuterLayout))) {
 		this._createControls();
 	}
 };

@@ -1,18 +1,44 @@
-import React, { useContext } from 'react';
-import Workspaces from "@glue42/workspaces-ui-react";
+import React, { useContext, useState } from 'react';
+import Workspaces, { AddWindowButton, EjectButton, MaximizeGroupButton, WorkspaceContents } from "@glue42/workspaces-ui-react";
 import "@glue42/workspaces-ui-react/dist/styles/popups.css";
 import "@glue42/workspaces-ui-react/dist/styles/goldenlayout-base.css";
 import "@glue42/workspaces-ui-react/dist/styles/glue42-theme.css";
 import "./index.css";
 import { GlueContext } from '@glue42/react-hooks';
+import CustomHeaderButtons from './CustomGroupHeaderButtons';
 // import { Glue42Workspaces } from '@glue42/workspaces-api';
 // import { Glue42Web } from "@glue42/web";
 // import { Glue42 } from "@glue42/desktop";
 
 const App = () => {
     (window as any).glue = useContext(GlueContext);
+    const [show, setShow] = useState(false);
     return (
-        <Workspaces />
+        <Workspaces/>
+        // <Workspaces components={
+        //     {
+        //         containers: {
+        //             group: {
+        //                 header: {
+        //                     ButtonsComponent: (p) => <div>{JSON.stringify(p)}</div>
+        //                 }
+        //             }
+        //         }
+        //     }
+        // } />
+
+        // <Workspaces components={
+        //     {
+        //         containers: {
+        //             group: {
+        //                 header: {
+        //                     ButtonsComponent: (p) => <CustomHeaderButtons headerProps={p} show={show} />
+        //                 }
+        //             }
+        //         },
+        //         WorkspaceContents: (p) => <><button onClick={() => setShow((s) => !s)}>Show/Hide</button> <WorkspaceContents {...p} /></>
+        //     }
+        // } />
     );
 }
 
