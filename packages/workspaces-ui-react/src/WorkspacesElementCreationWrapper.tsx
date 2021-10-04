@@ -92,11 +92,9 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
     }
 
     onCreateGroupTabControlsRequested = (options: CreateGroupRequestOptions) => {
-        console.log("trying to add new trab control", options);
         if (this.state.groupTabControls.some(g => g.domNode === options.domNode)) {
             return;
         }
-        console.log("Added new tab control");
         this.setState(s => {
             return {
                 ...s,
@@ -275,7 +273,6 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
         const GroupTabControlsComponent = this.props.components?.containers?.group?.header?.TabControlsComponent;
 
         return this.state.groupTabControls.map((g) => {
-            console.log("trying to render new tab control", g);
             if (!GroupTabControlsComponent || !g.domNode) {
                 return;
             }
@@ -290,11 +287,8 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
 
         return this.state.groupHeaderButtons.map((g) => {
             if (!GroupHeaderButtonsComponent || !g.domNode) {
-                console.log("cannot find group header node");
                 return;
             }
-
-            console.log("found dom node passing", g.domNode, this.state.groupHeaderButtons.length);
 
             const { domNode, callback, ...options } = g;
             return <Portal key={`${options.groupId}-buttons`} domNode={domNode}><GroupHeaderButtonsComponent {...options} /></Portal>

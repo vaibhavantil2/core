@@ -121,7 +121,6 @@ lm.utils.copy(lm.items.Stack.prototype, {
 	},
 	realHeight: function (obj) {
 		if (!obj || !obj[0]) {
-			console.log("returning 0", obj);
 			return 0;
 		}
 		const heightWithoutClone = obj.height();

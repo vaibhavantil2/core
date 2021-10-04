@@ -18,7 +18,7 @@
     "homepage": "https://glue42.com/",
     "scripts": {
         "test": "echo \"Error: no test specified\"",
-        "build": "",
+        "build": "rollup -c",
         "audit": "node ../../scripts/audit/index.js",
         "preversion": "npm run build && npm run test && npm run audit",
         "version": "npm run build"
