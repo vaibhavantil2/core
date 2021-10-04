@@ -6,6 +6,8 @@ export interface ElementCreationWrapperState {
 	addWorkspace?: CreateElementRequestOptions;
 	systemButtons?: CreateElementRequestOptions;
 	workspaceContents: CreateWorkspaceContentsRequestOptions[];
+	groupIcons: CreateGroupRequestOptions[];
+	groupTabControls: CreateGroupRequestOptions[];
 	groupHeaderButtons: CreateGroupRequestOptions[];
 	saveWorkspacePopup?: SaveWorkspacePopupComponentProps & CreateElementRequestOptions;
 	addApplicationPopup?: AddApplicationPopupComponentProps & CreateElementRequestOptions;
@@ -17,11 +19,17 @@ export interface WorkspacesWrapperProps {
 	onCreateAddWorkspaceRequested?: (options: CreateElementRequestOptions) => void;
 	onCreateSystemButtonsRequested?: (options: CreateElementRequestOptions) => void;
 	onCreateWorkspaceContentsRequested?: (options: CreateElementRequestOptions) => void;
+	onCreateGroupIconsRequested?: (options: CreateGroupRequestOptions) => void;
+	onCreateGroupTabControlsRequested?: (options: CreateGroupRequestOptions) => void;
 	onCreateGroupHeaderButtonsRequested?: (options: CreateGroupRequestOptions) => void;
 	onCreateSaveWorkspacePopupRequested?: (options: SaveWorkspacePopupComponentProps & CreateElementRequestOptions) => void;
 	onCreateAddApplicationPopupRequested?: (options: AddApplicationPopupComponentProps & CreateElementRequestOptions) => void;
 	onCreateAddWorkspacePopupRequested?: (options: AddWorkspacePopupComponentProps & CreateElementRequestOptions) => void;
 	onHideSystemPopupsRequested?: (cb: () => void) => void;
+	onRemoveWorkspaceContentsRequested?: (options: RemoveWorkspaceContentsRequestOptions) => void;
+	onRemoveGroupIconsRequested?: (options: RemoveGroupRequestOptions) => void;
+	onRemoveGroupTabControlsRequested?: (options: RemoveGroupRequestOptions) => void;
+	onRemoveGroupHeaderButtonsRequested?: (options: RemoveGroupRequestOptions) => void;
 	externalPopupApplications: {
 		addApplication: string | undefined;
 		saveWorkspace: string | undefined;
@@ -32,7 +40,13 @@ export interface WorkspacesWrapperProps {
 
 export interface WorkspaceContentsProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
 	workspaceId: string;
+	frameId?: string;
 	containerElement?: HTMLElement;
+}
+
+export interface GroupHeaderComponentProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
+	groupId: string;
+	workspaceId: string;
 }
 
 export interface CreateWorkspaceContentsRequestOptions extends CreateElementRequestOptions {
@@ -40,6 +54,15 @@ export interface CreateWorkspaceContentsRequestOptions extends CreateElementRequ
 }
 
 export interface CreateGroupRequestOptions extends CreateElementRequestOptions {
+	groupId: string;
+	workspaceId: string;
+}
+
+export interface RemoveWorkspaceContentsRequestOptions {
+	workspaceId: string;
+}
+
+export interface RemoveGroupRequestOptions {
 	groupId: string;
 }
 
@@ -86,7 +109,9 @@ export interface WorkspacesProps extends React.DetailedHTMLProps<React.HTMLAttri
 		containers?: {
 			group?: {
 				header?: {
-					ButtonsComponent?: React.ComponentType<any>;
+					IconComponent?: React.ComponentType<GroupHeaderComponentProps>;
+					TabControlsComponent?: React.ComponentType<GroupHeaderComponentProps>;
+					ButtonsComponent?: React.ComponentType<GroupHeaderComponentProps>;
 				};
 			};
 		};
@@ -108,6 +133,7 @@ export interface Bounds {
 
 interface ButtonProps extends React.DetailedHTMLProps<React.HtmlHTMLAttributes<HTMLLIElement>, HTMLLIElement> {
 	title?: string;
+	frameId?: string;
 }
 
 export type AddWorkspaceButtonProps = ButtonProps;
@@ -125,7 +151,9 @@ export interface WorkspacePopupProps extends Omit<PopupProps, "ref"> {
 	popupRef?: RefObject<PopupActions>;
 }
 
-export type GlueLogoProps = React.DetailedHTMLProps<React.HtmlHTMLAttributes<HTMLSpanElement>, HTMLSpanElement>;
+export interface GlueLogoProps extends React.DetailedHTMLProps<React.HtmlHTMLAttributes<HTMLSpanElement>, HTMLSpanElement> {
+	frameId?: string;
+}
 
 export interface SaveWorkspacePopupProps extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
 	workspaceId: string,

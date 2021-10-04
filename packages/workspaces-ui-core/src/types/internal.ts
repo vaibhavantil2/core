@@ -314,27 +314,51 @@ export interface WorkspaceDropOptions {
 }
 
 export interface ComponentFactory {
-    createLogo?: (options: { domNode: HTMLElement }, frameId: string) => void;
-    createAddWorkspace?: (options: { domNode: HTMLElement }, frameId: string) => void;
-    createSystemButtons?: (options: { domNode: HTMLElement }, frameId: string) => void;
-    createWorkspaceContents?: (options: { domNode: HTMLElement, workspaceId: string }) => void;
+    createLogo?: (options: { domNode: HTMLElement; frameId: string }) => void;
+    createAddWorkspace?: (options: { domNode: HTMLElement; frameId: string }) => void;
+    createSystemButtons?: (options: { domNode: HTMLElement; frameId: string }) => void;
+    createWorkspaceContents?: (options: { domNode: HTMLElement; workspaceId: string }) => void;
+
+    createGroupIcons?: (options: { domNode: HTMLElement; groupId: string; workspaceId: string }) => void;
+    createGroupTabControls?: (options: { domNode: HTMLElement; groupId: string; workspaceId: string }) => void;
+    createGroupHeaderButtons?: (options: { domNode: HTMLElement; groupId: string; workspaceId: string }) => void;
+
     createAddApplicationPopup?: (options: AddApplicationPopupOptions) => void;
     createSaveWorkspacePopup?: (options: SaveWorkspacePopupOptions) => void;
     createAddWorkspacePopup?: (options: OpenWorkspacePopupOptions) => void;
 
     hideSystemPopups?: (cb: () => void) => void;
+
+    removeWorkspaceContents?: (options: { workspaceId: string }) => void;
+    removeGroupIcons?: (options: { groupId: string }) => void;
+    removeGroupTabControls?: (options: { groupId: string }) => void;
+    removeGroupHeaderButtons?: (options: { groupId: string }) => void;
+
+    createId?: () => string;
 }
 
 export interface DecoratedComponentFactory {
     createLogo?: (options: { domNode: HTMLElement }) => void;
     createAddWorkspace?: (options: { domNode: HTMLElement }) => void;
     createSystemButtons?: (options: { domNode: HTMLElement }) => void;
-    createWorkspaceContents?: (options: { domNode: HTMLElement, workspaceId: string }) => void;
+    createWorkspaceContents?: (options: { domNode: HTMLElement; workspaceId: string }) => void;
+
+    createGroupIcons?: (options: { domNode: HTMLElement; groupId: string; workspaceId: string }) => void;
+    createGroupTabControls?: (options: { domNode: HTMLElement; groupId: string; workspaceId: string }) => void;
+    createGroupHeaderButtons?: (options: { domNode: HTMLElement; groupId: string; workspaceId: string }) => void;
+
     createAddApplicationPopup?: (options: AddApplicationPopupOptions) => void;
     createSaveWorkspacePopup?: (options: SaveWorkspacePopupOptions) => void;
     createAddWorkspacePopup?: (options: OpenWorkspacePopupOptions) => void;
 
     hideSystemPopups?: (cb: () => void) => void;
+
+    removeWorkspaceContents?: (options: { workspaceId: string }) => void;
+    removeGroupIcons?: (options: { groupId: string }) => void;
+    removeGroupTabControls?: (options: { groupId: string }) => void;
+    removeGroupHeaderButtons?: (options: { groupId: string }) => void;
+
+    createId?: () => string;
 }
 
 interface BasePayloadOptions {
@@ -361,10 +385,13 @@ export interface OpenWorkspacePopupOptions extends BasePayloadOptions {
 }
 
 export interface VisibilityState {
-    logo: [options: { domNode: HTMLElement }, frameId: string],
-    addWorkspace: [options: { domNode: HTMLElement }, frameId: string],
-    systemButtons: [options: { domNode: HTMLElement }, frameId: string],
-    workspaceContents: Array<[options: { domNode: HTMLElement, workspaceId: string }]>
+    logo: [{ domNode: HTMLElement; frameId: string }];
+    addWorkspace: [{ domNode: HTMLElement; frameId: string }];
+    systemButtons: [{ domNode: HTMLElement; frameId: string }];
+    workspaceContents: Array<[{ domNode: HTMLElement; workspaceId: string }]>;
+    groupIcons: Array<[{ domNode: HTMLElement; workspaceId: string; groupId: string }]>;
+    groupTabControls: Array<[{ domNode: HTMLElement; workspaceId: string; groupId: string }]>;
+    groupHeaderButtons: Array<[{ domNode: HTMLElement; workspaceId: string; groupId: string }]>;
 }
 
 export type WorkspaceOptionsWithTitle = GoldenLayout.WorkspacesOptions & { title?: string };
@@ -404,7 +431,7 @@ export interface WorkspacesLoadingConfig {
          * Valid only in `delayed` mode. Number of applications in a batch to be loaded at each interval.
          */
         batch?: number;
-    }
+    };
     /**
      * Visual indicator `Zzz` on tabs of apps which are not loaded yet. Useful for developing and testing purposes.
      */

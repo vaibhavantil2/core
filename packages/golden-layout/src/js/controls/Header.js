@@ -37,9 +37,31 @@ lm.controls.Header = function (layoutManager, parent) {
 		}
 	} else if (this.layoutManager._componentFactory) {
 		const headerControls = this.element.children(".lm_controls")[0];
+		const tabControls = this.element.children(".lm_tabs_controls")[0];
+		const logoContainer = this.element.children(".lm_logo")[0];
+
+		if (this.layoutManager._componentFactory.createGroupIcons) {
+			this.layoutManager._componentFactory.createGroupIcons({
+				domNode: logoContainer,
+				groupId: lm.utils.idAsString(parent.config.id),
+				workspaceId: this.layoutManager.config.workspacesOptions.workspaceId
+			});
+		}
+
+		if (this.layoutManager._componentFactory.createGroupTabControls) {
+			this.layoutManager._componentFactory.createGroupTabControls({
+				domNode: tabControls,
+				groupId: lm.utils.idAsString(parent.config.id),
+				workspaceId: this.layoutManager.config.workspacesOptions.workspaceId
+			});
+		}
+
 		if (this.layoutManager._componentFactory.createGroupHeaderButtons) {
-			console.log(parent, parent.config.id);
-			this.layoutManager._componentFactory.createGroupHeaderButtons({ domNode: headerControls, groupId: lm.utils.idAsString(parent.config.id) });
+			this.layoutManager._componentFactory.createGroupHeaderButtons({
+				domNode: headerControls,
+				groupId: lm.utils.idAsString(parent.config.id),
+				workspaceId: this.layoutManager.config.workspacesOptions.workspaceId
+			});
 		}
 	}
 

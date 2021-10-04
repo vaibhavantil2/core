@@ -1,4 +1,4 @@
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import manager from "./manager";
 import facade from "./interop/facade";
 import jquery from "jquery";

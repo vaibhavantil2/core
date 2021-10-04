@@ -642,6 +642,11 @@ declare module '@glue42/golden-layout' {
              * The name of the layout with which the workspace is associated with
              */
             layoutName?: string;
+
+            /**
+             * The id of the corresponding workspace
+             */
+            workspaceId?:string;
         }
 
         export interface Config {

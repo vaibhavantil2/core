@@ -3,7 +3,7 @@ import AddApplicationPopup from "./defaultComponents/popups/addApplication/AddAp
 import AddWorkspacePopup from "./defaultComponents/popups/addWorkspace/AddWorkspacePopup";
 import SaveWorkspacePopup from "./defaultComponents/popups/saveWorkspace/SaveWorkspacePopup";
 import Portal from "./Portal";
-import { AddApplicationPopupProps, CreateElementRequestOptions, ElementCreationWrapperState, AddWorkspacePopupProps, SaveWorkspacePopupProps, WorkspacesProps, CreateWorkspaceContentsRequestOptions, CreateGroupRequestOptions } from "./types/internal";
+import { AddApplicationPopupProps, CreateElementRequestOptions, ElementCreationWrapperState, AddWorkspacePopupProps, SaveWorkspacePopupProps, WorkspacesProps, CreateWorkspaceContentsRequestOptions, CreateGroupRequestOptions, RemoveWorkspaceContentsRequestOptions, RemoveGroupRequestOptions } from "./types/internal";
 import WorkspacesWrapper from "./WorkspacesWrapper";
 
 class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, ElementCreationWrapperState> {
@@ -14,6 +14,8 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
             addWorkspace: undefined,
             systemButtons: undefined,
             workspaceContents: [],
+            groupIcons: [],
+            groupTabControls: [],
             groupHeaderButtons: [],
             saveWorkspacePopup: undefined,
             addApplicationPopup: undefined,
@@ -73,6 +75,39 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
         });
     }
 
+    onCreateGroupIconsRequested = (options: CreateGroupRequestOptions) => {
+        if (this.state.groupIcons.some(g => g.domNode === options.domNode)) {
+            return;
+        }
+
+        this.setState(s => {
+            return {
+                ...s,
+                groupIcons: [
+                    ...s.groupIcons,
+                    options
+                ]
+            }
+        });
+    }
+
+    onCreateGroupTabControlsRequested = (options: CreateGroupRequestOptions) => {
+        console.log("trying to add new trab control", options);
+        if (this.state.groupTabControls.some(g => g.domNode === options.domNode)) {
+            return;
+        }
+        console.log("Added new tab control");
+        this.setState(s => {
+            return {
+                ...s,
+                groupTabControls: [
+                    ...s.groupTabControls,
+                    options
+                ]
+            }
+        });
+    }
+
     onCreateGroupHeaderButtonsRequested = (options: CreateGroupRequestOptions) => {
         if (this.state.groupHeaderButtons.some(g => g.domNode === options.domNode)) {
             return;
@@ -123,6 +158,50 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
                 addWorkspacePopup: options
             }
         }, options.callback);
+    }
+
+    onRemoveWorkspaceContentsRequested = (options: RemoveWorkspaceContentsRequestOptions) => {
+        this.setState(s => {
+            return {
+                ...s,
+                workspaceContents: [
+                    ...s.workspaceContents.filter((wc) => wc.workspaceId !== options.workspaceId),
+                ]
+            }
+        });
+    }
+
+    onRemoveGroupIconsRequested = (options: RemoveGroupRequestOptions) => {
+        this.setState(s => {
+            return {
+                ...s,
+                groupIcons: [
+                    ...s.groupIcons.filter((wc) => wc.groupId !== options.groupId),
+                ]
+            }
+        });
+    }
+
+    onRemoveGroupTabControlsRequested = (options: RemoveGroupRequestOptions) => {
+        this.setState(s => {
+            return {
+                ...s,
+                groupTabControls: [
+                    ...s.groupTabControls.filter((wc) => wc.groupId !== options.groupId),
+                ]
+            }
+        });
+    }
+
+    onRemoveGroupHeaderButtonsRequested = (options: RemoveGroupRequestOptions) => {
+        this.setState(s => {
+            return {
+                ...s,
+                groupHeaderButtons: [
+                    ...s.groupHeaderButtons.filter((wc) => wc.groupId !== options.groupId),
+                ]
+            }
+        });
     }
 
     onHideSystemPopups = (cb: () => void) => {
@@ -179,16 +258,46 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
         });
     }
 
+    renderGroupIcons = () => {
+        const GroupIconComponent = this.props.components?.containers?.group?.header?.IconComponent;
+
+        return this.state.groupIcons.map((g) => {
+            if (!GroupIconComponent || !g.domNode) {
+                return;
+            }
+
+            const { domNode, callback, ...options } = g;
+            return <Portal key={`${options.groupId}-icons`} domNode={domNode}><GroupIconComponent {...options} /></Portal>
+        });
+    }
+
+    renderGroupTabControls = () => {
+        const GroupTabControlsComponent = this.props.components?.containers?.group?.header?.TabControlsComponent;
+
+        return this.state.groupTabControls.map((g) => {
+            console.log("trying to render new tab control", g);
+            if (!GroupTabControlsComponent || !g.domNode) {
+                return;
+            }
+
+            const { domNode, callback, ...options } = g;
+            return <Portal key={`${options.groupId}-tab-controls`} domNode={domNode}><GroupTabControlsComponent {...options} /></Portal>
+        });
+    }
+
     renderGroupHeaderButtons = () => {
         const GroupHeaderButtonsComponent = this.props.components?.containers?.group?.header?.ButtonsComponent;
 
         return this.state.groupHeaderButtons.map((g) => {
             if (!GroupHeaderButtonsComponent || !g.domNode) {
+                console.log("cannot find group header node");
                 return;
             }
 
+            console.log("found dom node passing", g.domNode, this.state.groupHeaderButtons.length);
+
             const { domNode, callback, ...options } = g;
-            return <Portal key={options.groupId} domNode={domNode}><GroupHeaderButtonsComponent {...options} /></Portal>
+            return <Portal key={`${options.groupId}-buttons`} domNode={domNode}><GroupHeaderButtonsComponent {...options} /></Portal>
         });
     }
 
@@ -255,6 +364,8 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
                 {this.renderAddWorkspaceComponent()}
                 {this.renderSystemButtonsComponent()}
                 {this.renderWorkspaceContents()}
+                {this.renderGroupIcons()}
+                {this.renderGroupTabControls()}
                 {this.renderGroupHeaderButtons()}
                 {this.renderSaveWorkspacePopupComponent()}
                 {this.renderAddApplicationPopupComponent()}
@@ -264,10 +375,16 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
                     onCreateAddWorkspaceRequested={components?.header?.AddWorkspaceComponent ? this.onCreateAddWorkspaceRequested : undefined}
                     onCreateLogoRequested={components?.header?.LogoComponent ? this.onCreateLogoRequested : undefined}
                     onCreateWorkspaceContentsRequested={components?.WorkspaceContents ? this.onCreateWorkspaceContentsRequested : undefined}
+                    onCreateGroupIconsRequested={components?.containers?.group?.header?.IconComponent ? this.onCreateGroupIconsRequested : undefined}
+                    onCreateGroupTabControlsRequested={components?.containers?.group?.header?.TabControlsComponent ? this.onCreateGroupTabControlsRequested : undefined}
                     onCreateGroupHeaderButtonsRequested={components?.containers?.group?.header?.ButtonsComponent ? this.onCreateGroupHeaderButtonsRequested : undefined}
                     onCreateSaveWorkspacePopupRequested={onCreateSaveWorkspaceRequested}
                     onCreateAddApplicationPopupRequested={onCreateAddApplicationRequested}
                     onCreateAddWorkspacePopupRequested={onCreateAddWorkspacePopupRequested}
+                    onRemoveWorkspaceContentsRequested={components?.WorkspaceContents ? this.onRemoveWorkspaceContentsRequested : undefined}
+                    onRemoveGroupIconsRequested={components?.containers?.group?.header?.IconComponent ? this.onRemoveGroupIconsRequested : undefined}
+                    onRemoveGroupTabControlsRequested={components?.containers?.group?.header?.TabControlsComponent ? this.onRemoveGroupTabControlsRequested : undefined}
+                    onRemoveGroupHeaderButtonsRequested={components?.containers?.group?.header?.ButtonsComponent ? this.onRemoveGroupHeaderButtonsRequested : undefined}
                     onHideSystemPopupsRequested={this.onHideSystemPopups}
                     externalPopupApplications={externalPopupApplications}
                     glue={glue}

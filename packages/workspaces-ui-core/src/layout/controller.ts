@@ -17,6 +17,7 @@ import { WorkspaceWrapper } from "../state/workspaceWrapper";
 import { WorkspaceWindowWrapper } from "../state/windowWrapper";
 import uiExecutor from "../uiExecutor";
 import { LockGroupArguments } from "../interop/types";
+import elementsObserver from "./elementsObserver";
 
 export class LayoutController {
     private readonly _maximizedId = "__glMaximised";
@@ -1248,8 +1249,9 @@ export class LayoutController {
 
         workspaceContentItem.config.workspacesConfig = mergedOptions;
         (config as GoldenLayout.Config).workspacesOptions = mergedOptions;
+        (config as GoldenLayout.Config).workspacesOptions.workspaceId = id;
 
-        const layout = new GoldenLayout(config as GoldenLayout.Config, $(`#nestHere${id}`));
+        const layout = new GoldenLayout(config as GoldenLayout.Config, $(`#nestHere${id}`), componentStateMonitor.decoratedFactory);
         store.addOrUpdate(id, []);
 
         this.registerEmptyWindowComponent(layout, id);
@@ -1335,19 +1337,10 @@ export class LayoutController {
 
         layout.on("stackCreated", (stack: GoldenLayout.Stack) => {
             const wrapper = new WorkspaceContainerWrapper(this._stateResolver, stack, this._frameId);
-            const button = document.createElement("li");
-            button.classList.add("lm_add_button");
-
-            button.onclick = (e): void => {
-                e.stopPropagation();
-                this.emitter.raiseEvent("add-button-clicked", {
-                    args: {
-                        laneId: idAsString(stack.config.id),
-                        workspaceId: id,
-                        bounds: getElementBounds(button),
-                    }
-                });
-            };
+            const hasCustomHeaderButtons = componentStateMonitor.decoratedFactory.createGroupHeaderButtons;
+            elementsObserver.initStackObservation(stack);
+            const addWindowButton = document.createElement("li");
+            addWindowButton.classList.add("lm_add_button");
 
             const maximizeButton = $(stack.element)
                 .children(".lm_header")
@@ -1356,37 +1349,69 @@ export class LayoutController {
 
             maximizeButton.addClass("workspace_content");
 
-            if (wrapper.showMaximizeButton === false) {
-                uiExecutor.hideMaximizeButton(stack);
-            }
+            elementsObserver.observeStackEjectButton(stack, (ejectButton) => {
+                if ((layout.config.workspacesOptions as any).showEjectButtons === false && wrapper.showEjectButton !== true) {
+                    uiExecutor.hideEjectButton(stack);
+                }
 
-            const ejectButton = (stack as any)
-                .element
-                .children(".lm_header")
-                .children(".lm_controls")
-                .children(".lm_popout")[0];
+                if (wrapper.showEjectButton === false) {
+                    uiExecutor.hideEjectButton(stack);
+                }
 
-            if ((layout.config.workspacesOptions as any).showEjectButtons === false && wrapper.showEjectButton !== true) {
-                uiExecutor.hideAddWindowButton(stack);
-            }
+                if (ejectButton) {
+                    ejectButton.onclick = (): void => {
+                        const activeContentItem = stack.getActiveContentItem();
+                        this.emitter.raiseEvent("eject-requested", {
+                            item: activeContentItem,
+                        });
+                    };
+                }
+            });
 
-            if (wrapper.showEjectButton === false) {
-                uiExecutor.hideEjectButton(stack);
-            }
+            elementsObserver.observeStackMaximizeButton(stack, (maxButton) => {
+                if (hasCustomHeaderButtons) {
+                    maxButton.onclick = () => stack.toggleMaximise();
+                }
+
+                if (wrapper.showMaximizeButton === false) {
+                    uiExecutor.hideMaximizeButton(stack);
+                }
+            });
+
+            elementsObserver.observeStackAddWindowButton(stack, (addWindowBtn) => {
+                addWindowBtn.setAttribute("title", "add window");
+                addWindowBtn.onclick = (e): void => {
+                    e.stopPropagation();
+                    this.emitter.raiseEvent("add-button-clicked", {
+                        args: {
+                            laneId: idAsString(stack.config.id),
+                            workspaceId: id,
+                            bounds: getElementBounds(addWindowBtn),
+                        }
+                    });
+                };
+
+                if ((layout.config.workspacesOptions as any).showAddWindowButtons === false && wrapper.showAddWindowButton !== true) {
+                    uiExecutor.hideAddWindowButton(stack);
+                }
+
+                if (wrapper.showAddWindowButton === false) {
+                    uiExecutor.hideAddWindowButton(stack);
+                }
+            });
 
             stack.on("maximized", () => {
-                maximizeButton.addClass("lm_restore");
-                maximizeButton.attr("title", this._stackRestoreLabel);
+                const maxButton = elementsObserver.getStackMaximizeButton(stack);
+                $(maxButton).addClass("lm_restore");
+                $(maxButton).attr("title", this._stackRestoreLabel);
             });
 
             stack.on("minimized", () => {
-                maximizeButton.removeClass("lm_restore");
-                maximizeButton.attr("title", this._stackMaximizeLabel);
-            });
+                const maxButton = elementsObserver.getStackMaximizeButton(stack);
 
-            if (!this._options.disableCustomButtons) {
-                stack.header.controlsContainer.prepend($(button));
-            }
+                $(maxButton).removeClass("lm_restore");
+                $(maxButton).attr("title", this._stackMaximizeLabel);
+            });
 
             if ((layout.config.workspacesOptions as any).showAddWindowButtons === false && wrapper.showAddWindowButton !== true) {
                 uiExecutor.hideAddWindowButton(stack);
@@ -1432,11 +1457,6 @@ export class LayoutController {
                     .filter((t: Window) => t.id !== clickedTabId);
 
                 this.emitter.raiseEvent("selection-changed", { toBack, toFront });
-            });
-
-            stack.on("popoutRequested", () => {
-                const activeItem = stack.getActiveContentItem();
-                this.emitter.raiseEvent("eject-requested", { item: activeItem });
             });
         });
 
@@ -1544,40 +1564,30 @@ export class LayoutController {
                     };
                 }
 
+                elementsObserver.initFrameStackObservation(stack);
+
                 const headerElement: HTMLElement = stack.header.element[0];
-                const mutationObserver = new MutationObserver(() => {
-                    const addButton = this.getElementByClass(headerElement, "lm_add_button");
-
-                    if (addButton && componentStateMonitor.decoratedFactory.createAddWorkspace) {
-                        addButton.onclick = (e: MouseEvent): void => {
-                            e.stopPropagation();
-                            this.emitter.raiseEvent("workspace-add-button-clicked", { bounds: getElementBounds(addButton) });
-                        };
-                    }
-                });
-
-                const observerConfig = { attributes: false, childList: true, subtree: true };
-
-                mutationObserver.observe(stack.header.element[0], observerConfig);
-                if (!this._options.disableCustomButtons && !componentStateMonitor.decoratedFactory?.createAddWorkspace) {
-
+                const hasCustomAddWorkspaceButton = componentStateMonitor.decoratedFactory?.createAddWorkspace;
+                if (!hasCustomAddWorkspaceButton) {
                     const button = document.createElement("li");
                     button.classList.add("lm_add_button");
 
-                    button.onclick = (e): void => {
-                        e.stopPropagation();
-                        this._emitter.raiseEvent("workspace-add-button-clicked", {});
-                    };
-
                     stack.header.workspaceControlsContainer.prepend($(button));
                 }
+
+                elementsObserver.observeStackFrameAddWorkspaceButton(stack, (addWorkspaceButton) => {
+                    addWorkspaceButton.onclick = (e: MouseEvent): void => {
+                        e.stopPropagation();
+                        this.emitter.raiseEvent("workspace-add-button-clicked", { bounds: getElementBounds(addWorkspaceButton) });
+                    };
+                });
 
                 if (!componentStateMonitor.decoratedFactory.createLogo) {
                     const glueLogo = document.createElement("span");
 
                     glueLogo.classList.add("logo_type");
 
-                    const container = stack.header.element[0].getElementsByClassName("lm_logo")[0];
+                    const container = headerElement.getElementsByClassName("lm_logo")[0];
 
                     if (container) {
                         container.appendChild(glueLogo);

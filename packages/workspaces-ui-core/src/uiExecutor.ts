@@ -56,7 +56,7 @@ export class WorkspacesUIExecutor {
 
         saveButton.attr("title", WorkspacesUIExecutor.SaveWorkspaceButtonLabel);
 
-        if (workspace.layout && (workspace.layout.config.workspacesOptions as any).showSaveButton === false) {
+        if (workspace.layout && workspace.layout.config.workspacesOptions.showSaveButton === false) {
             saveButton.hide();
         }
     }
@@ -124,11 +124,8 @@ export class WorkspacesUIExecutor {
         }
 
         const maximiseButton = containerContentItem.header.element.children(".lm_controls").children(".lm_maximise");
-        if (!maximiseButton) {
-            return;
-        }
 
-        maximiseButton.show();
+        maximiseButton?.show();
     }
 
     public hideMaximizeButton(itemId: string | GoldenLayout.Stack): void {
@@ -144,11 +141,8 @@ export class WorkspacesUIExecutor {
         }
 
         const maximiseButton = containerContentItem.header.element.children(".lm_controls").children(".lm_maximise");
-        if (!maximiseButton) {
-            return;
-        }
 
-        maximiseButton.hide();
+        maximiseButton?.hide();
     }
 
     public showEjectButton(itemId: string | GoldenLayout.Stack): void {
@@ -163,11 +157,8 @@ export class WorkspacesUIExecutor {
             throw new Error(`Cannot show eject button of ${containerContentItem.type} ${containerContentItem.config.id}`);
         }
         const ejectButton = containerContentItem.header.element.children(".lm_controls").children(".lm_popout");
-        if (!ejectButton) {
-            return;
-        }
 
-        ejectButton.show();
+        ejectButton?.show();
     }
 
     public hideEjectButton(itemId: string | GoldenLayout.Stack): void {
@@ -182,11 +173,8 @@ export class WorkspacesUIExecutor {
             throw new Error(`Cannot hide eject button of ${containerContentItem.type} ${containerContentItem.config.id}`);
         }
         const ejectButton = containerContentItem.header.element.children(".lm_controls").children(".lm_popout");
-        if (!ejectButton) {
-            return;
-        }
 
-        ejectButton.hide();
+        ejectButton?.hide();
     }
 
     public showAddWindowButton(itemId: string | GoldenLayout.Stack): void {
@@ -201,16 +189,12 @@ export class WorkspacesUIExecutor {
             throw new Error(`Cannot show add window button of ${containerContentItem.type} ${containerContentItem.config.id}`);
         }
 
-        if ((containerContentItem.config.workspacesConfig as any).showAddWindowButton === false) {
+        if (containerContentItem.config.workspacesConfig.showAddWindowButton === false) {
             return;
         }
 
         const button = containerContentItem.header.element.children(".lm_controls").children(".lm_add_button");
-        if (!button) {
-            return;
-        }
-
-        button.show();
+        button?.show();
     }
 
     public hideAddWindowButton(itemId: string | GoldenLayout.Stack): void {
@@ -225,11 +209,7 @@ export class WorkspacesUIExecutor {
             throw new Error(`Cannot hide add window button of ${containerContentItem.type} ${containerContentItem.config.id}`);
         }
         const button = containerContentItem.header.element.children(".lm_controls").children(".lm_add_button");
-        if (!button) {
-            return;
-        }
-
-        button.hide();
+        button?.hide();
     }
 
     public showWindowCloseButtons(workspaceId: string): void {
