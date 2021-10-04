@@ -1,3 +1,5 @@
+2.3.0
+feat: Added new customizable zones in the header of the groups
 2.2.0
 feat: Added improved behavior of maximized components being manipulated
 2.1.6

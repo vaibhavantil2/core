@@ -1,3 +1,5 @@
+1.6.0
+feat: Added new customizable zones in the headers of the groups
 1.5.1
 chore: bump due to dependencies update
 1.5.0
