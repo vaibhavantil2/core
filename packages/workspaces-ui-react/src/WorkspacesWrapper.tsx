@@ -35,6 +35,7 @@ class WorkspacesWrapper extends React.Component<WorkspacesWrapperProps> {
             createSystemButtons: this.props.onCreateSystemButtonsRequested,
             createWorkspaceContents: this.props.onCreateWorkspaceContentsRequested,
             createGroupIcons: this.props.onCreateGroupIconsRequested,
+            createGroupTabs: this.props.onCreateGroupTabRequested,
             createGroupTabControls: this.props.onCreateGroupTabControlsRequested,
             createGroupHeaderButtons: this.props.onCreateGroupHeaderButtonsRequested,
             createSaveWorkspacePopup: this.props.onCreateSaveWorkspacePopupRequested,

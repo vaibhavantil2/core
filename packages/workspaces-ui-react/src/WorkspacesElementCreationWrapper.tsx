@@ -3,7 +3,7 @@ import AddApplicationPopup from "./defaultComponents/popups/addApplication/AddAp
 import AddWorkspacePopup from "./defaultComponents/popups/addWorkspace/AddWorkspacePopup";
 import SaveWorkspacePopup from "./defaultComponents/popups/saveWorkspace/SaveWorkspacePopup";
 import Portal from "./Portal";
-import { AddApplicationPopupProps, CreateElementRequestOptions, ElementCreationWrapperState, AddWorkspacePopupProps, SaveWorkspacePopupProps, WorkspacesProps, CreateWorkspaceContentsRequestOptions, CreateGroupRequestOptions, RemoveWorkspaceContentsRequestOptions, RemoveGroupRequestOptions } from "./types/internal";
+import { AddApplicationPopupProps, CreateElementRequestOptions, ElementCreationWrapperState, AddWorkspacePopupProps, SaveWorkspacePopupProps, WorkspacesProps, CreateWorkspaceContentsRequestOptions, CreateGroupRequestOptions, RemoveWorkspaceContentsRequestOptions, RemoveGroupRequestOptions, CreateGroupTabRequestOptions } from "./types/internal";
 import WorkspacesWrapper from "./WorkspacesWrapper";
 
 class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, ElementCreationWrapperState> {
@@ -15,6 +15,7 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
             systemButtons: undefined,
             workspaceContents: [],
             groupIcons: [],
+            groupTabs: [],
             groupTabControls: [],
             groupHeaderButtons: [],
             saveWorkspacePopup: undefined,
@@ -85,6 +86,22 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
                 ...s,
                 groupIcons: [
                     ...s.groupIcons,
+                    options
+                ]
+            }
+        });
+    }
+
+    onCreateGroupTabRequested = (options: CreateGroupTabRequestOptions) => {
+        if (this.state.groupTabs.some(g => g.domNode === options.domNode)) {
+            return;
+        }
+
+        this.setState(s => {
+            return {
+                ...s,
+                groupTabs: [
+                    ...s.groupTabs,
                     options
                 ]
             }
@@ -269,6 +286,19 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
         });
     }
 
+    renderGroupTabs = () => {
+        const TabComponent = this.props.components?.containers?.group?.header?.TabComponent;
+
+        return this.state.groupTabs.map((g) => {
+            if (!TabComponent || !g.domNode) {
+                return;
+            }
+
+            const { domNode, callback, ...options } = g;
+            return <Portal key={`${options.windowId}-tab`} domNode={domNode}><TabComponent {...options} /></Portal>
+        });
+    }
+
     renderGroupTabControls = () => {
         const GroupTabControlsComponent = this.props.components?.containers?.group?.header?.TabControlsComponent;
 
@@ -359,6 +389,7 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
                 {this.renderSystemButtonsComponent()}
                 {this.renderWorkspaceContents()}
                 {this.renderGroupIcons()}
+                {this.renderGroupTabs()}
                 {this.renderGroupTabControls()}
                 {this.renderGroupHeaderButtons()}
                 {this.renderSaveWorkspacePopupComponent()}
@@ -370,6 +401,7 @@ class WorkspacesElementCreationWrapper extends React.Component<WorkspacesProps, 
                     onCreateLogoRequested={components?.header?.LogoComponent ? this.onCreateLogoRequested : undefined}
                     onCreateWorkspaceContentsRequested={components?.WorkspaceContents ? this.onCreateWorkspaceContentsRequested : undefined}
                     onCreateGroupIconsRequested={components?.containers?.group?.header?.IconComponent ? this.onCreateGroupIconsRequested : undefined}
+                    onCreateGroupTabRequested={components?.containers?.group?.header?.TabComponent ? this.onCreateGroupTabRequested : undefined}
                     onCreateGroupTabControlsRequested={components?.containers?.group?.header?.TabControlsComponent ? this.onCreateGroupTabControlsRequested : undefined}
                     onCreateGroupHeaderButtonsRequested={components?.containers?.group?.header?.ButtonsComponent ? this.onCreateGroupHeaderButtonsRequested : undefined}
                     onCreateSaveWorkspacePopupRequested={onCreateSaveWorkspaceRequested}

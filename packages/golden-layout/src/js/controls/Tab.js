@@ -56,6 +56,14 @@ lm.controls.Tab = function (header, contentItem) {
 		this.contentItem.container.tab = this;
 		this.contentItem.container.emit('tab', this);
 	}
+
+	if(this._layoutManager._componentFactory && this._layoutManager._componentFactory.createGroupTabs){
+		this._layoutManager._componentFactory.createGroupTabs({
+			domNode: this.element[0],
+			windowId: lm.utils.idAsString(this.contentItem.config.id),
+			workspaceId: this._layoutManager.config.workspacesOptions.workspaceId
+		});
+	}
 };
 
 /**

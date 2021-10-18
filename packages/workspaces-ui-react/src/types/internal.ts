@@ -7,6 +7,7 @@ export interface ElementCreationWrapperState {
 	systemButtons?: CreateElementRequestOptions;
 	workspaceContents: CreateWorkspaceContentsRequestOptions[];
 	groupIcons: CreateGroupRequestOptions[];
+	groupTabs: CreateGroupTabRequestOptions[];
 	groupTabControls: CreateGroupRequestOptions[];
 	groupHeaderButtons: CreateGroupRequestOptions[];
 	saveWorkspacePopup?: SaveWorkspacePopupComponentProps & CreateElementRequestOptions;
@@ -20,6 +21,7 @@ export interface WorkspacesWrapperProps {
 	onCreateSystemButtonsRequested?: (options: CreateElementRequestOptions) => void;
 	onCreateWorkspaceContentsRequested?: (options: CreateElementRequestOptions) => void;
 	onCreateGroupIconsRequested?: (options: CreateGroupRequestOptions) => void;
+	onCreateGroupTabRequested?: (options: CreateGroupTabRequestOptions) => void;
 	onCreateGroupTabControlsRequested?: (options: CreateGroupRequestOptions) => void;
 	onCreateGroupHeaderButtonsRequested?: (options: CreateGroupRequestOptions) => void;
 	onCreateSaveWorkspacePopupRequested?: (options: SaveWorkspacePopupComponentProps & CreateElementRequestOptions) => void;
@@ -49,6 +51,10 @@ export interface GroupHeaderComponentProps extends React.DetailedHTMLProps<React
 	workspaceId: string;
 }
 
+export interface GroupTabComponentProps extends GroupHeaderComponentProps {
+	windowId: string;
+}
+
 export interface CreateWorkspaceContentsRequestOptions extends CreateElementRequestOptions {
 	workspaceId: string
 }
@@ -56,6 +62,10 @@ export interface CreateWorkspaceContentsRequestOptions extends CreateElementRequ
 export interface CreateGroupRequestOptions extends CreateElementRequestOptions {
 	groupId: string;
 	workspaceId: string;
+}
+
+export interface CreateGroupTabRequestOptions extends CreateGroupRequestOptions {
+	windowId: string;
 }
 
 export interface RemoveWorkspaceContentsRequestOptions {
@@ -110,6 +120,7 @@ export interface WorkspacesProps extends React.DetailedHTMLProps<React.HTMLAttri
 			group?: {
 				header?: {
 					IconComponent?: React.ComponentType<GroupHeaderComponentProps>;
+					TabComponent?: React.ComponentType<GroupTabComponentProps>;
 					TabControlsComponent?: React.ComponentType<GroupHeaderComponentProps>;
 					ButtonsComponent?: React.ComponentType<GroupHeaderComponentProps>;
 				};
