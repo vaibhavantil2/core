@@ -25,7 +25,8 @@
         "publish:beta": "npm publish --tag beta",
         "build": "npm run tslint && tsc -p ./tsconfig.json && rollup -c",
         "build:tests": "tsc -p ./tsconfig.test.json",
-        "audit": "node ../../scripts/audit/index.js"
+        "audit": "echo no audit found",
+        "audit:V1": "node ../../scripts/audit/index.js"
     },
     "author": {
         "name": "Glue42",

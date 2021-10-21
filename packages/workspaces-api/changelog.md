@@ -1,3 +1,5 @@
+1.8.1
+chore: added noTabHeader to the workspace restore options
 1.8.0
 feat: updated all typings to be inline with Enterprise 3.12
 feat: added isSelected to the workspace object
