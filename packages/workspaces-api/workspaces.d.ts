@@ -124,6 +124,9 @@ export namespace Glue42Workspaces {
 
         /** Used for replacing the specified workspace instead of creating a new one */
         reuseWorkspaceId?: string;
+
+        /** Opens the workspace without a workspace tab element */
+        noTabHeader?: boolean;
     }
 
     /** An object containing the bounds of a frame */
