@@ -1,3 +1,5 @@
+1.7.2
+chore: bump due to dependencies update
 1.7.1
 feat: added support for getPermission
 1.7.0
