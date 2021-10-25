@@ -135,4 +135,4 @@ Create several contexts with different names from Application B. Input the name 
 
 ## Reference
 
-[Shared Contexts API Reference](../../../reference/core/latest/shared%20contexts/index.html) 
+For a complete list of the available Shared Contexts API methods and properties, see the [Shared Contexts API Reference Documentation](../../../reference/core/latest/shared%20contexts/index.html).

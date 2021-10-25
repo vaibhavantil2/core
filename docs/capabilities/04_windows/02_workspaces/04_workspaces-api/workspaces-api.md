@@ -362,7 +362,7 @@ const workspace = await glue.workspaces.createWorkspace(definition);
 
 *Note that if the specified constraints are invalid, they will be ignored - e.g., when min exceeds max or conflicting constraints between different elements.*
 
-You can set size constraints also when using the [Workspaces Builder API](#workspaces_builder_api) or when adding Workspace elements using the `addRow()`, `addColumn()`, `addGroup()` or `addWindow()` methods of a [`Workspace`](../../../../reference/core/latest/workspaces/index.html#Workspace) instance or [box elements](#box_elements):
+You can set size constraints also when using the [Workspaces Builder API](#workspace-creating_workspaces-workspaces_builder_api) or when adding Workspace elements using the `addRow()`, `addColumn()`, `addGroup()` or `addWindow()` methods of a [`Workspace`](../../../../reference/core/latest/workspaces/index.html#Workspace) instance or [box elements](#workspace-finding_workspace_elements-box_elements):
 
 ```javascript
 const rowDefinition = {
@@ -542,7 +542,7 @@ const definition = {
 const workspace = await glue.workspaces.createWorkspace(definition);
 ```
 
-You can set locking configuration for a Workspace and its elements also when using the [Workspaces Builder API](#workspaces_builder_api) or when adding Workspace elements using the `addRow()`, `addColumn()`, `addGroup()` or `addWindow()` methods of a [`Workspace`](../../../../reference/core/latest/workspaces/index.html#Workspace) instance or [box elements](#box_elements):
+You can set locking configuration for a Workspace and its elements also when using the [Workspaces Builder API](#workspace-creating_workspaces-workspaces_builder_api) or when adding Workspace elements using the `addRow()`, `addColumn()`, `addGroup()` or `addWindow()` methods of a [`Workspace`](../../../../reference/core/latest/workspaces/index.html#Workspace) instance or [box elements](#workspace-finding_workspace_elements-box_elements):
 
 ```javascript
 const rowDefinition = {
@@ -753,4 +753,4 @@ The application above opens a fully functioning Workspace. There are multiple re
 
 ## Reference
 
-[Workspaces API Reference](../../../../reference/core/latest/workspaces/index.html) 
+For a complete list of the available Workspaces API methods and properties, see the [Workspaces API Reference Documentation](../../../../reference/core/latest/workspaces/index.html).

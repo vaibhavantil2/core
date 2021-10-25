@@ -856,4 +856,4 @@ Use the "Push" and "Push to Private" buttons to push stream data to the default 
 
 ## Reference
 
-[Interop API Reference](../../../reference/core/latest/interop/index.html) 
+For a complete list of the available Interop API methods and properties, see the [Interop API Reference Documentation](../../../reference/core/latest/interop/index.html).

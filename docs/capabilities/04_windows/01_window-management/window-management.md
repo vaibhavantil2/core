@@ -418,4 +418,4 @@ example 13 -->
 
 ## Reference
 
-[Window Management API Reference](../../../reference/core/latest/windows/index.html) 
+For a complete list of the available Window Management API methods and properties, see the [Window Management API Reference Documentation](../../../reference/core/latest/windows/index.html).

@@ -122,7 +122,7 @@ All Glue42 Channels are available as FDC3 system Channels.
 
 [**Glue42 Core**](https://glue42.com/core/) applications can interact with FDC3 Channels by using the [Shared Contexts API](../../capabilities/data-sharing-between-apps/shared-contexts/index.html). For each FDC3 Channel there is a shared context with the same name. Use the `get()`, `set()`, `update()` and `subscribe()` methods to interact with it.
 
-*For a sample Channel Selector widget implementation, see the [Channels: Channel Selector UI](../../capabilities/data-sharing-between-apps/channels/index.html#channel_selector_ui) section, which offers example implementations for the most popular JavaScript frameworks. Note that internally the examples use the [**Glue42 Core**](https://glue42.com/core/) Channels API and not the FDC3 Channels API.*
+*For a sample Channel Selector widget implementation, see the [Channels: Channel Selector UI](../../capabilities/data-sharing-between-apps/channels/index.html#live_examples-channel_selector_ui) section. Note that internally the example uses the [**Glue42 Core**](https://glue42.com/core/) Channels API and not the FDC3 Channels API.*
 
 *For more information on using Channels, see the [FDC3 Channels API](https://fdc3.finos.org/docs/next/api/ref/Channel).*
 

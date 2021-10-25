@@ -277,4 +277,4 @@ App B is subscribed for the [`onInstanceStarted()`](../../reference/core/latest/
 
 ## Reference
 
-[Application Management API Reference](../../reference/core/latest/appmanager/index.html)
+For a complete list of the available Application Management API methods and properties, see the [Application Management API Reference Documentation](../../reference/core/latest/appmanager/index.html).
