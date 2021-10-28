@@ -99,7 +99,11 @@ Adding a custom toolbar with buttons to the Workspaces App:
 
 ## Header Area Components
 
-Use the default header components or replace them with your custom ones. Compose more than one component in a [header area zone](#header_area_zones) by passing a function that returns a `<Fragment />` component. The following example demonstrates composing the Glue42 logo and a custom button in the Logo zone:
+Use the default header components or replace them with your custom ones. Compose more than one component in a [header area zone](#header_area_zones) by passing a function that returns a `<Fragment />` component. 
+
+### Logo
+
+The following example demonstrates composing the Glue42 logo and a custom button in the Logo zone:
 
 ```javascript
 import React from "react";
@@ -126,6 +130,8 @@ export default App;
 Adding a custom button in the Logo zone:
 
 ![Button logo zone](../../../../images/workspaces/button-logo-zone.png)
+
+### Add Workspace
 
 The following example demonstrates replacing the default Add Workspace component with a custom button:
 
@@ -154,6 +160,8 @@ export default App;
 Using a custom button for the Add Workspace component:
 
 ![Button add workspace](../../../../images/workspaces/button-add-workspace.png)
+
+### System Buttons
 
 The following example demonstrates adding a custom button to the System Buttons zone and using the default Minimize, Maximize and Close buttons:
 
