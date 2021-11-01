@@ -252,4 +252,4 @@ The example below uses a custom [jQuery Selectmenu widget](https://jqueryui.com/
 
 ## Reference
 
-[Channels API Reference](../../../reference/core/latest/channels/index.html) 
+For a complete list of the available Channels API methods and properties, see the [Channels API Reference Documentation](../../../reference/core/latest/channels/index.html).

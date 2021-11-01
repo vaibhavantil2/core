@@ -1,3 +1,5 @@
+2.3.2
+chore: bump due to dependencies update
 2.3.1
 feat: added getPermission method to the api
 2.3.0

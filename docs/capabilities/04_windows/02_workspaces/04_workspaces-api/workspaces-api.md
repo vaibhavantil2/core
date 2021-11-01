@@ -299,6 +299,42 @@ const targetElement = myWorkspace.getBox((boxElement) => {
 await targetElement.addWindow({ appName: "app-three" });
 ```
 
+### Manipulating Workspace Elements
+
+Once you have a reference to any [`Box`](../../../../reference/core/latest/workspaces/index.html#Box) or [`WorkspaceWindow`](../../../../reference/core/latest/workspaces/index.html#WorkspaceWindow) element, you can use its methods to manipulate its state and content.
+
+#### Maximize and Restore
+
+To maximize a Workspace element within the bounds of the Workspace, use its `maximize()` method:
+
+```javascript
+await targetElement.maximize();
+```
+
+To restore a Workspace element after maximizing it, use its `restore()` method:
+
+```javascript
+await targetElement.restore();
+```
+
+#### Remove a Child Element
+
+To remove an immediate child element from any [`Box`](../../../../reference/core/latest/workspaces/index.html#Box) element, use its `removeChild()` method. It accepts a predicate that you can use as a filter to find the desired child element:
+
+```javascript
+const predicate = child => child.id === "target-id";
+
+await targetElement.removeChild(predicate);
+```
+
+#### Close
+
+To close any Workspace element (and all its children, if any), use its `close()` method:
+
+```javascript
+await targetElement.close();
+```
+
 ### Size Constraints
 
 Workspace elements can have size constraints which will prevent the user from resizing them beyond the set limits. Workspace rows and columns can also be pinned, meaning that the size of the pinned element (width for columns, height for rows) will be preserved when the user maximizes, restores or resizes the Workspace.
@@ -362,7 +398,7 @@ const workspace = await glue.workspaces.createWorkspace(definition);
 
 *Note that if the specified constraints are invalid, they will be ignored - e.g., when min exceeds max or conflicting constraints between different elements.*
 
-You can set size constraints also when using the [Workspaces Builder API](#workspaces_builder_api) or when adding Workspace elements using the `addRow()`, `addColumn()`, `addGroup()` or `addWindow()` methods of a [`Workspace`](../../../../reference/core/latest/workspaces/index.html#Workspace) instance or [box elements](#box_elements):
+You can set size constraints also when using the [Workspaces Builder API](#workspace-creating_workspaces-workspaces_builder_api) or when adding Workspace elements using the `addRow()`, `addColumn()`, `addGroup()` or `addWindow()` methods of a [`Workspace`](../../../../reference/core/latest/workspaces/index.html#Workspace) instance or [box elements](#workspace-finding_workspace_elements-box_elements):
 
 ```javascript
 const rowDefinition = {
@@ -472,6 +508,11 @@ Locking properties for a [`Group`](../../../../reference/core/latest/workspaces/
 |----------|-------------|
 | `allowExtract` | If `false`, will prevent the user from extracting windows from the window group. |
 | `allowDrop` | If `false`, will prevent the user from adding windows by dropping them in the window group. |
+| `allowDropLeft` | If `false`, will prevent the user from adding windows by dropping them in the leftmost area of the window group. |
+| `allowDropTop` | If `false`, will prevent the user from adding windows by dropping them in the topmost area of the window group. |
+| `allowDropRight` | If `false`, will prevent the user from adding windows by dropping them in the rightmost area of the window group. |
+| `allowDropBottom` | If `false`, will prevent the user from adding windows by dropping them in the bottommost area of the window group. |
+| `allowDropHeader` | If `false`, will prevent the user from adding windows by dropping them in the header area of the window group. |
 | `showMaximizeButton` | If `false`, will hide the Maximize button in the header of the window group. |
 | `showEjectButton` | If `false`, will hide the Eject button in the header of the window group. |
 | `showAddWindowButton` | If `false`, will hide the Add Window button (the "+" button) in the header of the window group. |
@@ -481,12 +522,14 @@ Locking properties for a [`Row`](../../../../reference/core/latest/workspaces/in
 | Property | Description |
 |----------|-------------|
 | `allowDrop` | If `false`, will prevent the user from adding windows by dropping them in the Workspace row. |
+| `allowSplitters` | If `false`, will prevent the splitters from being draggable, so the Workspace row can't be resized . |
 
 Locking properties for a [`Column`](../../../../reference/core/latest/workspaces/index.html#Column):
 
 | Property | Description |
 |----------|-------------|
 | `allowDrop` | If `false`, will prevent the user from adding windows by dropping them in the Workspace column. |
+| `allowSplitters` | If `false`, will prevent the splitters from being draggable, so the Workspace column can't be resized . |
 
 Locking properties for a [`WorkspaceWindow`](../../../../reference/core/latest/workspaces/index.html#WorkspaceWindow):
 
@@ -542,7 +585,7 @@ const definition = {
 const workspace = await glue.workspaces.createWorkspace(definition);
 ```
 
-You can set locking configuration for a Workspace and its elements also when using the [Workspaces Builder API](#workspaces_builder_api) or when adding Workspace elements using the `addRow()`, `addColumn()`, `addGroup()` or `addWindow()` methods of a [`Workspace`](../../../../reference/core/latest/workspaces/index.html#Workspace) instance or [box elements](#box_elements):
+You can set locking configuration for a Workspace and its elements also when using the [Workspaces Builder API](#workspace-creating_workspaces-workspaces_builder_api) or when adding Workspace elements using the `addRow()`, `addColumn()`, `addGroup()` or `addWindow()` methods of a [`Workspace`](../../../../reference/core/latest/workspaces/index.html#Workspace) instance or [box elements](#workspace-finding_workspace_elements-box_elements):
 
 ```javascript
 const rowDefinition = {
@@ -753,4 +796,4 @@ The application above opens a fully functioning Workspace. There are multiple re
 
 ## Reference
 
-[Workspaces API Reference](../../../../reference/core/latest/workspaces/index.html) 
+For a complete list of the available Workspaces API methods and properties, see the [Workspaces API Reference Documentation](../../../../reference/core/latest/workspaces/index.html).

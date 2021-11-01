@@ -224,4 +224,4 @@ const hasPermission = await glue.notifications.requestPermission();
 
 ## Reference
 
-[Notifications API Reference](../../../reference/core/latest/notifications/index.html)
+For a complete list of the available Notifications API methods and properties, see the [Notifications API Reference Documentation](../../../reference/core/latest/notifications/index.html).
