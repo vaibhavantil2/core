@@ -7,7 +7,7 @@ import { ContextMessageReplaySpec } from "./contexts/contextMessageReplaySpec";
 import { version as pjsonVersion } from "../package.json";
 import { ConnectionSettings } from "./connection/types";
 
-export default function(configuration: Glue42Core.Config, ext: Glue42Core.Extension, glue42gd: Glue42Core.GDObject | undefined): InternalConfig {
+export default function (configuration: Glue42Core.Config, ext: Glue42Core.Extension, glue42gd: Glue42Core.GDObject | undefined): InternalConfig {
 
     let nodeStartingContext: GDStaringContext;
     if (Utils.isNode()) {
@@ -92,17 +92,23 @@ export default function(configuration: Glue42Core.Config, ext: Glue42Core.Extens
         // inject Context message replay
         replaySpecs.push(ContextMessageReplaySpec);
 
+        let identity = {
+            application: uniqueAppName,
+            applicationName: appName,
+            windowId,
+            instance: instanceId,
+            process: pid,
+            region,
+            environment,
+            api: ext.version || pjsonVersion
+        };
+
+        if (configuration.identity) {
+            identity = Object.assign(identity, configuration.identity);
+        }
+
         return {
-            identity: {
-                application: uniqueAppName,
-                applicationName: appName,
-                windowId,
-                instance: instanceId,
-                process: pid,
-                region,
-                environment,
-                api: ext.version || pjsonVersion
-            },
+            identity,
             reconnectInterval,
             ws,
             sharedWorker,
