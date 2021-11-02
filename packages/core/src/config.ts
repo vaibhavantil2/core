@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Glue42Core } from "../glue";
 import { InternalConfig, GDStaringContext } from "./types";
 import generate from "shortid";
@@ -122,8 +123,8 @@ export default function(configuration: Glue42Core.Config, ext: Glue42Core.Extens
             return glue42gd.applicationName;
         }
 
-        if (window?.glue42electron) {
-            return window?.glue42electron.application;
+        if (typeof window !== "undefined" && typeof (window as any).glue42electron !== "undefined") {
+            return (window as any).glue42electron.application;
         }
 
         const uid = generate();
