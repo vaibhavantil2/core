@@ -1,3 +1,5 @@
+2.3.0
+feat: updated to the latest core
 2.2.15
 feat: add support for glue42/electron when running in Electron with contextIsolation: true
 2.2.14
