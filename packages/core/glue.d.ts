@@ -1,5 +1,4 @@
 import { UnsubscribeFunction } from "callback-registry";
-import { Identity } from "./src/connection/types";
 
 /**
  * Factory function that creates a new Glue42 instance.
