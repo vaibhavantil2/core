@@ -1,3 +1,5 @@
+2.3.1
+chore: bump due to dependencies update
 2.3.0
 feat: updated to the latest core
 2.2.15
