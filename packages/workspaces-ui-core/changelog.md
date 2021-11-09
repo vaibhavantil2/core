@@ -1,3 +1,5 @@
+1.6.1
+chore: bump due to dependencies update
 1.6.0
 fix: improvements around empty placeholder behavior and general workspace structure and updated to the latest core
 1.5.3

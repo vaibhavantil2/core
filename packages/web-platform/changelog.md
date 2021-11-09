@@ -1,3 +1,5 @@
+1.8.1
+chore: bump due to dependencies update
 1.8.0
 chore: updated to the latest core
 1.7.3

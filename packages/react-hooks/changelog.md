@@ -1,3 +1,5 @@
+2.4.1
+chore: updated the react dependencies
 2.4.0
 chore: updated to the latest core
 2.3.4
