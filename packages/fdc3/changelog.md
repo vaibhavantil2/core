@@ -1,3 +1,5 @@
+2.3.4
+chore: bump due to dependencies update
 2.3.3
 fix: improved glue42electron check
 2.3.2
