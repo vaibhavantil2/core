@@ -217,7 +217,7 @@ export namespace Glue42Core {
         contexts: Glue42Core.Contexts.API;
 
         /** Brings up the Glue42 Desktop feedback dialog. */
-        feedback: (info?: FeedbackInfo) => void;
+        feedback(info?: FeedbackInfo): void;
 
         /** Info object containing versions of all included libraries and Glue42 itself. */
         info: object;

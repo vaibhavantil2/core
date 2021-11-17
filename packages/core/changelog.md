@@ -1,3 +1,5 @@
+5.5.1
+fix: feedback in core package is now listed correctly as a method
 5.5.0
 feat: add support for passing custom identity
 5.4.14
