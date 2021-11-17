@@ -1,3 +1,7 @@
+2.3.3
+fix: improved glue42electron check
+2.3.2
+fix: Improved electron checks & added glue42EnterpriseConfig global variable
 2.3.1
 chore: bump due to dependencies update
 2.3.0
