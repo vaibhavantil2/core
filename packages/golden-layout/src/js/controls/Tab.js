@@ -16,6 +16,7 @@ lm.controls.Tab = function (header, contentItem) {
 	this.closeElement = this.element.find('.lm_close_tab');
 	this.closeElement[contentItem.config.isClosable ? 'show' : 'hide']();
 	this.isActive = false;
+	this.isPinned = false;
 
 	this.setTitle(contentItem.config.title);
 	this.contentItem.on('titleChanged', this.setTitle, this);
@@ -83,6 +84,36 @@ lm.utils.copy(lm.controls.Tab.prototype, {
 	},
 
 	onCloseClick: undefined,
+	pin: function () {
+		if (this.isPinned) {
+			return;
+		}
+		this.titleElement.hide();
+		this.closeElement.hide();
+
+		const currentIndex = this.header.tabs.indexOf(this);
+		const lastPinnedTabIndex = this._getLastIndexOfPinnedTab();
+		this.header.moveTab(currentIndex, lastPinnedTabIndex + 1);
+		this.element.addClass('lm_pinned');
+		this.isPinned = true;
+	},
+	unpin: function () {
+		if (!this.isPinned) {
+			return;
+		}
+		this.titleElement.show();
+		this.closeElement.show();
+
+		const currentIndex = this.header.tabs.indexOf(this);
+		const lastPinnedTabIndex = this._getLastIndexOfPinnedTab();
+		if (currentIndex != lastPinnedTabIndex) {
+			this.header.moveTab(currentIndex, lastPinnedTabIndex + 1);
+		}
+
+		this.element.removeClass('lm_pinned');
+
+		this.isPinned = false;
+	},
 
 	/**
 	 * Sets this tab's active state. To programmatically
@@ -271,5 +302,19 @@ lm.utils.copy(lm.controls.Tab.prototype, {
 	 */
 	_onCloseMousedown: function (event) {
 		event.stopPropagation();
+	},
+	_getLastIndexOfPinnedTab() {
+		const lastPinnedTab = this.header.tabs.reduce((acc, t) => {
+			if (t.isPinned) {
+				return t;
+			}
+			return acc;
+		}, undefined);
+
+		if (!lastPinnedTab) {
+			return -1;
+		}
+
+		return this.header.tabs.indexOf(lastPinnedTab);
 	}
 });

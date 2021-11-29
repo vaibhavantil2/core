@@ -159,6 +159,10 @@ ul {
 .lm_tab.lm_active:hover::before {
   transform: translateX(0);
 }
+.lm_tab.lm_pinned {
+  flex-basis: 0%;
+  flex-grow: 0;
+}
 .lm_tab i {
   position: absolute;
   top: 0;

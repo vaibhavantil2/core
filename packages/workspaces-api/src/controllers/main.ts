@@ -352,6 +352,14 @@ export class MainController implements WorkspacesController {
         return this.base.lockContainer(itemId, type, config);
     }
 
+    public pinWorkspace(workspaceId: string): Promise<void> {
+        return this.base.pinWorkspace(workspaceId);
+    }
+
+    public unpinWorkspace(workspaceId: string): Promise<void> {
+        return this.base.unpinWorkspace(workspaceId);
+    }
+
     public async getFrameConstraints(frameId: string): Promise<Glue42Workspaces.FrameConstraints> {
         const frameSnapshot = await this.getSnapshot(frameId, "frame");
 

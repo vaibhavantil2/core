@@ -136,6 +136,10 @@ export class Workspace implements Glue42Workspaces.Workspace {
         return getData(this).config.showAddWindowButtons;
     }
 
+    public get isPinned(): boolean {
+        return getData(this).config.isPinned;
+    }
+
     public async removeChild(predicate: (child: Glue42Workspaces.WorkspaceElement) => boolean): Promise<void> {
         checkThrowCallback(predicate);
         const child = this.children.find(predicate);
@@ -392,6 +396,16 @@ export class Workspace implements Glue42Workspaces.Workspace {
         const verifiedConfig = lockConfigResult === undefined ? undefined : workspaceLockConfigDecoder.runWithException(lockConfigResult);
 
         await getData(this).controller.lockWorkspace(this.id, verifiedConfig);
+        await this.refreshReference();
+    }
+
+    public async pin(): Promise<void> {
+        await getData(this).controller.pinWorkspace(this.id);
+        await this.refreshReference();
+    }
+
+    public async unpin(): Promise<void> {
+        await getData(this).controller.unpinWorkspace(this.id);
         await this.refreshReference();
     }
 

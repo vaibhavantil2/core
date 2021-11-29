@@ -44,6 +44,7 @@ export interface WorkspaceConfigResult {
     widthInPx?: number;
     heightInPx?: number;
     isSelected?: boolean;
+    isPinned?: boolean;
 }
 
 export interface BaseChildSnapshotConfig {

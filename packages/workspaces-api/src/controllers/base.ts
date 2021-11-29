@@ -408,4 +408,12 @@ export class BaseController {
     public async lockContainer(itemId: string, type: SubParentTypes["type"], config?: ContainerLockConfig): Promise<void> {
         await this.bridge.send<void>(OPERATIONS.lockContainer.name, { itemId, type, config });
     }
+
+    public async pinWorkspace(workspaceId: string): Promise<void> {
+        await this.bridge.send<void>(OPERATIONS.pinWorkspace.name, { workspaceId });
+    }
+
+    public async unpinWorkspace(workspaceId: string): Promise<void> {
+        await this.bridge.send<void>(OPERATIONS.unpinWorkspace.name, { workspaceId });
+    }
 }

@@ -75,7 +75,9 @@ type OperationsTypes = "isWindowInWorkspace" |
     "resumeWorkspace" |
     "lockWorkspace" |
     "lockWindow" |
-    "lockContainer";
+    "lockContainer" |
+    "pinWorkspace" |
+    "unpinWorkspace";
 type MethodsTypes = "control" | "frameStream" | "workspaceStream" | "containerStream" | "windowStream";
 
 export const webPlatformMethodName = "T42.Web.Platform.Control";
@@ -131,5 +133,7 @@ export const OPERATIONS: { [key in OperationsTypes]: ControlOperation } = {
     resumeWorkspace: { name: "resumeWorkspace", argsDecoder: workspaceSelectorDecoder, resultDecoder: voidResultDecoder },
     lockWorkspace: { name: "lockWorkspace", argsDecoder: lockWorkspaceDecoder, resultDecoder: voidResultDecoder },
     lockWindow: { name: "lockWindow", argsDecoder: lockWindowDecoder, resultDecoder: voidResultDecoder },
-    lockContainer: { name: "lockContainer", argsDecoder: lockContainerDecoder, resultDecoder: voidResultDecoder }
+    lockContainer: { name: "lockContainer", argsDecoder: lockContainerDecoder, resultDecoder: voidResultDecoder },
+    pinWorkspace: { name: "pinWorkspace", argsDecoder: workspaceSelectorDecoder, resultDecoder: voidResultDecoder },
+    unpinWorkspace: { name: "unpinWorkspace", argsDecoder: workspaceSelectorDecoder, resultDecoder: voidResultDecoder }
 };
