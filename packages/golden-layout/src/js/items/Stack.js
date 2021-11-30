@@ -155,7 +155,7 @@ lm.utils.copy(lm.items.Stack.prototype, {
 			const pinnedTabs = this.contentItems.filter(t => t.config.workspacesConfig.isPinned);
 
 			for (let i = pinnedTabs.length - 1; i >= 0; i--) {
-				pinnedTabs.pin();
+				pinnedTabs[i].tab.pin();
 			}
 		}
 	},
