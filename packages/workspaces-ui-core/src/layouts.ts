@@ -150,7 +150,7 @@ export class LayoutsManager {
         const layoutToImport = {
             name,
             type: this._layoutsType as "Workspace",
-            metadata: {},
+            metadata: options.metadata,
             components: [{
                 type: this._layoutComponentType as "Workspace",
                 state: {

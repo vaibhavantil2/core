@@ -1398,6 +1398,9 @@ export namespace Glue42Workspaces {
 
         /** Toggles whether or not the current workspace context should be saved in the layout */
         saveContext?: boolean;
+
+        /** Object which will be saved as part of the layout */
+        metadata?: object;
     }
 
     /** An object describing the complete state of a frame at the time when the object was created */

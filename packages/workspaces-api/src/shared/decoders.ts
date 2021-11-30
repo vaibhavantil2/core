@@ -270,10 +270,10 @@ export const workspaceDefinitionDecoder: Decoder<Glue42Workspaces.WorkspaceDefin
         reuseWorkspaceId: optional(nonEmptyStringDecoder),
         loadingStrategy: optional(loadingStrategyDecoder),
         allowDrop: optional(boolean()),
-        allowDropLeft:optional(boolean()),
-        allowDropTop:optional(boolean()),
-        allowDropRight:optional(boolean()),
-        allowDropBottom:optional(boolean()),
+        allowDropLeft: optional(boolean()),
+        allowDropTop: optional(boolean()),
+        allowDropRight: optional(boolean()),
+        allowDropBottom: optional(boolean()),
         allowExtract: optional(boolean()),
         showSaveButton: optional(boolean()),
         showCloseButton: optional(boolean()),
@@ -674,7 +674,8 @@ export const windowStreamDataDecoder: Decoder<WindowStreamData> = object({
 export const workspaceLayoutSaveConfigDecoder: Decoder<Glue42Workspaces.WorkspaceLayoutSaveConfig> = object({
     name: nonEmptyStringDecoder,
     workspaceId: nonEmptyStringDecoder,
-    saveContext: optional(boolean())
+    saveContext: optional(boolean()),
+    metadata: optional(object())
 });
 
 export const workspaceSelectorDecoder: Decoder<WorkspaceSelector> = object({

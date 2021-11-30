@@ -259,7 +259,8 @@ export class GlueFacade {
         return await manager.saveWorkspace(
             operationArguments.name,
             operationArguments.workspaceId,
-            operationArguments.saveContext);
+            operationArguments.saveContext,
+            operationArguments.metadata);
     }
 
     private handleDeleteLayout(operationArguments: LayoutSelector): void {
