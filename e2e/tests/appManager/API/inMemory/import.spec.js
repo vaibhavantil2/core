@@ -434,4 +434,174 @@ describe('import() ', function () {
                 .catch(done);
         });
     });
+
+    describe('bulk operations', function () {
+        this.timeout(60000);
+
+        const baseDefinition = {
+            name: "SimpleOne",
+            type: "window",
+            title: "SimpleOne",
+            details: {
+                url: "http://localhost:4242/dummyApp/index.html"
+            },
+            customProperties: {
+                includeInWorkspaces: true
+            }
+        };
+
+        const getMassApps = (numberOfDefs, namePrefix) => {
+            const originalName = baseDefinition.name;
+
+            const apps = Array.from({ length: numberOfDefs }).map((el, idx) => {
+
+                const name = namePrefix ? namePrefix + originalName + idx.toString() : originalName + idx.toString();
+
+                return Object.assign({}, baseDefinition, { name });
+            });
+
+            return apps;
+        };
+
+        const coolDown = () => new Promise((resolve) => setTimeout(resolve, 5000));
+
+        beforeEach(() => glue.appManager.inMemory.clear());
+        afterEach(async () => {
+
+            await glue.appManager.inMemory.clear();
+
+            await coolDown();
+        });
+
+        it('should import 9000 new app definitions with mode replace', async () => {
+            const massDefs = getMassApps(9000);
+
+            await glue.appManager.inMemory.import(massDefs, "replace");
+
+            expect(glue.appManager.applications().length).to.eql(9000);
+
+            const exported = await glue.appManager.inMemory.export();
+
+            expect(exported.length).to.eql(9000);
+        });
+
+        it('should import 9000 existing app definitions with mode replace', async () => {
+            const massDefs = getMassApps(9000);
+
+            await glue.appManager.inMemory.import(massDefs, "replace");
+            await glue.appManager.inMemory.import(massDefs, "replace");
+
+            expect(glue.appManager.applications().length).to.eql(9000);
+
+            const exported = await glue.appManager.inMemory.export();
+
+            expect(exported.length).to.eql(9000);
+        });
+
+        it('should import 9000 new app definitions with mode merge', async () => {
+            const massDefs = getMassApps(9000);
+
+            await glue.appManager.inMemory.import(massDefs, "merge");
+
+            expect(glue.appManager.applications().length).to.eql(9000);
+
+            const exported = await glue.appManager.inMemory.export();
+
+            expect(exported.length).to.eql(9000);
+        });
+
+        it('should import 9000 non-changed existing app definitions with mode merge', async () => {
+            const massDefs = getMassApps(9000);
+
+            await glue.appManager.inMemory.import(massDefs, "merge");
+            await glue.appManager.inMemory.import(massDefs, "merge");
+
+            expect(glue.appManager.applications().length).to.eql(9000);
+
+            const exported = await glue.appManager.inMemory.export();
+
+            expect(exported.length).to.eql(9000);
+        });
+
+        it('should import 9000 non-changed existing app definitions with mode merge faster than 10000MS', async () => {
+            const massDefs = getMassApps(9000);
+
+            await glue.appManager.inMemory.import(massDefs, "merge");
+
+            const startOfTimer = performance.now();
+
+            await glue.appManager.inMemory.import(massDefs, "merge");
+
+            const endOfTimer = performance.now();
+
+            expect(endOfTimer - startOfTimer).to.be.lessThan(10000);
+        });
+
+        it('should import 9000 changed existing app definitions with mode merge', async () => {
+            const massDefs = getMassApps(9000);
+
+            await glue.appManager.inMemory.import(massDefs, "merge");
+
+            massDefs.forEach((def) => def.icon = "new icon is set");
+
+            await glue.appManager.inMemory.import(massDefs, "merge");
+
+            expect(glue.appManager.applications().length).to.eql(9000);
+
+            expect(glue.appManager.applications().every((app) => app.icon === "new icon is set")).to.be.true;
+
+            const exported = await glue.appManager.inMemory.export();
+
+            expect(exported.length).to.eql(9000);
+        });
+
+        it('should remove 9000 apps with import mode replace', async () => {
+            const massDefs = getMassApps(9000);
+
+            await glue.appManager.inMemory.import(massDefs, "replace");
+            await glue.appManager.inMemory.import([], "replace");
+
+            expect(glue.appManager.applications().length).to.eql(0);
+
+            const exported = await glue.appManager.inMemory.export();
+
+            expect(exported.length).to.eql(0);
+        });
+
+        it('should throw when importing 10001 application definitions with mode replace', (done) => {
+            const massDefs = getMassApps(10001);
+
+            glue.appManager.inMemory.import(massDefs, "replace")
+                .then(() => done("should have resolve, because importing more than the allowed limit of definitions"))
+                .catch(() => done());
+        });
+
+        it('should throw when importing 10001 application definitions with mode merge', async () => {
+            const massDefs = getMassApps(10001);
+
+            glue.appManager.inMemory.import(massDefs, "merge")
+                .then(() => done("should have resolve, because importing more than the allowed limit of definitions"))
+                .catch(() => done());
+        });
+
+        it('should throw when importing 1001 application definitions with mode merge, but there are already 9000 imported', async () => {
+            const massDefs = getMassApps(9000);
+            const massDefsPrefixed = getMassApps(1001, "new-");
+
+            glue.appManager.inMemory.import(massDefs, "replace")
+                .then(() => glue.appManager.inMemory.import(massDefsPrefixed, "merge"))
+                .then(() => done("should have resolve, because the total number of defs is more than the limit"))
+                .catch(() => done());
+        });
+
+        it('should not throw when importing 1001 application definitions with mode replace, but there are already 9000 imported', (done) => {
+            const massDefs = getMassApps(9000);
+            const massDefsPrefixed = getMassApps(1001, "new-");
+
+            glue.appManager.inMemory.import(massDefs, "replace")
+                .then(() => glue.appManager.inMemory.import(massDefsPrefixed, "replace"))
+                .then(() => done())
+                .catch(done);
+        });
+    });
 });

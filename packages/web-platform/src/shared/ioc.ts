@@ -20,6 +20,7 @@ import { AppDirectory } from "../libs/applications/appStore/directory";
 import { RemoteWatcher } from "../libs/applications/appStore/remoteWatcher";
 import { ServiceWorkerController } from "../controllers/serviceWorker";
 import { NotificationsController } from "../libs/notifications/controller";
+import { AsyncSequelizer } from "./sequelizer";
 
 export class IoC {
     private _gatewayInstance!: Gateway;
@@ -262,5 +263,9 @@ export class IoC {
 
     public createMessageChannel(): MessageChannel {
         return new MessageChannel();
+    }
+
+    public createSequelizer(looseInterval?: number): AsyncSequelizer {
+        return new AsyncSequelizer(looseInterval);
     }
 }

@@ -1,4 +1,6 @@
 describe('remove() ', function () {
+    this.timeout(60000);
+
     let definitionsOnStart;
     let unsubs = [];
     let timeout;
@@ -14,6 +16,30 @@ describe('remove() ', function () {
         }
     };
 
+    const baseDefinition = {
+        name: "SimpleOne",
+        type: "window",
+        title: "SimpleOne",
+        details: {
+            url: "http://localhost:4242/dummyApp/index.html"
+        },
+        customProperties: {
+            includeInWorkspaces: true
+        }
+    };
+
+    const getMassApps = (numberOfDefs, namePrefix) => {
+        const originalName = baseDefinition.name;
+
+        const apps = Array.from({ length: numberOfDefs }).map((el, idx) => {
+
+            const name = namePrefix ? namePrefix + originalName + idx.toString() : originalName + idx.toString();
+
+            return Object.assign({}, baseDefinition, { name });
+        });
+
+        return apps;
+    };
 
     before(async () => {
         await coreReady;
@@ -133,6 +159,17 @@ describe('remove() ', function () {
         glue.appManager.inMemory.remove(extraDefOne.name)
             .then(ready)
             .catch(done);
+    });
+
+    it('should wait a running bulk import and correctly remove a definition', async () => {
+        const massDefs = getMassApps(9000);
+
+        await Promise.all([
+            glue.appManager.inMemory.import(massDefs, "replace"),
+            glue.appManager.inMemory.remove("SimpleOne10")
+        ]);
+
+        expect(glue.appManager.application("SimpleOne10")).to.be.undefined;
     });
 
 });

@@ -1,5 +1,7 @@
 describe('export() ', function () {
 
+    this.timeout(60000);
+
     const extraDefOne = {
         name: "ExtraOne",
         type: "window",
@@ -19,6 +21,30 @@ describe('export() ', function () {
 
     afterEach(() => glue.appManager.inMemory.import(definitionsOnStart, "replace"));
 
+    const baseDefinition = {
+        name: "SimpleOne",
+        type: "window",
+        title: "SimpleOne",
+        details: {
+            url: "http://localhost:4242/dummyApp/index.html"
+        },
+        customProperties: {
+            includeInWorkspaces: true
+        }
+    };
+
+    const getMassApps = (numberOfDefs, namePrefix) => {
+        const originalName = baseDefinition.name;
+
+        const apps = Array.from({ length: numberOfDefs }).map((el, idx) => {
+
+            const name = namePrefix ? namePrefix + originalName + idx.toString() : originalName + idx.toString();
+
+            return Object.assign({}, baseDefinition, { name });
+        });
+
+        return apps;
+    };
 
     it("should return a promise", async () => {
         const appsExportPromise = glue.appManager.inMemory.export();
@@ -61,5 +87,15 @@ describe('export() ', function () {
         });
     });
 
+    it('should wait a running bulk import and return correct collection of 9000 app definitions when triggered in parallel', async () => {
+        const massDefs = getMassApps(9000);
+
+        const [_, exported] = await Promise.all([
+            glue.appManager.inMemory.import(massDefs, "replace"),
+            glue.appManager.inMemory.export()
+        ]);
+
+        expect(exported.length).to.eql(9000);
+    });
 });
 

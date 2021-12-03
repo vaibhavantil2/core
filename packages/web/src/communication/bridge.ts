@@ -50,7 +50,7 @@ export class GlueBridge {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public async send<OutBound, InBound>(domain: LibDomains, operation: BridgeOperation, operationData: OutBound): Promise<InBound> {
+    public async send<OutBound, InBound>(domain: LibDomains, operation: BridgeOperation, operationData: OutBound, options?: Glue42Core.AGM.InvokeOptions): Promise<InBound> {
 
         if (operation.dataDecoder) {
             try {
@@ -63,7 +63,7 @@ export class GlueBridge {
         let operationResult;
 
         try {
-            operationResult = await this.transmitMessage(domain, operation, operationData);
+            operationResult = await this.transmitMessage(domain, operation, operationData, options);
 
             if (operation.resultDecoder) {
                 operationResult = operation.resultDecoder.runWithException(operationResult);
@@ -127,7 +127,7 @@ export class GlueBridge {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private async transmitMessage(domain: string, operation: BridgeOperation, data: any): Promise<any> {
+    private async transmitMessage(domain: string, operation: BridgeOperation, data: any, options?: Glue42Core.AGM.InvokeOptions): Promise<any> {
 
         const messageData = { domain, data, operation: operation.name };
 
@@ -136,7 +136,7 @@ export class GlueBridge {
         const baseErrorMessage = `Internal Platform Communication Error. Attempted operation: ${JSON.stringify(operation.name)} with data: ${JSON.stringify(data)}. `;
 
         try {
-            invocationResult = await this.coreGlue.interop.invoke(GlueWebPlatformControlName, messageData);
+            invocationResult = await this.coreGlue.interop.invoke(GlueWebPlatformControlName, messageData, undefined, options);
 
             if (!invocationResult) {
                 throw new Error("Received unsupported result from the platform - empty result");

@@ -32,6 +32,8 @@ module.exports = (config) => {
         ],
         port: 9999,
         singleRun: true,
-        concurrency: Infinity
+        concurrency: Infinity,
+        browserNoActivityTimeout: 100000,
+        browserDisconnectTimeout: 100000
     });
 };

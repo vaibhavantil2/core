@@ -9,11 +9,11 @@ import { Glue42Core } from "@glue42/core";
 export class RemoteWatcher {
     private url!: string;
     private request!: Request;
-    private handleApps!: (apps: Array<Glue42Web.AppManager.Definition | Glue42WebPlatform.Applications.FDC3Definition>) => void;
+    private handleApps!: (apps: Array<Glue42Web.AppManager.Definition | Glue42WebPlatform.Applications.FDC3Definition>) => Promise<void>;
     private requestTimeout!: number;
     private pollingInterval: number | undefined;
 
-    public start(config: Glue42WebPlatform.RemoteStore, handleApps: (apps: Array<Glue42Web.AppManager.Definition | Glue42WebPlatform.Applications.FDC3Definition>) => void): void {
+    public start(config: Glue42WebPlatform.RemoteStore, handleApps: (apps: Array<Glue42Web.AppManager.Definition | Glue42WebPlatform.Applications.FDC3Definition>) => Promise<void>): void {
         this.url = config.url;
         this.handleApps = handleApps;
         this.requestTimeout = config.requestTimeout || defaultRemoteWatcherRequestTimeoutMS;
@@ -50,9 +50,9 @@ export class RemoteWatcher {
                 return soFar;
             }, []);
 
-            this.handleApps(validatedApps);
+            await this.handleApps(validatedApps);
 
-        } catch (error) {
+        } catch (error: any) {
 
             const stringError = typeof error === "string" ? error : JSON.stringify(error.message);
             this.logger?.warn(stringError);

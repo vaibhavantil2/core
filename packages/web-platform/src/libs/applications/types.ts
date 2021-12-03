@@ -1,10 +1,18 @@
 import { Glue42Web } from "@glue42/web";
 import { Glue42WebPlatform } from "../../../platform";
 import { InternalApplicationsConfig } from "../../common/types";
+import AsyncSequelizer from "../../shared/sequelizer";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type AppManagerOperationTypes = "appHello" | "applicationStart" | "instanceStop" |
     "registerWorkspaceApp" | "unregisterWorkspaceApp" | "export" | "import" | "remove" | "clear" | "registerRemoteApps";
+
+export interface ApplicationsMergeResult {
+    readyApps: BaseApplicationData[];
+    addedApps: BaseApplicationData[];
+    changedApps: BaseApplicationData[];
+    removedApps: BaseApplicationData[];
+}
 
 export interface BaseApplicationData {
     name: string;
@@ -76,6 +84,7 @@ export interface AppDirSetup {
     onAdded: (data: BaseApplicationData) => void;
     onChanged: (data: BaseApplicationData) => void;
     onRemoved: (data: BaseApplicationData) => void;
+    sequelizer: AsyncSequelizer;
 }
 
 export interface AppDirProcessingConfig {
