@@ -1,3 +1,5 @@
+1.8.3
+fix: added support for bulk app definitions import
 1.8.2
 chore: bump due to dependencies update
 1.8.1
