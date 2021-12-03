@@ -169,7 +169,7 @@ export class IntentsController implements LibController {
             2. Running instances (application can register dynamic intents by calling `addIntentListener()` that aren't predefined inside of their application definitions)
             It also populates intent handlers (actual entities that can handle the intent).
         */
-        const apps: AppDefinitionWithIntents[] = this.appDirectory.getAll().map((app) => {
+        const apps: AppDefinitionWithIntents[] = (await this.appDirectory.getAll()).map((app) => {
             return {
                 name: app.name,
                 title: app.title || "",

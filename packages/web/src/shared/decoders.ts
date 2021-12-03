@@ -1,7 +1,7 @@
 import { Glue42Workspaces } from "@glue42/workspaces-api";
 import { Decoder, string, number, object, constant, oneOf, optional, array, boolean, anyJson, lazy } from "decoder-validate";
 import { Glue42Web } from "../../web";
-import { AppsImportOperation, AppHelloSuccess, ApplicationData, ApplicationStartConfig, AppManagerOperationTypes, AppRemoveConfig, BaseApplicationData, BasicInstanceData, InstanceData, AppsExportOperation, FDC3Definition } from "../appManager/protocol";
+import { AppsImportOperation, AppHelloSuccess, ApplicationData, ApplicationStartConfig, AppManagerOperationTypes, AppRemoveConfig, BaseApplicationData, BasicInstanceData, InstanceData, AppsExportOperation, FDC3Definition, AppDirectoryStateChange } from "../appManager/protocol";
 import { AllLayoutsFullConfig, AllLayoutsSummariesResult, GetAllLayoutsConfig, LayoutsImportConfig, LayoutsOperationTypes, OptionalSimpleLayoutResult, SimpleLayoutConfig, SimpleLayoutResult } from "../layouts/protocol";
 import { HelloSuccess, OpenWindowConfig, CoreWindowData, WindowHello, WindowOperationTypes, SimpleWindowCommand, WindowTitleConfig, WindowBoundsResult, WindowMoveResizeConfig, WindowUrlResult, FrameWindowBoundsResult } from "../windows/protocol";
 import { IntentsOperationTypes, WrappedIntentFilter, WrappedIntents } from "../intents/protocol";
@@ -36,11 +36,9 @@ export const windowOperationTypesDecoder: Decoder<WindowOperationTypes> = oneOf<
     constant("setTitle")
 );
 
-export const appManagerOperationTypesDecoder: Decoder<AppManagerOperationTypes> = oneOf<"appHello" | "applicationAdded" | "applicationRemoved" | "applicationChanged" | "instanceStarted" | "instanceStopped" | "applicationStart" | "instanceStop" | "clear">(
+export const appManagerOperationTypesDecoder: Decoder<AppManagerOperationTypes> = oneOf<"appHello" | "appDirectoryStateChange" | "instanceStarted" | "instanceStopped" | "applicationStart" | "instanceStop" | "clear">(
     constant("appHello"),
-    constant("applicationAdded"),
-    constant("applicationRemoved"),
-    constant("applicationChanged"),
+    constant("appDirectoryStateChange"),
     constant("instanceStarted"),
     constant("instanceStopped"),
     constant("applicationStart"),
@@ -248,6 +246,12 @@ export const baseApplicationDataDecoder: Decoder<BaseApplicationData> = object({
     version: optional(nonEmptyStringDecoder),
     icon: optional(nonEmptyStringDecoder),
     caption: optional(nonEmptyStringDecoder)
+});
+
+export const appDirectoryStateChangeDecoder: Decoder<AppDirectoryStateChange> = object({
+    appsAdded: array(baseApplicationDataDecoder),
+    appsChanged: array(baseApplicationDataDecoder),
+    appsRemoved: array(baseApplicationDataDecoder)
 });
 
 export const appHelloSuccessDecoder: Decoder<AppHelloSuccess> = object({
