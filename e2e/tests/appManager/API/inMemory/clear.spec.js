@@ -195,8 +195,7 @@ describe('clear() ', function () {
             glue.appManager.inMemory.clear()
         ]);
 
-
-        expect(glue.appManager.applications()).to.eql(0);
+        expect(glue.appManager.applications().length).to.eql(0);
 
         const exported = await glue.appManager.inMemory.export();
 

@@ -7,7 +7,7 @@ import { allApplicationDefinitionsDecoder, appManagerOperationTypesDecoder, impo
 import { IoC } from "../shared/ioc";
 import { LibController, ParsedConfig } from "../shared/types";
 import { WindowHello } from "../windows/protocol";
-import { AppsImportOperation, AppHelloSuccess, ApplicationStartConfig, AppRemoveConfig, InstanceData, operations, BaseApplicationData, AppsExportOperation, DefinitionParseResult } from "./protocol";
+import { AppsImportOperation, AppHelloSuccess, ApplicationStartConfig, AppRemoveConfig, InstanceData, operations, BaseApplicationData, AppsExportOperation, DefinitionParseResult, AppDirectoryStateChange } from "./protocol";
 import {
     default as CallbackRegistryFactory,
     CallbackRegistry,
@@ -125,11 +125,15 @@ export class AppManagerController implements LibController {
     }
 
     private addOperationsExecutors(): void {
-        operations.applicationAdded.execute = this.handleApplicationAddedMessage.bind(this);
-        operations.applicationRemoved.execute = this.handleApplicationRemovedMessage.bind(this);
-        operations.applicationChanged.execute = this.handleApplicationChangedMessage.bind(this);
+        operations.appDirectoryStateChange.execute = this.handleAppDirectoryStateChange.bind(this);
         operations.instanceStarted.execute = this.handleInstanceStartedMessage.bind(this);
         operations.instanceStopped.execute = this.handleInstanceStoppedMessage.bind(this);
+    }
+
+    private async handleAppDirectoryStateChange(data: AppDirectoryStateChange): Promise<void> {
+        data.appsAdded.forEach(this.handleApplicationAddedMessage.bind(this));
+        data.appsChanged.forEach(this.handleApplicationChangedMessage.bind(this));
+        data.appsRemoved.forEach(this.handleApplicationRemovedMessage.bind(this));
     }
 
     private onAppAdded(callback: (app: Glue42Web.AppManager.Application) => any): UnsubscribeFunction {

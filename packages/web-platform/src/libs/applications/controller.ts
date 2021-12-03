@@ -10,7 +10,7 @@ import { IoC } from "../../shared/ioc";
 import { PromiseWrap } from "../../shared/promisePlus";
 import { getRelativeBounds } from "../../shared/utils";
 import { appHelloDecoder, appHelloSuccessDecoder, applicationStartConfigDecoder, appManagerOperationTypesDecoder, appRemoveConfigDecoder, appsExportOperationDecoder, appsImportOperationDecoder, appsRemoteRegistrationDecoder, basicInstanceDataDecoder, instanceDataDecoder } from "./decoders";
-import { AppsImportOperation, AppHello, AppHelloSuccess, ApplicationData, AppManagerOperationTypes, BaseApplicationData, BasicInstanceData, InstanceData, InstanceLock, InstanceProcessInfo, AppsExportOperation, AppRemoveConfig, AppsRemoteRegistration } from "./types";
+import { AppsImportOperation, AppHello, AppHelloSuccess, ApplicationData, AppManagerOperationTypes, BasicInstanceData, InstanceData, InstanceLock, InstanceProcessInfo, AppsExportOperation, AppRemoveConfig, AppsRemoteRegistration, AppDirectoryStateChange } from "./types";
 import logger from "../../shared/logger";
 import { workspaceWindowDataDecoder } from "../workspaces/decoders";
 import { simpleWindowDecoder } from "../windows/decoders";
@@ -60,9 +60,7 @@ export class ApplicationsController implements LibController {
 
         await this.appDirectory.start({
             config: config.applications,
-            onAdded: (data: BaseApplicationData) => this.emitStreamData("applicationAdded", data),
-            onChanged: (data: BaseApplicationData) => this.emitStreamData("applicationChanged", data),
-            onRemoved: (data: BaseApplicationData) => this.emitStreamData("applicationRemoved", data),
+            appsStateChange: (data: AppDirectoryStateChange) => this.emitStreamData("appDirectoryStateChange", data),
             sequelizer: this.ioc.createSequelizer()
         });
 
@@ -329,7 +327,7 @@ export class ApplicationsController implements LibController {
 
         if (removed) {
             this.logger?.trace(`definition ${removed.name} removed successfully`);
-            this.emitStreamData("applicationRemoved", removed);
+            this.emitStreamData("appDirectoryStateChange", { appsRemoved: [removed], appsAdded: [], appsChanged: [] });
         }
     }
 
@@ -413,7 +411,7 @@ export class ApplicationsController implements LibController {
         this.emitStreamData("instanceStarted", config.data);
     }
 
-    private emitStreamData(operation: "applicationAdded" | "applicationRemoved" | "applicationChanged" | "instanceStarted" | "instanceStopped", data: any): void {
+    private emitStreamData(operation: "appDirectoryStateChange" | "instanceStarted" | "instanceStopped", data: any): void {
         this.logger?.trace(`sending notification of event: ${operation} with data: ${JSON.stringify(data)}`);
         this.glueController.pushSystemMessage("appManager", operation, data);
     }

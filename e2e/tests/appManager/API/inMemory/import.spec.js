@@ -463,15 +463,8 @@ describe('import() ', function () {
             return apps;
         };
 
-        const coolDown = () => new Promise((resolve) => setTimeout(resolve, 5000));
-
         beforeEach(() => glue.appManager.inMemory.clear());
-        afterEach(async () => {
-
-            await glue.appManager.inMemory.clear();
-
-            await coolDown();
-        });
+        afterEach(async () => glue.appManager.inMemory.clear());
 
         it('should import 9000 new app definitions with mode replace', async () => {
             const massDefs = getMassApps(9000);

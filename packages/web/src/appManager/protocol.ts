@@ -1,17 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Glue42Web } from "../../web";
-import { appHelloSuccessDecoder, applicationStartConfigDecoder, appRemoveConfigDecoder, appsExportOperationDecoder, baseApplicationDataDecoder, basicInstanceDataDecoder, instanceDataDecoder, windowHelloDecoder } from "../shared/decoders";
+import { appDirectoryStateChangeDecoder, appHelloSuccessDecoder, applicationStartConfigDecoder, appRemoveConfigDecoder, appsExportOperationDecoder, basicInstanceDataDecoder, instanceDataDecoder, windowHelloDecoder } from "../shared/decoders";
 import { BridgeOperation } from "../shared/types";
 
-export type AppManagerOperationTypes = "appHello" | "applicationAdded" |
-    "applicationRemoved" | "applicationChanged" | "instanceStarted" | "instanceStopped" |
+export type AppManagerOperationTypes = "appHello" | "appDirectoryStateChange" | "instanceStarted" | "instanceStopped" |
     "applicationStart" | "instanceStop" | "import" | "remove" | "export" | "clear";
 
 export const operations: { [key in AppManagerOperationTypes]: BridgeOperation } = {
     appHello: { name: "appHello", dataDecoder: windowHelloDecoder, resultDecoder: appHelloSuccessDecoder },
-    applicationAdded: { name: "applicationAdded", dataDecoder: baseApplicationDataDecoder },
-    applicationRemoved: { name: "applicationRemoved", dataDecoder: baseApplicationDataDecoder },
-    applicationChanged: { name: "applicationChanged", dataDecoder: baseApplicationDataDecoder },
+    appDirectoryStateChange: { name: "appDirectoryStateChange", dataDecoder: appDirectoryStateChangeDecoder },
     instanceStarted: { name: "instanceStarted", dataDecoder: instanceDataDecoder },
     instanceStopped: { name: "instanceStopped", dataDecoder: instanceDataDecoder },
     applicationStart: { name: "applicationStart", dataDecoder: applicationStartConfigDecoder, resultDecoder: instanceDataDecoder },
@@ -39,6 +36,12 @@ export interface BaseApplicationData {
 
 export interface ApplicationData extends BaseApplicationData {
     instances: InstanceData[];
+}
+
+export interface AppDirectoryStateChange {
+    appsAdded: BaseApplicationData[];
+    appsChanged: BaseApplicationData[];
+    appsRemoved: BaseApplicationData[];
 }
 
 export interface AppRemoveConfig {

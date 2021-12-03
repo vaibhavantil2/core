@@ -3,7 +3,7 @@ import { Glue42Core } from "@glue42/core";
 import { Glue42Web } from "@glue42/web";
 import { Glue42WebPlatform } from "../../../../platform";
 import { objEqualFast } from "../../../shared/utils";
-import { AppDirSetup, AppDirProcessingConfig, BaseApplicationData, ApplicationsMergeResult } from "../types";
+import { AppDirSetup, AppDirProcessingConfig, BaseApplicationData, ApplicationsMergeResult, AppDirectoryStateChange } from "../types";
 import logger from "../../../shared/logger";
 import { SessionStorageController } from "../../../controllers/session";
 import { RemoteWatcher } from "./remoteWatcher";
@@ -12,9 +12,7 @@ import { AsyncSequelizer } from "../../../shared/sequelizer";
 export class AppDirectory {
     private maxAllowedApplicationsInStore = 10000;
     private readonly baseEventFlushDurationMs = 10;
-    private onAdded!: (data: BaseApplicationData) => void;
-    private onChanged!: (data: BaseApplicationData) => void;
-    private onRemoved!: (data: BaseApplicationData) => void;
+    private appsStateChange!: (state: AppDirectoryStateChange) => void;
     private sequelizer!: AsyncSequelizer;
 
     constructor(
@@ -24,9 +22,7 @@ export class AppDirectory {
 
     public async start(setup: AppDirSetup): Promise<void> {
         this.logger?.trace("Starting the application directory");
-        this.onAdded = setup.onAdded;
-        this.onChanged = setup.onChanged;
-        this.onRemoved = setup.onRemoved;
+        this.appsStateChange = setup.appsStateChange;
         this.sequelizer = setup.sequelizer;
 
         if (setup.config.local && setup.config.local.length) {
@@ -55,7 +51,7 @@ export class AppDirectory {
 
             this.sessionStorage.overwriteApps(mergeResult.readyApps, config.type);
 
-            await this.announceApps(mergeResult.addedApps, mergeResult.changedApps, mergeResult.removedApps);
+            await this.announceApps(mergeResult);
 
         });
     }
@@ -214,40 +210,22 @@ export class AppDirectory {
         return logger.get("applications.remote.directory");
     }
 
-    private async announceApps(addedApps: BaseApplicationData[], changedApps: BaseApplicationData[], removedApps: BaseApplicationData[]): Promise<void> {
-        let flushIdx = -1;
+    private async announceApps(mergeResult: ApplicationsMergeResult): Promise<void> {
 
-        for (const app of addedApps) {
-            this.logger?.trace(`new definition: ${app.name} detected, adding and announcing`);
-            this.onAdded(app);
+        const appsStateChange: AppDirectoryStateChange = {
+            appsAdded: mergeResult.addedApps,
+            appsChanged: mergeResult.changedApps,
+            appsRemoved: mergeResult.removedApps
+        };
 
-            await this.waitEventFlush(++flushIdx);
-        }
+        this.logger?.trace(`announcing a change in the app directory state: ${JSON.stringify(appsStateChange)}`);
 
-        for (const app of changedApps) {
-            this.logger?.trace(`change detected at definition ${app.name}`);
-            this.onChanged(app);
+        this.appsStateChange(appsStateChange);
 
-            await this.waitEventFlush(++flushIdx);
-        }
-
-        for (const app of removedApps) {
-            this.logger?.trace(`definition ${app.name} missing, removing and announcing`);
-            this.onRemoved(app);
-
-            await this.waitEventFlush(++flushIdx);
-        }
+        await this.waitEventFlush();
     }
 
-    private waitEventFlush(flushIdx: number): Promise<void> {
-        if (flushIdx % 50 === 0) {
-            const flushDuration = flushIdx < 1000 ? this.baseEventFlushDurationMs :
-                flushIdx < 5000 ? this.baseEventFlushDurationMs + 40 :
-                    this.baseEventFlushDurationMs + 90;
-
-            return new Promise((resolve) => setTimeout(resolve, flushDuration));
-        }
-
-        return Promise.resolve();
+    private waitEventFlush(): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, this.baseEventFlushDurationMs));
     }
 }
