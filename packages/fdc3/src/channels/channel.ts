@@ -7,7 +7,7 @@ import {
 } from "@finos/fdc3";
 import { Glue42 } from "@glue42/desktop";
 import { WindowType } from "../types/windowtype";
-import { newSubscribe } from "../utils";
+import { newContextsSubscribe, newChannelsSubscribe } from "../utils";
 
 export class SystemChannel implements Channel {
     id: string;
@@ -43,7 +43,11 @@ export class SystemChannel implements Channel {
         const contextType = arguments.length === 2 && contextTypeInput;
         const handler = arguments.length === 2 ? handlerInput : contextTypeInput;
 
-        const subHandler = (data: any): void => {
+        const subHandler = (data: any, _: Glue42.ChannelContext, updaterId: string): void => {
+            if (updaterId === (window as WindowType).glue.interop.instance.peerId) {
+                return;
+            }
+
             if (contextType) {
                 if (data?.type === contextType) {
                     handler(data);
@@ -111,7 +115,7 @@ export class AppChannel implements Channel {
             }
         };
 
-        const unsubPromise = newSubscribe(this.id, subHandler);
+        const unsubPromise = newContextsSubscribe(this.id, subHandler);
 
         return {
             unsubscribe: (): void => {

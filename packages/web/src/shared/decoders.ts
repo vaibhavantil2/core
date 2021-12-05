@@ -11,14 +11,15 @@ import { NotificationEventPayload, NotificationsOperationTypes, PermissionQueryR
 export const nonEmptyStringDecoder: Decoder<string> = string().where((s) => s.length > 0, "Expected a non-empty string");
 export const nonNegativeNumberDecoder: Decoder<number> = number().where((num) => num >= 0, "Expected a non-negative number");
 
-export const libDomainDecoder: Decoder<LibDomains> = oneOf<"system" | "windows" | "appManager" | "layouts" | "intents" | "notifications" | "channels">(
+export const libDomainDecoder: Decoder<LibDomains> = oneOf<"system" | "windows" | "appManager" | "layouts" | "intents" | "notifications" | "channels" | "extension">(
     constant("system"),
     constant("windows"),
     constant("appManager"),
     constant("layouts"),
     constant("intents"),
     constant("notifications"),
-    constant("channels")
+    constant("channels"),
+    constant("extension")
 );
 
 export const windowOperationTypesDecoder: Decoder<WindowOperationTypes> = oneOf<"openWindow" | "getBounds" | "getFrameBounds" | "windowHello" | "windowAdded" | "windowRemoved" | "getUrl" | "moveResize" | "focus" | "close" | "getTitle" | "setTitle">(
@@ -180,7 +181,7 @@ export const fdc3AppDefinitionDecoder: Decoder<FDC3Definition> = object({
     name: nonEmptyStringDecoder,
     title: optional(nonEmptyStringDecoder),
     version: optional(nonEmptyStringDecoder),
-    appId: nonEmptyStringDecoder,
+    appId: optional(nonEmptyStringDecoder),
     manifest: nonEmptyStringDecoder,
     manifestType: nonEmptyStringDecoder,
     tooltip: optional(nonEmptyStringDecoder),
@@ -203,7 +204,8 @@ export const applicationDefinitionDecoder: Decoder<Glue42Web.AppManager.Definiti
     icon: optional(nonEmptyStringDecoder),
     caption: optional(nonEmptyStringDecoder),
     details: applicationDetailsDecoder,
-    intents: optional(array(intentDefinitionDecoder))
+    intents: optional(array(intentDefinitionDecoder)),
+    hidden: optional(boolean())
 });
 
 export const allApplicationDefinitionsDecoder: Decoder<Glue42Web.AppManager.Definition | FDC3Definition> = oneOf<Glue42Web.AppManager.Definition | FDC3Definition>(
@@ -277,7 +279,8 @@ export const applicationStartConfigDecoder: Decoder<ApplicationStartConfig> = ob
         constant("left"),
         constant("right"),
         constant("bottom")
-    ))
+    )),
+    forceChromeTab: optional(boolean())
 });
 
 export const layoutTypeDecoder: Decoder<Glue42Web.Layouts.LayoutType> = oneOf<"Global" | "Activity" | "ApplicationDefault" | "Swimlane" | "Workspace">(

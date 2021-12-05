@@ -42,7 +42,11 @@ export const createFactoryFunction = (coreFactoryFunction: GlueCoreFactoryFuncti
 
         await Promise.all(config.libraries.map((lib: any) => lib(glue, config)));
 
-        logger.trace("all libraries were started, glue is ready, returning it");
+        logger.trace("all libraries were started");
+
+        ioc.eventsDispatcher.start(glue);
+
+        logger.trace("start event dispatched, glue is ready, returning it");
 
         return glue;
     };

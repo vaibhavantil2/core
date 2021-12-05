@@ -59,7 +59,9 @@ export class FramesController {
 
         const options = `left=${openBounds.left},top=${openBounds.top},width=${openBounds.width},height=${openBounds.height}`;
 
-        const frameUrl = `${this.config.src}?emptyFrame=true`;
+        const frameSrc = (await this.getWorkspacesUrls()).workspacesUrl.current;
+
+        const frameUrl = `${frameSrc}?emptyFrame=true`;
 
         const childWindow = window.open(frameUrl, frameData.windowId, options);
 
@@ -162,7 +164,7 @@ export class FramesController {
     private clearAllWorkspaceWindows(frameId: string): void {
         const workspaceWindows = this.sessionController.pickWorkspaceClients((client) => client.frameId === frameId);
 
-        workspaceWindows.forEach((workspaceWindow) => this.ioc.applicationsController.unregisterWorkspaceApp({windowId: workspaceWindow.windowId}));
+        workspaceWindows.forEach((workspaceWindow) => this.ioc.applicationsController.unregisterWorkspaceApp({ windowId: workspaceWindow.windowId }));
     }
 
     private async waitHello(windowId: string): Promise<void> {
@@ -191,6 +193,20 @@ export class FramesController {
         }
 
         throw new Error(`Cannot find frame for item: ${itemId}`);
+    }
+
+    private getWorkspacesUrls(): Promise<{ workspacesUrl: { current: string; default: string } }> {
+        const currentProtocol = (new URL(window.location.href)).protocol;
+
+        if (!currentProtocol.includes("extension")) {
+            return Promise.resolve({ workspacesUrl: { current: this.config.src, default: this.config.src } });
+        }
+
+        return new Promise((resolve) => {
+            chrome.storage.local.get("workspacesUrl", (entry) => {
+                resolve(entry as { workspacesUrl: { current: string; default: string } });
+            });
+        });
     }
 
 }

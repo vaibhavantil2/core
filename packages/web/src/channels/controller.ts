@@ -39,6 +39,33 @@ export class ChannelsController implements LibController {
         // noop
     }
 
+    public async list(): Promise<Glue42Web.Channels.ChannelContext[]> {
+        const channelNames = this.getAllChannelNames();
+
+        const channelContexts = await Promise.all(channelNames.map((channelName) => this.get(channelName)));
+
+        return channelContexts;
+    }
+
+    public my(): string {
+        return this.current();
+    }
+
+    public async join(name: string): Promise<void> {
+        const channelNames = this.getAllChannelNames();
+        channelNameDecoder(channelNames).runWithException(name);
+
+        await this.switchToChannel(name);
+    }
+
+    public onChanged(callback: (channel: string) => void): UnsubscribeFunction {
+        return this.changed(callback);
+    }
+
+    public async leave(): Promise<void> {
+        await this.switchToChannel();
+    }
+
     private toApi(): Glue42Web.Channels.API {
         const api: Glue42Web.Channels.API = {
             subscribe: this.subscribe.bind(this),
@@ -163,40 +190,19 @@ export class ChannelsController implements LibController {
         return channelNames;
     }
 
-    private async list(): Promise<Glue42Web.Channels.ChannelContext[]> {
-        const channelNames = this.getAllChannelNames();
-
-        const channelContexts = await Promise.all(channelNames.map((channelName) => this.get(channelName)));
-
-        return channelContexts;
-    }
-
-    private get(name: string): Promise<Glue42Web.Channels.ChannelContext> {
+    private async get(name: string): Promise<Glue42Web.Channels.ChannelContext> {
         const channelNames = this.getAllChannelNames();
         channelNameDecoder(channelNames).runWithException(name);
 
         const contextName = this.createContextName(name);
 
-        return this.contexts.get(contextName);
-    }
+        const channelContext = await this.contexts.get(contextName);
 
-    private async join(name: string): Promise<void> {
-        const channelNames = this.getAllChannelNames();
-        channelNameDecoder(channelNames).runWithException(name);
-
-        await this.switchToChannel(name);
-    }
-
-    private async leave(): Promise<void> {
-        await this.switchToChannel();
+        return channelContext;
     }
 
     private current(): string {
         return this.currentChannelName as string;
-    }
-
-    private my(): string {
-        return this.current();
     }
 
     private changed(callback: (channel: string) => void): UnsubscribeFunction {
@@ -205,10 +211,6 @@ export class ChannelsController implements LibController {
         }
 
         return this.registry.add(this.ChangedKey, callback);
-    }
-
-    private onChanged(callback: (channel: string) => void): UnsubscribeFunction {
-        return this.changed(callback);
     }
 
     private add(info: Glue42Web.Channels.ChannelContext): Promise<Glue42Web.Channels.ChannelContext> {
