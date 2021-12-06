@@ -145,7 +145,9 @@ export class ApplicationsController implements LibController {
 
         const openBounds = await this.getStartingBounds(appDefinition.createOptions, config, commandId);
 
-        const options = `left=${openBounds.left},top=${openBounds.top},width=${openBounds.width},height=${openBounds.height}`;
+        const options = config.forceChromeTab ?
+            undefined :
+            `left=${openBounds.left},top=${openBounds.top},width=${openBounds.width},height=${openBounds.height}`;
 
         this.logger?.trace(`[${commandId}] open arguments are valid, opening to bounds: ${options}`);
 
@@ -417,12 +419,13 @@ export class ApplicationsController implements LibController {
     }
 
     private async getStartingBounds(appDefOptions: Glue42Web.AppManager.DefinitionDetails, openOptions: ApplicationStartConfig, commandId: string): Promise<Glue42Web.Windows.Bounds> {
-        const openBounds = Object.assign(
-            {},
-            this.defaultBounds,
-            { top: appDefOptions.top, left: appDefOptions.left, width: appDefOptions.width, height: appDefOptions.height },
-            { top: openOptions.top, left: openOptions.left, width: openOptions.width, height: openOptions.height }
-        );
+
+        const openBounds: Glue42Web.Windows.Bounds = {
+            top: openOptions.top || appDefOptions.top || this.defaultBounds.top,
+            left: openOptions.left || appDefOptions.left || this.defaultBounds.left,
+            width: openOptions.width || appDefOptions.width || this.defaultBounds.width,
+            height: openOptions.height || appDefOptions.height || this.defaultBounds.height
+        };
 
         if (!openOptions.relativeTo) {
             return openBounds;

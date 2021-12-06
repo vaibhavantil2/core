@@ -17,6 +17,7 @@ import { Glue42WebPlatform } from "../../platform";
 import { SystemController } from "./system";
 import { ServiceWorkerController } from "./serviceWorker";
 import { NotificationsController } from "../libs/notifications/controller";
+import { ExtensionController } from "../libs/extension/controller";
 
 export class PlatformController {
 
@@ -28,7 +29,8 @@ export class PlatformController {
         workspaces: this.workspacesController,
         intents: this.intentsController,
         channels: this.channelsController,
-        notifications: this.notificationsController
+        notifications: this.notificationsController,
+        extension: this.extensionController
     }
 
     constructor(
@@ -43,7 +45,8 @@ export class PlatformController {
         private readonly notificationsController: NotificationsController,
         private readonly portsBridge: PortsBridge,
         private readonly stateController: WindowsStateController,
-        private readonly serviceWorkerController: ServiceWorkerController
+        private readonly serviceWorkerController: ServiceWorkerController,
+        private readonly extensionController: ExtensionController
     ) { }
 
     private get logger(): Glue42Web.Logger.API | undefined {
@@ -80,6 +83,10 @@ export class PlatformController {
         this.serviceWorkerController.notifyReady();
     }
 
+    public async connectExtClient(client: any, port: any): Promise<void> {
+        await this.portsBridge.handleExtConnectionRequest(client, port);
+    }
+
     public getClientGlue(): Glue42Web.API {
         return this.glueController.clientGlue;
     }
@@ -93,7 +100,7 @@ export class PlatformController {
 
             await definition.start(this.glueController.clientGlue, definition.config, platformControls);
 
-        } catch (error: any) {
+        } catch (error) {
             const stringError = typeof error === "string" ? error : JSON.stringify(error.message);
             const message = `Plugin: ${definition.name} threw while initiating: ${stringError}`;
 
@@ -165,7 +172,7 @@ export class PlatformController {
         Object.values(this.controllers).forEach((controller, idx) => {
             try {
                 controller.handleClientUnloaded?.(client.windowId, client.win);
-            } catch (error: any) {
+            } catch (error) {
                 const stringError = typeof error === "string" ? error : JSON.stringify(error.message);
                 const controllerName = Object.keys(this.controllers)[idx];
                 this.logger?.error(`${controllerName} controller threw when handling unloaded client ${client.windowId} with error message: ${stringError}`);

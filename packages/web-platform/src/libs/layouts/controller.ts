@@ -133,7 +133,7 @@ export class LayoutsController implements LibController {
     public async handleRemove(config: SimpleLayoutConfig, commandId: string): Promise<void> {
         this.logger?.trace(`[${commandId}] handling remove request for ${JSON.stringify(config)}`);
 
-        const layout = await (await this.getAll(config.type)).find((l) => l.name === config.name && l.type === config.type);
+        const layout = (await this.getAll(config.type)).find((l) => l.name === config.name && l.type === config.type);
 
         if (layout) {
             await this.delete(config.name, config.type);

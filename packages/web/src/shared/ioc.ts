@@ -15,6 +15,8 @@ import { IntentsController } from "../intents/controller";
 import { ChannelsController } from "../channels/controller";
 import { SystemController } from "../system/controller";
 import { Notification } from "../notifications/notification";
+import { ExtController } from "../extension/controller";
+import { EventsDispatcher } from "./dispatcher";
 
 export class IoC {
     private _webConfig!: ParsedConfig;
@@ -24,8 +26,10 @@ export class IoC {
     private _notificationsControllerInstance!: NotificationsController;
     private _intentsControllerInstance!: IntentsController;
     private _channelsControllerInstance!: ChannelsController;
+    private _extensionController!: ExtController;
     private _systemControllerInstance!: SystemController;
     private _bridgeInstance!: GlueBridge;
+    private _eventsDispatcher!: EventsDispatcher;
 
     public controllers: { [key in LibDomains]: LibController } = {
         windows: this.windowsController,
@@ -34,7 +38,8 @@ export class IoC {
         notifications: this.notificationsController,
         intents: this.intentsController,
         channels: this.channelsController,
-        system: this.systemController
+        system: this.systemController,
+        extension: this.extensionController
     }
 
     constructor(private readonly coreGlue: Glue42Core.GlueCore) { }
@@ -93,6 +98,22 @@ export class IoC {
         }
 
         return this._channelsControllerInstance;
+    }
+
+    public get extensionController(): ExtController {
+        if (!this._extensionController) {
+            this._extensionController = new ExtController();
+        }
+
+        return this._extensionController;
+    }
+
+    public get eventsDispatcher(): EventsDispatcher {
+        if (!this._eventsDispatcher) {
+            this._eventsDispatcher = new EventsDispatcher();
+        }
+
+        return this._eventsDispatcher;
     }
 
     public get bridge(): GlueBridge {

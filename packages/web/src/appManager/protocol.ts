@@ -72,6 +72,7 @@ export interface ApplicationStartConfig {
     height?: number;
     relativeTo?: string;
     relativeDirection?: "top" | "left" | "right" | "bottom";
+    forceChromeTab?: boolean;
 }
 
 export interface BasicInstanceData {
@@ -82,7 +83,7 @@ export interface FDC3Definition {
     name: string;
     title?: string;
     version?: string;
-    appId: string;
+    appId?: string;
     manifest: string;
     manifestType: string;
     tooltip?: string;

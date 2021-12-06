@@ -10,10 +10,17 @@ export default {
     output: [
         {
             file: pkg.main,
-            name: 'web',
+            name: 'fdc3-glue42',
             format: 'umd',
             sourcemap: true
-        }
+        },
+        {
+            file: './dist/fdc3-glue42.min.js',
+            name: 'fdc3-glue42.min',
+            format: 'umd',
+            sourcemap: true,
+            plugins: [terser()]
+        },
     ],
     external: [
         //...Object.keys(pkg.dependencies || {}),
@@ -24,7 +31,7 @@ export default {
         typescript({
             typescript: require('typescript'),
         }),
-        terser(),
+        // terser(),
         // Allow json resolution
         json(),
         // // Allow bundling cjs modules (unlike webpack, rollup doesn't understand cjs)

@@ -3,8 +3,8 @@ import { SystemChannel, AppChannel } from "./channel";
 import { WindowType } from "../types/windowtype";
 import {
     getChannelsList,
-    isInElectron,
-    newSubscribe,
+    newContextsSubscribe,
+    newChannelsSubscribe,
     isEmptyObject,
     AsyncListener
 } from "../utils";
@@ -28,16 +28,13 @@ const createChannelsAgent = (): ChannelsAPI => {
     const initDone = (window as WindowType).fdc3GluePromise.then(() => {
         const current = (window as WindowType).glue.channels.current();
 
-        // In Glue42 Core the channel selector widget needs to use the FDC3 Channels API instead of the Glue42 Channels API to navigate between the channels.
-        if (isInElectron) {
-            if (typeof current !== "undefined") {
-                handleSwitchChannelUI(current);
-            }
-
-            (window as WindowType).glue.channels.changed((channelId: string) => {
-                handleSwitchChannelUI(channelId);
-            });
+        if (typeof current !== "undefined") {
+            handleSwitchChannelUI(current);
         }
+
+        (window as WindowType).glue.channels.changed((channelId: string) => {
+            handleSwitchChannelUI(channelId);
+        });
 
         const setChannelsPromise = getChannelsList().then((channelContents) => {
             channelContents.map((channelContext) => {
@@ -230,8 +227,8 @@ const createChannelsAgent = (): ChannelsAPI => {
         const { id, type } = currentChannel;
 
         const subscribe = (subHandler: (data: any) => void): (() => void) | Promise<() => void> => type === "system"
-            ? (window as WindowType).glue.channels.subscribe(subHandler)
-            : newSubscribe(id, subHandler);
+            ? newChannelsSubscribe(subHandler)
+            : newContextsSubscribe(id, subHandler);
 
         const onNewData = (data: any): void => {
             if (contextType) {
