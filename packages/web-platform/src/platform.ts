@@ -30,8 +30,11 @@ export class Platform {
 
     public exposeAPI(): Glue42WebPlatform.API {
         return {
-            version: this.version
-        };
+            version: this.version,
+            connectExtClient: (client: any, port: any) => {
+                return this.controller.connectExtClient(client, port);
+            }
+        } as Glue42WebPlatform.API;
     }
 
     private get version(): string {
@@ -59,7 +62,7 @@ export class Platform {
         const glue42core = {
             platformStarted: true,
             isPlatformFrame: !!config?.workspaces?.isFrame,
-            environment: this.platformConfig.environment,
+            environment: Object.assign({}, this.platformConfig.environment, { extension: undefined }),
             workspacesFrameCache: typeof config.workspaces?.frameCache === "boolean" ? config.workspaces?.frameCache : true
         };
 

@@ -20,6 +20,7 @@ import { AppDirectory } from "../libs/applications/appStore/directory";
 import { RemoteWatcher } from "../libs/applications/appStore/remoteWatcher";
 import { ServiceWorkerController } from "../controllers/serviceWorker";
 import { NotificationsController } from "../libs/notifications/controller";
+import { ExtensionController } from "../libs/extension/controller";
 import { AsyncSequelizer } from "./sequelizer";
 
 export class IoC {
@@ -38,6 +39,7 @@ export class IoC {
     private _intentsController!: IntentsController;
     private _channelsController!: ChannelsController;
     private _notificationsController!: NotificationsController;
+    private _extensionController!: ExtensionController;
     private _sessionController!: SessionStorageController;
     private _stateChecker!: WindowsStateController;
     private _framesController!: FramesController;
@@ -77,7 +79,8 @@ export class IoC {
                 this.notificationsController,
                 this.portsBridge,
                 this.stateController,
-                this.serviceWorkerController
+                this.serviceWorkerController,
+                this.extensionController
             );
         }
 
@@ -214,11 +217,20 @@ export class IoC {
         return this._channelsController;
     }
 
+    public get extensionController(): ExtensionController {
+        if (!this._extensionController) {
+            this._extensionController = new ExtensionController(this.sessionController);
+        }
+
+        return this._extensionController;
+    }
+
     public get notificationsController(): NotificationsController {
         if (!this._notificationsController) {
             this._notificationsController = new NotificationsController(
                 this.glueController,
-                this.serviceWorkerController
+                this.serviceWorkerController,
+                this.sessionController
             );
         }
 

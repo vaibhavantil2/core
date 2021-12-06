@@ -71,14 +71,15 @@ export const windowLayoutComponentDecoder: Decoder<Glue42Web.Layouts.WindowCompo
     })
 });
 
-export const libDomainDecoder: Decoder<LibDomains> = oneOf<"system" | "windows" | "appManager" | "layouts" | "workspaces" | "intents" | "notifications">(
+export const libDomainDecoder: Decoder<LibDomains> = oneOf<"system" | "windows" | "appManager" | "layouts" | "workspaces" | "intents" | "notifications" | "extension">(
     constant("system"),
     constant("windows"),
     constant("appManager"),
     constant("layouts"),
     constant("workspaces"),
     constant("intents"),
-    constant("notifications")
+    constant("notifications"),
+    constant("extension")
 );
 
 export const systemOperationTypesDecoder: Decoder<SystemOperationTypes> = oneOf<"getEnvironment" | "getBase">(
@@ -177,7 +178,8 @@ export const glueCoreAppDefinitionDecoder: Decoder<Glue42Web.AppManager.Definiti
     icon: optional(nonEmptyStringDecoder),
     caption: optional(nonEmptyStringDecoder),
     details: applicationDetailsDecoder,
-    intents: optional(array(intentDefinitionDecoder))
+    intents: optional(array(intentDefinitionDecoder)),
+    hidden: optional(boolean())
 });
 
 // todo: remove this dirty fix once the remote app services are updated

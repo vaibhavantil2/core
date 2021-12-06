@@ -1,3 +1,5 @@
+5.6.0
+feat: added support for GDX (Glue42 Developer Extension)
 5.5.1
 fix: feedback in core package is now listed correctly as a method
 5.5.0

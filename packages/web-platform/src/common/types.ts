@@ -6,7 +6,7 @@ import { Glue42WebPlatform } from "../../platform";
 
 export type Glue42API = Glue42.Glue;
 export type Glue42Config = Glue42.Config;
-export type LibDomains = "system" | "windows" | "appManager" | "layouts" | "workspaces" | "intents" | "channels" | "notifications";
+export type LibDomains = "system" | "windows" | "appManager" | "layouts" | "workspaces" | "intents" | "channels" | "notifications" | "extension";
 
 export interface InternalWindowsConfig {
     windowResponseTimeoutMs: number;
@@ -89,6 +89,7 @@ export interface ApplicationStartConfig {
     relativeTo?: string;
     relativeDirection?: "top" | "left" | "right" | "bottom";
     waitForAGMReady?: boolean;
+    forceChromeTab?: boolean;
 }
 
 export type SystemOperationTypes = "getEnvironment" | "getBase";

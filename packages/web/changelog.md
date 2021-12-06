@@ -1,3 +1,7 @@
+2.5.0
+feat: added support for GDX (Glue42 Developer Extension)
+2.4.3
+fix: added support for bulk app definitions import
 2.4.2
 chore: bump due to dependencies update
 2.4.1

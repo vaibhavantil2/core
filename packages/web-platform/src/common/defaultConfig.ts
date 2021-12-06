@@ -6,7 +6,7 @@ export const defaultPlatformConfig: InternalPlatformConfig = {
         defaultWindowOpenBounds: {
             top: 0,
             left: 0,
-            width: 600,
+            width: 800,
             height: 600
         }
     },

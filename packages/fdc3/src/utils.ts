@@ -7,7 +7,7 @@ import { WindowType } from "./types/windowtype";
  * 1. Skip updates from myself
  * 2. Ignore initial replay
  */
-export const newSubscribe = (id: string, callback: (data: any, delta: any, removed: string[], unsubscribe: () => void, extraData?: any) => void): Promise<() => void> => {
+export const newContextsSubscribe = (id: string, callback: (data: any, delta: any, removed: string[], unsubscribe: () => void, extraData?: any) => void): Promise<() => void> => {
     let didReplay = false;
 
     return (window as WindowType).glue.contexts.subscribe(id, (data: any, delta: any, removed: string[], unsubscribe: () => void, extraData?: any) => {
@@ -16,11 +16,21 @@ export const newSubscribe = (id: string, callback: (data: any, delta: any, remov
             return;
         }
 
-        const updateFromMe = extraData.updaterId === (window as WindowType).glue.interop.instance.instance;
+        const updateFromMe = extraData.updaterId === (window as WindowType).glue.interop.instance.peerId;
 
         if (!updateFromMe) {
             callback(data, delta, removed, unsubscribe, extraData);
         }
+    });
+};
+
+export const newChannelsSubscribe = (callback: (data: any) => void): () => void => {
+    return (window as WindowType).glue.channels.subscribe((data: any, _: Glue42.ChannelContext, updaterId: string) => {
+        if (updaterId === (window as WindowType).glue.interop.instance.peerId) {
+            return;
+        }
+
+        callback(data);
     });
 };
 
