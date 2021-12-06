@@ -1,3 +1,5 @@
+2.4.0
+feat: added support for GDX (Glue42 Developer Extension)
 2.3.5
 chore: bump due to dependencies update
 2.3.4

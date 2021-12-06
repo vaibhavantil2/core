@@ -1,3 +1,5 @@
+1.9.0
+feat: added support for GDX (Glue42 Developer Extension)
 1.8.3
 fix: added support for bulk app definitions import
 1.8.2
