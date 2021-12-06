@@ -90,6 +90,11 @@ export namespace Glue42Web {
         notifications?: Notifications.Settings;
 
         /**
+         * Configures whether the Glue42 Web will share the initialized API object upon request via a custom web event. Defaults to false. 
+         */
+        exposeGlue?: boolean;
+
+        /**
          * A list of glue libraries which will be initiated internally and provide access to specific functionalities
          */
         libraries?: Array<(glue: Glue42Web.API, config?: Glue42Web.Config | Glue42.Config) => Promise<void>>;

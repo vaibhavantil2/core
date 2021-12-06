@@ -5,15 +5,19 @@ import {
     UnsubscribeFunction,
 } from "callback-registry";
 import { Glue42Web } from "../../web";
+import { ParsedConfig } from "./types";
 
 export class EventsDispatcher {
     private glue!: Glue42Web.API;
     private readonly registry: CallbackRegistry = CallbackRegistryFactory();
     private readonly glue42CoreEventName = "Glue42CoreRuntime";
 
+    constructor(private readonly config: ParsedConfig) { }
+
     private readonly events: { [key in string]: { name: string; handle: (glue42coreData: any) => void | Promise<void> } } = {
         notifyStarted: { name: "notifyStarted", handle: this.handleNotifyStarted.bind(this) },
-        contentInc: { name: "contentInc", handle: this.handleContentInc.bind(this) }
+        contentInc: { name: "contentInc", handle: this.handleContentInc.bind(this) },
+        requestGlue: { name: "requestGlue", handle: this.handleRequestGlue.bind(this) }
     }
 
     public start(glue: Glue42Web.API): void {
@@ -55,6 +59,14 @@ export class EventsDispatcher {
 
     private announceStarted(): void {
         this.send("start");
+    }
+
+    private handleRequestGlue(): void {
+        if (!this.config.exposeGlue) {
+            return;
+        }
+
+        this.send("glue-access", { glue: this.glue });
     }
 
     private handleNotifyStarted(): void {
