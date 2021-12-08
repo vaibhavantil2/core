@@ -111,13 +111,14 @@ export class WorkspacesManager {
         return this._frameController.onFrameContentClicked(cb);
     }
 
-    public async saveWorkspace(name: string, id?: string, saveContext?: boolean): Promise<WorkspaceLayout> {
+    public async saveWorkspace(name: string, id?: string, saveContext?: boolean, metadata?: object): Promise<WorkspaceLayout> {
         const workspace = store.getById(id) || store.getActiveWorkspace();
         const result = await this._layoutsManager.save({
             name,
             workspace,
             title: store.getWorkspaceTitle(workspace.id),
-            saveContext
+            saveContext,
+            metadata
         });
 
         const config = workspace.layout?.config || workspace.hibernateConfig;

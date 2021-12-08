@@ -104,6 +104,8 @@ export const isInElectron = navigator.userAgent.toLowerCase().includes(" electro
 
 export const isGlue42Electron = !!(window as any).glue42electron;
 
+export const isGlue42Enterprise = typeof window.glue42gd !== "undefined";
+
 export const AsyncListener = (actualUnsub:
     (() => void)
     | Promise<() => void>

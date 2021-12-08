@@ -1,7 +1,7 @@
 import createDesktopAgent from "./agent";
 import Glue, { Glue42 } from "@glue42/desktop";
 import { Glue42Web } from "@glue42/web";
-import { isInElectron, waitFor, fetchTimeout, isGlue42Electron } from "./utils";
+import { isInElectron, waitFor, fetchTimeout, isGlue42Electron, isGlue42Enterprise } from "./utils";
 import { version } from "../package.json";
 import { WindowType } from "./types/windowtype";
 import { Glue42GD, Glue42GDOriginalGlue } from "./types/glue42gd";
@@ -95,8 +95,11 @@ const setupGlue = (): void => {
         } else {
             setupGlue42Core();
         }
+    } else if (isInElectron && !isGlue42Electron && !isGlue42Enterprise) {
+        // Enterprise in Electron without @glue42/electron.
+        setupGlue42Enterprise(true);
     } else {
-        setupGlue42Enterprise();
+        setupGlue42Enterprise(false);
     }
 };
 
