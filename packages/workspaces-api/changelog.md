@@ -1,3 +1,5 @@
+1.10.1
+feat: saveLayout() now can also save meta data
 1.10.0
 feat: added support for GDX (Glue42 Developer Extension)
 1.9.1

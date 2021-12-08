@@ -1,3 +1,5 @@
+1.7.1
+chore: bump due to dependencies update
 1.7.0
 feat: added support for GDX (Glue42 Developer Extension)
 1.6.3
