@@ -22,6 +22,8 @@ const getDataManager = (model: Workspace): PrivateDataManager => {
     return data.get(model).manager;
 };
 
+type SaveLayoutConfig = Omit<Omit<Glue42Workspaces.WorkspaceLayoutSaveConfig, "name">, "workspaceId">;
+
 export class Workspace implements Glue42Workspaces.Workspace {
 
     constructor(dataManager: PrivateDataManager) {
@@ -180,9 +182,9 @@ export class Workspace implements Glue42Workspaces.Workspace {
         return getData(this).controller.getSnapshot(this.id, "workspace");
     }
 
-    public async saveLayout(name: string, config?: { saveContext?: boolean }): Promise<void> {
+    public async saveLayout(name: string, config?: SaveLayoutConfig): Promise<void> {
         nonEmptyStringDecoder.runWithException(name);
-        await getData(this).controller.saveLayout({ name, workspaceId: this.id, saveContext: config?.saveContext });
+        await getData(this).controller.saveLayout({ name, workspaceId: this.id, saveContext: config?.saveContext, metadata: config?.metadata });
     }
 
     public async setTitle(title: string): Promise<void> {

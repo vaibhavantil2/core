@@ -302,7 +302,8 @@ export interface SaveWorkspaceConfig {
     title?: string;
     workspace: Workspace;
     name: string;
-    saveContext: boolean;
+    saveContext?: boolean;
+    metadata?:object;
 }
 
 export interface WorkspaceDropOptions {
