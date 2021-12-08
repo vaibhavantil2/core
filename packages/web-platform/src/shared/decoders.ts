@@ -159,7 +159,8 @@ export const applicationDetailsDecoder: Decoder<Glue42Web.AppManager.DefinitionD
     top: optional(number()),
     left: optional(number()),
     width: optional(nonNegativeNumberDecoder),
-    height: optional(nonNegativeNumberDecoder)
+    height: optional(nonNegativeNumberDecoder),
+    preloadScripts: optional(array(nonEmptyStringDecoder))
 });
 
 export const intentDefinitionDecoder: Decoder<Glue42Web.AppManager.Intent> = object({

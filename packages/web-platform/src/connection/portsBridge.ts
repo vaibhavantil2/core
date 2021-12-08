@@ -131,12 +131,12 @@ export class PortsBridge {
         });
     }
 
-    private async handleRemoteConnectionRequest(source: Window, origin: string, clientId: string, clientType: "child" | "grandChild", bridgeInstanceId: string): Promise<void> {
+    private async handleRemoteConnectionRequest(source: Window, origin: string, clientId: string, clientType: "child" | "grandChild", windowId: string): Promise<void> {
         const channel = this.ioc.createMessageChannel();
 
         await this.gateway.connectClient(channel.port1, this.removeClient.bind(this));
 
-        const foundData = this.sessionStorage.getBridgeInstanceData(bridgeInstanceId);
+        const foundData = this.sessionStorage.getBridgeInstanceData(windowId);
         const appName = foundData?.appName;
 
         const myWindowId = this.sessionStorage.getWindowDataByName("Platform")?.windowId;

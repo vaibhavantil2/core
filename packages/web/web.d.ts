@@ -851,6 +851,12 @@ export namespace Glue42Web {
              * @default 400
              */
             height?: number;
+
+            /**
+             * Supported only when ran with GDX (Glue42 Developer Extension)
+             * Defines an array of URLs pointing to JS scripts, which will be injected in the page by GDX
+             */
+            preloadScripts?: string[];
         }
 
         /**
