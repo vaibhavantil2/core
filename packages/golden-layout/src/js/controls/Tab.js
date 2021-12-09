@@ -107,7 +107,7 @@ lm.utils.copy(lm.controls.Tab.prototype, {
 		const currentIndex = this.header.tabs.indexOf(this);
 		const lastPinnedTabIndex = this._getLastIndexOfPinnedTab();
 		if (currentIndex != lastPinnedTabIndex) {
-			this.header.moveTab(currentIndex, lastPinnedTabIndex + 1);
+			this.header.moveTab(currentIndex, lastPinnedTabIndex);
 		}
 
 		this.element.removeClass('lm_pinned');
@@ -244,6 +244,13 @@ lm.utils.copy(lm.controls.Tab.prototype, {
 		this.element.css("z-index", `42`);
 	},
 	_onReorderStop: function (x, y) {
+		const tabIndex = this.header.tabs.indexOf(this);
+		const lastPinnedTabIndex = this._getLastIndexOfPinnedTab((t) => t != this);
+
+		if (this.isPinned && lastPinnedTabIndex + 1 < tabIndex) {
+			this.header.moveTab(tabIndex, lastPinnedTabIndex + 1);
+		}
+
 		this.element.css("left", "");
 		this.element.css("width", "");
 		this.element.css("position", "");
@@ -303,9 +310,9 @@ lm.utils.copy(lm.controls.Tab.prototype, {
 	_onCloseMousedown: function (event) {
 		event.stopPropagation();
 	},
-	_getLastIndexOfPinnedTab() {
+	_getLastIndexOfPinnedTab(filter) {
 		const lastPinnedTab = this.header.tabs.reduce((acc, t) => {
-			if (t.isPinned) {
+			if (t.isPinned && (typeof filter != "function" || filter(t))) {
 				return t;
 			}
 			return acc;

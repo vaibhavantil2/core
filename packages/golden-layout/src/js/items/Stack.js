@@ -152,11 +152,11 @@ lm.utils.copy(lm.items.Stack.prototype, {
 
 			this.setActiveContentItem(initialItem);
 
-			const pinnedTabs = this.contentItems.filter(t => t.config.workspacesConfig.isPinned);
+			const pinnedItems = this.contentItems.filter(t => t.config.workspacesConfig.isPinned);
 
-			for (let i = pinnedTabs.length - 1; i >= 0; i--) {
-				pinnedTabs[i].tab.pin();
-			}
+			pinnedItems.forEach((pi)=>{
+				pi.tab.pin();
+			});
 		}
 	},
 
@@ -190,6 +190,11 @@ lm.utils.copy(lm.items.Stack.prototype, {
 		lm.items.AbstractContentItem.prototype.addChild.call(this, contentItem, index);
 		this.childElementContainer.append(contentItem.element);
 		this.header.createTab(contentItem, index);
+
+		if (contentItem.config.workspacesConfig.isPinned) {
+			contentItem.tab.pin();
+		}
+
 		if ($(this.layoutManager.container).is(":visible") && activate) {
 			this.setActiveContentItem(contentItem);
 		} else {

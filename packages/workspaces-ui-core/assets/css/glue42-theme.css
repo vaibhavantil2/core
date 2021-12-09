@@ -157,13 +157,13 @@
 .lm_header .lm_tab::after {
   background-color: rgb(var(--t42-bg-dark));
 }
-.lm_header .lm_tab .lm_saveButton::before {
+.lm_header .lm_tab .lm_saveButton .lm_saveButtonContent {
   background-color: var(--t42-content-color-muted);
 }
 .lm_header .lm_tab .lm_saveButton:hover {
   background-color: var(--t42-color-opacity-10);
 }
-.lm_header .lm_tab .lm_saveButton:hover::before {
+.lm_header .lm_tab .lm_saveButton:hover .lm_saveButtonContent {
   background-color: var(--t42-content-color);
 }
 .lm_header .lm_tab .lm_hibernationIcon:hover {
