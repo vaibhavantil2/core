@@ -162,6 +162,11 @@ ul {
 .lm_tab.lm_pinned {
   flex-basis: 0%;
   flex-grow: 0;
+  padding: 0 0 0 0.125rem;
+  min-width: 1.5rem;
+}
+.lm_tab.lm_pinned .lm_saveButton {
+  margin: 0;
 }
 .lm_tab i {
   position: absolute;
