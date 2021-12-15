@@ -13,11 +13,16 @@ import { WorkspacesFactoryFunction } from "../../../packages/workspaces-api/work
 // TODO: Add building and serving the Workspaces application to the e2e script.
 import { channelsConfig, localApplicationsConfig } from "./config";
 import sinon, { fake } from "sinon";
+import { GtfPuppet } from "./puppet";
 
 // Make the RUNNER environment variable available inside of the tests (resolved during the gtf build process) and set it as window title.
 const RUNNER = process.env.RUNNER;
 window.RUNNER = RUNNER;
 document.title = RUNNER;
+
+console.log(`Runner in GTF: ${RUNNER}`);
+
+const isRunningPuppetMode = process.env.RUNNER === "Puppet";
 
 declare const window: any;
 declare const GlueWorkspaces: WorkspacesFactoryFunction;
@@ -26,7 +31,7 @@ declare const GlueWebPlatform: Glue42WebPlatformFactoryFunction;
 const setupNotifications = () => {
     window.notificationsFakeTriggerClick = false;
     window.notificationsFakePermission = "granted";
-    
+
     window.sinonSandbox = sinon.createSandbox();
 
     window.showNotificationFake = window.sinonSandbox.fake.resolves({});
@@ -61,6 +66,12 @@ const setupNotifications = () => {
     const fakeSwRegistration = new Promise<ServiceWorkerRegistration>((resolve) => resolve({ showNotification: window.showNotificationFake } as ServiceWorkerRegistration));
 
     return fakeSwRegistration;
+};
+
+const startPuppetGtf = async () => {
+    window.gtf = Object.assign({ puppet: new GtfPuppet() });
+
+    await window.gtf.puppet.start();
 };
 
 const startGtf = async () => {
@@ -123,4 +134,4 @@ const startGtf = async () => {
     );
 };
 
-window.coreReady = startGtf();
+window.coreReady = isRunningPuppetMode ? startPuppetGtf() : startGtf();

@@ -11,8 +11,9 @@
     "build": "lerna run build",
     "test": "npm run test:scripts && lerna run test",
     "build:gtf": "parcel build ./e2e/config/gtf/index.ts --no-source-maps --no-minify --out-dir ./e2e/config --out-file gtf.js",
+    "e2e:puppet": "cross-env RUNNER=Puppet npm run build:gtf && node ./e2e/scripts/copyLibs.js && cross-env RUNNER=Puppet node ./e2e/index.js",
     "e2e": "cross-env RUNNER=Platform npm run build:gtf && npm run e2e:no-gtf-rebuild",
-    "e2e:no-gtf-rebuild": "node ./e2e/scripts/copyLibs.js && node ./e2e/index.js",
+    "e2e:no-gtf-rebuild": "node ./e2e/scripts/copyLibs.js && cross-env RUNNER=Init node ./e2e/index.js",
     "release": "gulp release",
     "test:scripts": "mocha ./scripts/test/**/*spec.js",
     "lint:fix": "./node_modules/.bin/eslint --ignore-path .gitignore . --fix",
@@ -49,10 +50,12 @@
     "parcel-bundler": "^1.12.4",
     "rimraf": "^3.0.2",
     "rollup-plugin-typescript2": "^0.27.2",
+    "shortid": "^2.2.16",
     "simple-git": "^1.131.0",
     "sinon": "^11.1.1",
     "tree-kill": "^1.2.2",
-    "typescript": "^3.8.3"
+    "typescript": "^3.8.3",
+    "ws": "^8.3.0"
   },
   "husky": {
     "hooks": {

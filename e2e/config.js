@@ -43,6 +43,12 @@ module.exports = {
             groupName: 'workspaces'
         }
     ],
+    runPuppet: [
+        {
+            groupName: 'init',
+            processes: ['puppetBridge']
+        }
+    ],
     processes: [
         {
             name: 'remoteSource',
@@ -51,6 +57,18 @@ module.exports = {
                 hostname: 'localhost',
                 port: 9998,
                 path: '/v1/apps/search',
+                method: 'GET',
+                pollingInterval: 100,
+                pollingTimeout: 30 * 1000
+            })
+        },
+        {
+            name: 'puppetBridge',
+            path: './puppet-env/puppet-bridge.js',
+            readyCondition: basePolling({
+                hostname: 'localhost',
+                port: 9997,
+                path: '/',
                 method: 'GET',
                 pollingInterval: 100,
                 pollingTimeout: 30 * 1000
